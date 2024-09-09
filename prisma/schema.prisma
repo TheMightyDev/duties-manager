@@ -14,16 +14,11 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-model Post {
-    id        Int      @id @default(autoincrement())
-    name      String
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    createdBy   User   @relation(fields: [createdById], references: [id])
-    createdById String
-
-    @@index([name])
+enum importance {
+    HIGHPRIORITY
+    NORMALPRIORITY
+    PREFERSNOTTO
+    ABSENT
 }
 
 // Necessary for Next auth
@@ -55,14 +50,20 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String?   @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    posts         Post[]
+    id             String       @id @default(cuid())
+    firstName      String
+    lastName       String
+    organizationId String
+    organization   organization @relation(fields: [organizationId], references: [id])
+    role           String
+    roleStartDate  DateTime
+    retireDate     DateTime
+    email          String?      @unique
+    emailVerified  DateTime?
+    accounts       Account[]
+    sessions       Session[]
+    Assignment     Assignment[] @relation(name: "reserve relation")
+    reserve        Assignment[] @relation(name: "user")
 }
 
 model VerificationToken {
@@ -71,4 +72,47 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model organization {
+    id          String  @id @default(cuid())
+    name        String
+    description String?
+
+    User User[]
+    Duty Duty[]
+}
+
+model Duty {
+    id             String       @id @default(cuid())
+    organizationId String
+    startDate      DateTime
+    endDate        DateTime
+    kind           String //should be enum
+    score          Int
+    role           String //should be enum
+    quantity       Int
+    organization   organization @relation(fields: [organizationId], references: [id])
+
+    Assignment Assignment[]
+}
+
+model Assignment {
+    id        String @id @default(cuid())
+    dutyId    String
+    userId    String
+    reserveId String
+    duty      Duty   @relation(fields: [dutyId], references: [id], onDelete: Cascade)
+    reserve   User   @relation(name: "reserve relation", fields: [reserveId], references: [id], onDelete: Cascade)
+    User      User   @relation(name: "user", fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Preference {
+    id          String     @id @default(cuid())
+    userId      String
+    startDate   DateTime
+    endDate     DateTime
+    importance  importance
+    kind        String
+    description String?
 }
