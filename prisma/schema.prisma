@@ -14,11 +14,26 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-enum importance {
-    HIGHPRIORITY
-    NORMALPRIORITY
-    PREFERSNOTTO
+enum UserRole {
+    SQUAD
+    COMMANDER
+    OFFICER
+    EXEMPT
+}
+
+enum DutyKind {
+    GUARDING
+    KITCHEN
+    OTHER
+}
+
+enum PreferenceImportance {
+    HIGH_PRIORITY
+    NORMAL_PRIORITY
+    PREFERS_NOT_TO
     ABSENT
+
+    @@map("importance")
 }
 
 // Necessary for Next auth
@@ -54,7 +69,7 @@ model User {
     firstName      String
     lastName       String
     organizationId String
-    organization   organization @relation(fields: [organizationId], references: [id])
+    organization   Organization @relation(fields: [organizationId], references: [id])
     role           String
     roleStartDate  DateTime
     retireDate     DateTime
@@ -74,7 +89,7 @@ model VerificationToken {
     @@unique([identifier, token])
 }
 
-model organization {
+model Organization {
     id          String  @id @default(cuid())
     name        String
     description String?
@@ -87,12 +102,13 @@ model Duty {
     id             String       @id @default(cuid())
     organizationId String
     startDate      DateTime
+    description    String?
     endDate        DateTime
-    kind           String //should be enum
+    kind           DutyKind //should be enum
     score          Int
-    role           String //should be enum
+    role           UserRole //should be enum
     quantity       Int
-    organization   organization @relation(fields: [organizationId], references: [id])
+    organization   Organization @relation(fields: [organizationId], references: [id])
 
     Assignment Assignment[]
 }
@@ -108,11 +124,11 @@ model Assignment {
 }
 
 model Preference {
-    id          String     @id @default(cuid())
+    id          String               @id @default(cuid())
     userId      String
     startDate   DateTime
     endDate     DateTime
-    importance  importance
+    importance  PreferenceImportance
     kind        String
     description String?
 }
