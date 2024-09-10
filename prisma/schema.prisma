@@ -14,28 +14,6 @@ datasource db {
     url      = env("DATABASE_URL")
 }
 
-enum UserRole {
-    SQUAD
-    COMMANDER
-    OFFICER
-    EXEMPT
-}
-
-enum DutyKind {
-    GUARDING
-    KITCHEN
-    OTHER
-}
-
-enum PreferenceImportance {
-    HIGH_PRIORITY
-    NORMAL_PRIORITY
-    PREFERS_NOT_TO
-    ABSENT
-
-    @@map("importance")
-}
-
 // Necessary for Next auth
 model Account {
     id                       String  @id @default(cuid())
@@ -68,6 +46,7 @@ model User {
     id             String       @id @default(cuid())
     firstName      String
     lastName       String
+    isAdmin        Boolean      @default(false)
     organizationId String
     organization   Organization @relation(fields: [organizationId], references: [id])
     role           String
@@ -98,15 +77,30 @@ model Organization {
     Duty Duty[]
 }
 
+enum DutyKind {
+    GUARDING
+    KITCHEN
+    AGRICULTURE
+    FOOD_PACKAGING
+    OTHER
+}
+
+enum UserRole {
+    SQUAD
+    COMMANDER
+    OFFICER
+    EXEMPT
+}
+
 model Duty {
     id             String       @id @default(cuid())
     organizationId String
     startDate      DateTime
     description    String?
     endDate        DateTime
-    kind           DutyKind //should be enum
+    kind           DutyKind
     score          Int
-    role           UserRole //should be enum
+    role           UserRole
     quantity       Int
     organization   Organization @relation(fields: [organizationId], references: [id])
 
@@ -123,12 +117,30 @@ model Assignment {
     User      User   @relation(name: "user", fields: [userId], references: [id], onDelete: Cascade)
 }
 
+enum PreferenceReason {
+    VACATION
+    MEDICAL
+    EDUCATION
+    APPOINTMENT
+    RELIGION
+    FAMILY_EVENT
+    CELEBRATION
+    OTHER
+}
+
+enum PreferenceImportance {
+    HIGH_PRIORITY
+    NORMAL_PRIORITY
+    PREFERS_NOT_TO
+    ABSENT
+}
+
 model Preference {
     id          String               @id @default(cuid())
     userId      String
     startDate   DateTime
     endDate     DateTime
     importance  PreferenceImportance
-    kind        String
-    description String?
+    kind        PreferenceReason
+    description String
 }
