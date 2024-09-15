@@ -23,9 +23,8 @@ export default [
             "**/*.tsx"
         ],
         "rules": {
-            ...ts.configs["eslint-recommended"].rules,
-            ...ts.configs["recommended"].rules,
-            "semi": "error",
+            ...ts.configs["eslint-recommended"]?.rules,
+            ...ts.configs["recommended"]?.rules,
             "@stylistic/array-bracket-newline": [
                 "error",
                 "consistent"
