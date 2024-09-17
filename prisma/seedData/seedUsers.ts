@@ -1,5 +1,5 @@
 import { type User, UserRole } from "@prisma/client";
-import { addDays, addMonths } from "date-fns";
+import { addMonths } from "date-fns";
 import { seedOrganizations } from "prisma/seedData/seedOrganizations";
 
 export const seedUsers = [
@@ -44,12 +44,12 @@ export const seedUsers = [
 		firstName: "dove",
 		lastName: "dali",
 		email: "user4@example.com",		
-		emailVerified: addMonths(new Date(), -2),
+		emailVerified: addMonths(new Date(), -1),
 		organizationId: seedOrganizations[0].id,
 		isAdmin: false,
 		roleStartDate: addMonths(new Date(), -5),
-		retireDate: addMonths(new Date(), 20),
-		role: UserRole.SQUAD,
+		retireDate: addMonths(new Date(), 10),
+		role: UserRole.OFFICER,
 	},
 	{
 		id: "user5",
@@ -60,43 +60,7 @@ export const seedUsers = [
 		organizationId: seedOrganizations[0].id,
 		isAdmin: false,
 		roleStartDate: addMonths(new Date(), -2),
-		retireDate: addMonths(new Date(), 2),
-		role: UserRole.OFFICER,
-	},
-	{
-		id: "user6",
-		firstName: "fred",
-		lastName: "funk",
-		email: "user6@example.com",		
-		emailVerified: addMonths(new Date(), -1),
-		organizationId: seedOrganizations[0].id,
-		isAdmin: false,
-		roleStartDate: addMonths(new Date(), -2),
-		retireDate: addDays(new Date(), 45),
-		role: UserRole.OFFICER,
-	},
-	{
-		id: "user7",
-		firstName: "gidi",
-		lastName: "garlic",
-		email: "user7@example.com",		
-		emailVerified: addMonths(new Date(), -1),
-		organizationId: seedOrganizations[0].id,
-		isAdmin: false,
-		roleStartDate: addMonths(new Date(), -3),
-		retireDate: addMonths(new Date(), 8),
-		role: UserRole.COMMANDER,
-	},
-	{
-		id: "user8",
-		firstName: "haji",
-		lastName: "hadad",
-		email: "user8@example.com",		
-		emailVerified: addMonths(new Date(), -1),
-		organizationId: seedOrganizations[0].id,
-		isAdmin: false,
-		roleStartDate: addMonths(new Date(), -2),
-		retireDate: addMonths(new Date(), 10),
+		retireDate: addMonths(new Date(), 20),
 		role: UserRole.COMMANDER,
 	},
 ] as const satisfies User[];

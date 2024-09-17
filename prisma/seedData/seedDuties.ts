@@ -15,7 +15,7 @@ export const seedDuties = [
 		description: null,
 	},
 	{
-		id: "duty2",
+		id: "duty1",
 		organizationId: seedOrganizations[0].id,
 		kind: DutyKind.GUARDING,
 		startDate: subDays(new Date(), 11),
@@ -26,7 +26,7 @@ export const seedDuties = [
 		description: null,
 	},
 	{
-		id: "duty3",
+		id: "duty1",
 		organizationId: seedOrganizations[0].id,
 		kind: DutyKind.GUARDING,
 		startDate: addDays(new Date(), 5),
@@ -37,7 +37,7 @@ export const seedDuties = [
 		description: null,
 	},
 	{
-		id: "duty4",
+		id: "duty1",
 		organizationId: seedOrganizations[0].id,
 		kind: DutyKind.GUARDING,
 		startDate: addDays(new Date(), 20),
