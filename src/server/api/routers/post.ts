@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 import {
-  createTRPCRouter,
-  protectedProcedure,
-  publicProcedure,
+	createTRPCRouter,
+	protectedProcedure,
+	publicProcedure,
 } from "@/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
@@ -25,12 +25,31 @@ export const postRouter = createTRPCRouter({
         },
       });
     }),
-
-  getLatest: protectedProcedure.query(async ({ ctx }) => {
-    const post = await ctx.db.post.findFirst({
-      orderBy: { createdAt: "desc" },
-      where: { createdBy: { id: ctx.session.user.id } },
-    });
+	
+	getAllUsersInOrganizations: publicProcedure
+		.input(z.object({ organizationId: z.string() }))
+		.query(async ({ ctx, input }) => {
+			const users = await ctx.db.user.findMany({
+				where: {
+					organizationId: input.organizationId,
+				},
+				select: {
+					isAdmin: false,
+					organizationId: false,
+					emailVerified: false,
+					firstName: true,	
+				}
+			})
+			
+			return users;
+		}),
+		
+  getLatest: publicProcedure.query(async ({ ctx }) => {
+    const post = await ctx.db.user.findFirst({
+			where: {
+				firstName: {equals: "alon"}
+			}
+		});
 
     return post ?? null;
   }),
