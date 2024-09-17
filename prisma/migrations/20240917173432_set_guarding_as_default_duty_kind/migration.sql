@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "Duty" ALTER COLUMN "kind" SET DEFAULT 'GUARDING';
