@@ -33,12 +33,6 @@ export const postRouter = createTRPCRouter({
 				where: {
 					organizationId: input.organizationId,
 				},
-				select: {
-					isAdmin: false,
-					organizationId: false,
-					emailVerified: false,
-					firstName: true,	
-				}
 			})
 			
 			return users;
