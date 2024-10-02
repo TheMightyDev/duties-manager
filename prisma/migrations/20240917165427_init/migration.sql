@@ -1,5 +1,14 @@
 -- CreateEnum
-CREATE TYPE "importance" AS ENUM ('HIGHPRIORITY', 'NORMALPRIORITY', 'PREFERSNOTTO', 'ABSENT');
+CREATE TYPE "UserRole" AS ENUM ('SQUAD', 'COMMANDER', 'OFFICER', 'EXEMPT');
+
+-- CreateEnum
+CREATE TYPE "DutyKind" AS ENUM ('GUARDING', 'KITCHEN', 'AGRICULTURE', 'FOOD_PACKAGING', 'OTHER');
+
+-- CreateEnum
+CREATE TYPE "PreferenceReason" AS ENUM ('VACATION', 'MEDICAL', 'EDUCATION', 'APPOINTMENT', 'RELIGION', 'FAMILY_EVENT', 'CELEBRATION', 'OTHER');
+
+-- CreateEnum
+CREATE TYPE "PreferenceImportance" AS ENUM ('HIGH_PRIORITY', 'NORMAL_PRIORITY', 'PREFERS_NOT_TO', 'ABSENT');
 
 -- CreateTable
 CREATE TABLE "Account" (
@@ -8,14 +17,14 @@ CREATE TABLE "Account" (
     "type" TEXT NOT NULL,
     "provider" TEXT NOT NULL,
     "providerAccountId" TEXT NOT NULL,
-    "refresh_token" TEXT,
-    "access_token" TEXT,
-    "expires_at" INTEGER,
-    "token_type" TEXT,
+    "refreshToken" TEXT,
+    "accessToken" TEXT,
+    "expiresAt" INTEGER,
+    "tokenType" TEXT,
     "scope" TEXT,
-    "id_token" TEXT,
+    "idToken" TEXT,
     "session_state" TEXT,
-    "refresh_token_expires_in" INTEGER,
+    "refreshTokenExpiresIn" INTEGER,
 
     CONSTRAINT "Account_pkey" PRIMARY KEY ("id")
 );
@@ -35,8 +44,9 @@ CREATE TABLE "User" (
     "id" TEXT NOT NULL,
     "firstName" TEXT NOT NULL,
     "lastName" TEXT NOT NULL,
+    "isAdmin" BOOLEAN NOT NULL DEFAULT false,
     "organizationId" TEXT NOT NULL,
-    "role" TEXT NOT NULL,
+    "role" "UserRole" NOT NULL,
     "roleStartDate" TIMESTAMP(3) NOT NULL,
     "retireDate" TIMESTAMP(3) NOT NULL,
     "email" TEXT,
@@ -53,24 +63,25 @@ CREATE TABLE "VerificationToken" (
 );
 
 -- CreateTable
-CREATE TABLE "organization" (
+CREATE TABLE "Organization" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
 
-    CONSTRAINT "organization_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Organization_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "Duty" (
     "id" TEXT NOT NULL,
+    "kind" "DutyKind" NOT NULL,
     "organizationId" TEXT NOT NULL,
     "startDate" TIMESTAMP(3) NOT NULL,
     "endDate" TIMESTAMP(3) NOT NULL,
-    "kind" TEXT NOT NULL,
-    "score" INTEGER NOT NULL,
-    "role" TEXT NOT NULL,
+    "role" "UserRole" NOT NULL,
     "quantity" INTEGER NOT NULL,
+    "score" INTEGER NOT NULL,
+    "description" TEXT,
 
     CONSTRAINT "Duty_pkey" PRIMARY KEY ("id")
 );
@@ -89,11 +100,11 @@ CREATE TABLE "Assignment" (
 CREATE TABLE "Preference" (
     "id" TEXT NOT NULL,
     "userId" TEXT NOT NULL,
+    "reason" "PreferenceReason" NOT NULL,
+    "importance" "PreferenceImportance" NOT NULL,
     "startDate" TIMESTAMP(3) NOT NULL,
     "endDate" TIMESTAMP(3) NOT NULL,
-    "importance" "importance" NOT NULL,
-    "kind" TEXT NOT NULL,
-    "description" TEXT,
+    "description" TEXT NOT NULL,
 
     CONSTRAINT "Preference_pkey" PRIMARY KEY ("id")
 );
@@ -120,16 +131,19 @@ ALTER TABLE "Account" ADD CONSTRAINT "Account_userId_fkey" FOREIGN KEY ("userId"
 ALTER TABLE "Session" ADD CONSTRAINT "Session_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "User" ADD CONSTRAINT "User_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "User" ADD CONSTRAINT "User_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Duty" ADD CONSTRAINT "Duty_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "organization"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Duty" ADD CONSTRAINT "Duty_organizationId_fkey" FOREIGN KEY ("organizationId") REFERENCES "Organization"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Assignment" ADD CONSTRAINT "Assignment_dutyId_fkey" FOREIGN KEY ("dutyId") REFERENCES "Duty"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Assignment" ADD CONSTRAINT "Assignment_reserveId_fkey" FOREIGN KEY ("reserveId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Assignment" ADD CONSTRAINT "Assignment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Assignment" ADD CONSTRAINT "Assignment_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "Assignment" ADD CONSTRAINT "Assignment_reserveId_fkey" FOREIGN KEY ("reserveId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Preference" ADD CONSTRAINT "Preference_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
