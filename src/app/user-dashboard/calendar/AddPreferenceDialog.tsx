@@ -207,6 +207,8 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 						ref={inputRefs.importance}>
 						{
 							Object.keys(PreferenceImportance).map((importance) => (
+								// Only the admin can declare that someone is temporarily absent from doing duties
+								importance !== PreferenceImportance.ABSENT &&
 								<option value={importance}>{importance}</option>
 							))
 						}
