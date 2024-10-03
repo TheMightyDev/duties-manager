@@ -1,5 +1,6 @@
 {
 	"editor.indentSize": 2,
+	"eslint.useFlatConfig": true,
 	"editor.codeActionsOnSave": {
 		"source.organizeImports": "always",
 		"source.fixAll.eslint": "always"
