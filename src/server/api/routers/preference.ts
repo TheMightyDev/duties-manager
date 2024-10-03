@@ -42,4 +42,22 @@ export const preferenceRouter = createTRPCRouter({
 				return false;
 			}
 		})),
+		
+	deleteById: publicProcedure
+		.input(z.string())
+		.query((async ({ ctx, input: id }) => {
+			try {
+				await ctx.db.preference.delete({
+					where: {
+						id,
+					},
+				});
+			
+				return true;
+			} catch (e) {
+				console.error("error", e);
+			
+				return false;
+			}
+		})),
 });

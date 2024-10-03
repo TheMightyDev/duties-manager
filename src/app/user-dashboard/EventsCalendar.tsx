@@ -1,6 +1,6 @@
 "use client";
 
-import { AddPreferenceDialog } from "@/app/user-dashboard/AddPreferenceDialog";
+import { AddPreferenceDialog, AddPreferenceDialogMode } from "@/app/user-dashboard/AddPreferenceDialog";
 import { type DatesSelection } from "@/app/user-dashboard/types";
 import { type DateSelectArg, type EventClickArg, type EventInput } from "@fullcalendar/core/index.js";
 import heLocale from "@fullcalendar/core/locales/he";
@@ -18,6 +18,7 @@ import { useImmer } from "use-immer";
 interface EventsCalendarProps {
 	initialPreferences: Preference[];
 	addNewPreference: (newPreference: Preference) => Promise<boolean>;
+	deletePreferenceById: (id: string) => Promise<boolean>;
 }
 
 const mockPreferences = [ {
@@ -33,7 +34,9 @@ const mockPreferences = [ {
 export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 	initialPreferences,
 	addNewPreference,
+	deletePreferenceById: deletePreferenceById,
 }) => {
+	const [ dialogMode, setDialogMode ] = React.useState<AddPreferenceDialogMode>(AddPreferenceDialogMode.ADD);
 	const [ selectedPreferenceId, setSelectedPreferenceId ] = React.useState<string | null>(null);
 	const [ isDialogOpen, setIsDialogOpen ] = React.useState<boolean>(false);
 	const [ datesSelection, setDatesSelection ] = React.useState<DatesSelection | null>(null);
@@ -50,12 +53,12 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 				start: preference.startDate,
 				end: addMinutes(preference.endDate, 1),
 				
-				color: preference.reason === PreferenceReason.CELEBRATION ? "pink" : "",
+				className: preference.reason === PreferenceReason.CELEBRATION ? "bg-pink-700 border-pink-900" : "",
+				// color: preference.reason === PreferenceReason.CELEBRATION ? "pink" : "",
 			}));
 		},
 		[ preferences ]
 	);
-	const selectedPreference = preferences.find((preference) => preference.id === selectedPreferenceId);
 	
 	const getPreferenceInDateRange = ({ start, end }: DatesSelection): Preference | undefined => (
 		preferences.find((preference) => {
@@ -69,7 +72,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		// setSelectedPreferenceId(undefined);
 	};
 	
-	const addNewPreferenceWrapper = (newPreference: Preference) => {
+	const createPreferenceWrapper = (newPreference: Preference) => {
 		addNewPreference(newPreference).then(
 			() => {
 				toast.success("ההסתייגות הוגשה בהצלחה");
@@ -79,6 +82,23 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 			},
 			() => {
 				toast.error("הגשת ההסתייגות נכשלה");
+			}
+		);
+	};
+	
+	const deletePreferenceWrapper = (id: string) => {
+		deletePreferenceById(id).then(
+			() => {
+				toast.success("ההסתייגות נמחקה בהצלחה");
+				updatePreferences((draft) => {
+					const deletedPreferenceIndex = draft.findIndex((preference) => preference.id === id);
+					
+					// Note: `splice` mutates the original array
+					draft.splice(deletedPreferenceIndex, 1);
+				});
+			},
+			() => {
+				toast.error("מחיקת ההסתייגות נכשלה");
 			}
 		);
 	};
@@ -105,6 +125,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		} else {
 			setSelectedPreferenceId(null);
 			setIsDialogOpen(true);
+			setDialogMode(AddPreferenceDialogMode.ADD);
 			setDatesSelection(datesSelection);
 		}
 	};
@@ -112,8 +133,18 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 	const eventClick = (arg: EventClickArg) => {
 		const m = arg.event.id;
 		setSelectedPreferenceId(m);
+		setDialogMode(AddPreferenceDialogMode.EDIT);
+		setIsDialogOpen(true);
+		const nextPreference = preferences.find((preference) => preference.id === m);
+
+		setDatesSelection({
+			start: nextPreference!.startDate,
+			end: nextPreference!.endDate,
+		});
 		console.log("@eventClick", arg.event);
 	};
+
+	const selectedPreference = preferences.find((preference) => preference.id === selectedPreferenceId);
 
 	return (
 		<>
@@ -135,11 +166,14 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 			{
 				datesSelection &&
 				<AddPreferenceDialog
+					mode={dialogMode}
 					isOpen={isDialogOpen}
 					datesSelection={datesSelection}
 					setDatesSelection={setDatesSelection}
+					selectedPreference={selectedPreference}
 					getPreferenceInDateRange={getPreferenceInDateRange}
-					addNewPreferenceWrapper={addNewPreferenceWrapper}
+					createPreference={createPreferenceWrapper}
+					deletePreference={deletePreferenceWrapper}
 					closeDialog={() => {
 						setIsDialogOpen(false);
 						setDatesSelection(null);

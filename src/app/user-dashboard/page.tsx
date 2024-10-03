@@ -20,11 +20,18 @@ const UserDashboardPage: NextPage = async () => {
 		return await api.preference.addNew(newPreference);
 	};
 	
+	const deletePreferenceById = async (id: string) => {
+		"use server";
+		
+		return await api.preference.deleteById(id);
+	};
+	
 	return (
 		<>
 			<EventsCalendar
 				initialPreferences={preferences}
-				addNewPreference={addNewPreference}/>
+				addNewPreference={addNewPreference}
+				deletePreferenceById={deletePreferenceById} />
 		</>
 	);
 };

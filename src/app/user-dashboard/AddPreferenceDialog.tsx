@@ -2,33 +2,45 @@
 
 import { type DatesSelection } from "@/app/user-dashboard/types";
 import { PreferenceImportance, PreferenceReason, type Preference } from "@prisma/client";
-import { addDays, format, parse } from "date-fns";
+import { add, addDays, format, parse } from "date-fns";
 import React from "react";
+
+export enum AddPreferenceDialogMode {
+	ADD,
+	EDIT,
+}
 
 interface AddPreferenceDialogProps {
 	isOpen: boolean;
+	mode: AddPreferenceDialogMode;
 	datesSelection: DatesSelection;
 	setDatesSelection: React.Dispatch<React.SetStateAction<DatesSelection | null>>;
+	/** Required if on "edit" mode */
+	selectedPreference?: Preference;
+	
 	getPreferenceInDateRange: (datesSelection: DatesSelection) => Preference | undefined;
-	addNewPreferenceWrapper: (newPreference: Preference) => void;
+	createPreference: (newPreference: Preference) => void;
+	deletePreference: (id: string) => void;
 	closeDialog: () => void;
 }
 
 export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
+	mode,
 	isOpen,
 	datesSelection,
 	setDatesSelection,
+	selectedPreference,
+	
 	getPreferenceInDateRange,
-	addNewPreferenceWrapper,
+	createPreference,
+	deletePreference,
 	closeDialog,
 }) => {
 	const inputRefs = {
 		reason: React.useRef<HTMLSelectElement>(null),
 		importance: React.useRef<HTMLSelectElement>(null),
-		description: React.useRef<HTMLInputElement>(null),
+		description: React.useRef<HTMLTextAreaElement>(null),
 	};
-	
-	console.log("datesSelection", format(datesSelection.start, "yyyy-MM-dd"));
 	
 	const preference = getPreferenceInDateRange({
 		start: datesSelection.start,
@@ -42,9 +54,14 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 		
 		setDatesSelection((prev) => {
 			if (prev) {
+				const parsedDate = parse(nextValue, "yyyy-MM-dd", new Date());
+				
 				const nextDatesSelection = {
 					...prev,
-					[which]: parse(nextValue, "yyyy-MM-dd", new Date()),
+					[which]: which === "start" ? parsedDate : add(parsedDate, {
+						days: 1,
+						minutes: -1,
+					}),
 				};
 				
 				return nextDatesSelection;
@@ -71,7 +88,7 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 		const importance = inputRefs.importance.current?.value as PreferenceImportance;
 		const description = inputRefs.description.current?.value as string;
 		
-		addNewPreferenceWrapper({
+		createPreference({
 			id: Math.round(Math.random() * 500_000).toString(),
 			userId: "user1",
 			reason,
@@ -84,10 +101,24 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 		closeDialog();
 	};
 	
+	const handleDelete = () => {
+		if (selectedPreference) {
+			deletePreference(selectedPreference.id);
+		}
+		
+		closeDialog();
+	};
+	
 	React.useEffect(() => {
-		inputRefs.reason.current!.value = PreferenceReason.VACATION;
-		inputRefs.importance.current!.value = PreferenceImportance.NORMAL_PRIORITY;
-		inputRefs.description.current!.value = "";
+		if (mode === AddPreferenceDialogMode.EDIT && selectedPreference) {
+			inputRefs.reason.current!.value = selectedPreference.reason;
+			inputRefs.importance.current!.value = selectedPreference.importance;
+			inputRefs.description.current!.value = selectedPreference.description;
+		} else {
+			inputRefs.reason.current!.value = PreferenceReason.VACATION;
+			inputRefs.importance.current!.value = PreferenceImportance.NORMAL_PRIORITY;
+			inputRefs.description.current!.value = "";
+		}
 	}, [ isOpen ]);
 
 	return (
@@ -134,7 +165,9 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 						ref={inputRefs.reason}>
 						{
 							Object.keys(PreferenceReason).map((reason) => (
-								<option value={reason}>{reason}</option>
+								<option
+									className="bg-red-300"
+									value={reason}>{reason}</option>
 							))
 						}
 					</select>
@@ -165,6 +198,12 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 						className="resize-none"></textarea>
 				</div>
 				<div>
+					{
+						mode === AddPreferenceDialogMode.EDIT &&
+						<button onClick={handleDelete}>
+							מחיקה
+						</button>
+					}
 					<button onClick={handleCancel}>
 						ביטול
 					</button>
