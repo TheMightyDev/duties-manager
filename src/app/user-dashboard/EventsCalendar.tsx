@@ -8,7 +8,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin, { type DateClickArg } from "@fullcalendar/interaction";
 import FullCalendar from "@fullcalendar/react";
 import { type Preference, PreferenceImportance, PreferenceReason } from "@prisma/client";
-import { subDays } from "date-fns";
+import { addMinutes, subMinutes } from "date-fns";
 import { seedUsers } from "prisma/seedData/seedUsers";
 import React from "react";
 import { toast, ToastContainer } from "react-toastify";
@@ -17,31 +17,40 @@ import { useImmer } from "use-immer";
 
 interface EventsCalendarProps {
 	initialPreferences: Preference[];
+	addNewPreference: (newPreference: Preference) => Promise<boolean>;
 }
 
-export const EventsCalendar: React.FC<EventsCalendarProps> = ({ initialPreferences }) => {
+const mockPreferences = [ {
+	id: "123",
+	userId: seedUsers[0].id,
+	startDate: new Date(2024, 9, 25),
+	endDate: new Date(2024, 9, 27, 10, 0, 20),
+	reason: PreferenceReason.APPOINTMENT,
+	description: "heh",
+	importance: PreferenceImportance.HIGH_PRIORITY,
+} ];
+
+export const EventsCalendar: React.FC<EventsCalendarProps> = ({
+	initialPreferences,
+	addNewPreference,
+}) => {
 	const [ selectedPreferenceId, setSelectedPreferenceId ] = React.useState<string | null>(null);
 	const [ isDialogOpen, setIsDialogOpen ] = React.useState<boolean>(false);
 	const [ datesSelection, setDatesSelection ] = React.useState<DatesSelection | null>(null);
-	const [ preferences, updatePreferences ] = useImmer<Preference[]>(
-		[ {
-			id: "123",
-			userId: seedUsers[0].id,
-			startDate: new Date(2024, 9, 25),
-			endDate: new Date(2024, 9, 27, 10, 0, 20),
-			reason: PreferenceReason.APPOINTMENT,
-			description: "heh",
-			importance: PreferenceImportance.HIGH_PRIORITY,
-		} ]
-	);
+	const [ preferences, updatePreferences ] = useImmer<Preference[]>(initialPreferences);
 
 	const preferencesFormattedForEvent = React.useMemo(
 		() => {
+			console.log("@preferences", preferences);
+			
 			return preferences.map<EventInput>((preference) => ({
 				id: preference.id,
+				allDay: true,
 				title: preference.description,
 				start: preference.startDate,
-				end: preference.endDate,
+				end: addMinutes(preference.endDate, 1),
+				
+				color: preference.reason === PreferenceReason.CELEBRATION ? "pink" : "",
 			}));
 		},
 		[ preferences ]
@@ -60,13 +69,30 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({ initialPreferenc
 		// setSelectedPreferenceId(undefined);
 	};
 	
+	const addNewPreferenceWrapper = (newPreference: Preference) => {
+		addNewPreference(newPreference).then(
+			() => {
+				toast.success("ההסתייגות הוגשה בהצלחה");
+				updatePreferences((draft) => {
+					draft.push(newPreference);
+				});
+			},
+			() => {
+				toast.error("הגשת ההסתייגות נכשלה");
+			}
+		);
+	};
+	
 	const dateSelectHandler = (arg: DateSelectArg) => {
 		console.log("@selected", arg);
 		
-		const preferenceInDateRange = getPreferenceInDateRange({
+		const datesSelection: DatesSelection = {
 			start: arg.start,
-			end: arg.end,
-		});
+			// When we select a dates range in full calendar, the end date is midnight of the next selected date
+			end: subMinutes(arg.end, 1),
+		};
+		
+		const preferenceInDateRange = getPreferenceInDateRange(datesSelection);
 		
 		console.log("@preferenceInDateRange", preferenceInDateRange);
 		if (preferenceInDateRange) {
@@ -79,11 +105,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({ initialPreferenc
 		} else {
 			setSelectedPreferenceId(null);
 			setIsDialogOpen(true);
-			setDatesSelection({
-				start: arg.start,
-				// When we select a dates range in full calendar, the end date is midnight of the next selected date
-				end: subDays(arg.end, 1),
-			});
+			setDatesSelection(datesSelection);
 		}
 	};
 	
@@ -116,10 +138,17 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({ initialPreferenc
 					isOpen={isDialogOpen}
 					datesSelection={datesSelection}
 					setDatesSelection={setDatesSelection}
-					getPreferenceInDateRange={getPreferenceInDateRange}/>
+					getPreferenceInDateRange={getPreferenceInDateRange}
+					addNewPreferenceWrapper={addNewPreferenceWrapper}
+					closeDialog={() => {
+						setIsDialogOpen(false);
+						setDatesSelection(null);
+					}}/>
 			}
 			
-			<ToastContainer limit={2} />
+			<ToastContainer
+				limit={2}
+				rtl={true} />
 		</>
 	);
 };

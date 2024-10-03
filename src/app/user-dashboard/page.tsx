@@ -1,5 +1,7 @@
+
 import { EventsCalendar } from "@/app/user-dashboard/EventsCalendar";
 import { api } from "@/trpc/server";
+import { type Preference } from "@prisma/client";
 import { type NextPage } from "next";
 import { seedUsers } from "prisma/seedData/seedUsers";
 
@@ -10,9 +12,19 @@ const UserDashboardPage: NextPage = async () => {
 		year: new Date().getFullYear(),
 	});
 	
+	console.log("@preferences", preferences);
+	
+	const addNewPreference = async (newPreference: Preference) => {
+		"use server";
+
+		return await api.preference.addNew(newPreference);
+	};
+	
 	return (
 		<>
-			<EventsCalendar initialPreferences={preferences}/>
+			<EventsCalendar
+				initialPreferences={preferences}
+				addNewPreference={addNewPreference}/>
 		</>
 	);
 };
