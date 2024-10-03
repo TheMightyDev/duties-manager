@@ -1,7 +1,7 @@
 "use client";
 
 import { AddPreferenceDialog, AddPreferenceDialogMode } from "@/app/user-dashboard/AddPreferenceDialog";
-import { type DatesSelection, type GetPreferenceParams } from "@/app/user-dashboard/types";
+import { type DatesSelection, type GetPreferenceParams, type PreferenceOperations } from "@/app/user-dashboard/types";
 import { type DateSelectArg, type EventClickArg, type EventInput } from "@fullcalendar/core/index.js";
 import heLocale from "@fullcalendar/core/locales/he";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -14,16 +14,15 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useImmer } from "use-immer";
 
-interface EventsCalendarProps {
+interface EventsCalendarProps extends PreferenceOperations<Promise<boolean>> {
 	initialPreferences: Preference[];
-	createPreference: (newPreference: Preference) => Promise<boolean>;
-	deletePreference: (params: { id: string }) => Promise<boolean>;
 }
 
 export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 	initialPreferences,
 	createPreference,
 	deletePreference,
+	updatePreference,
 }) => {
 	const [ dialogMode, setDialogMode ] = React.useState<AddPreferenceDialogMode>(AddPreferenceDialogMode.ADD);
 	const [ selectedPreferenceId, setSelectedPreferenceId ] = React.useState<string | null>(null);
@@ -75,14 +74,12 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		);
 	};
 	
-	const deletePreferenceWrapper = (id: string) => {
-		deletePreference({
-			id,
-		}).then(
+	const deletePreferenceWrapper = (params: { id: string }) => {
+		deletePreference(params).then(
 			() => {
 				toast.success("ההסתייגות נמחקה בהצלחה");
 				updatePreferences((draft) => {
-					const deletedPreferenceIndex = draft.findIndex((preference) => preference.id === id);
+					const deletedPreferenceIndex = draft.findIndex((preference) => preference.id === params.id);
 					
 					// Note: `splice` mutates the original array
 					draft.splice(deletedPreferenceIndex, 1);
@@ -90,6 +87,22 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 			},
 			() => {
 				toast.error("מחיקת ההסתייגות נכשלה");
+			}
+		);
+	};
+	
+	const updatePreferenceWrapper = (preferenceWithUpdates: Preference) => {
+		updatePreference(preferenceWithUpdates).then(
+			() => {
+				toast.success("ההסתייגות עודכנה בהצלחה");
+				updatePreferences((draft) => {
+					const index = draft.findIndex((preference) => preference.id === preferenceWithUpdates.id);
+					
+					draft[index] = preferenceWithUpdates;
+				});
+			},
+			() => {
+				toast.error("עדכון ההסתייגות נכשלה");
 			}
 		);
 	};
@@ -166,6 +179,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 					getPreference={getPreference}
 					createPreference={createPreferenceWrapper}
 					deletePreference={deletePreferenceWrapper}
+					updatePreference={updatePreferenceWrapper}
 					closeDialog={() => {
 						setIsDialogOpen(false);
 						setDatesSelection(null);

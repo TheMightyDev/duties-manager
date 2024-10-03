@@ -40,7 +40,8 @@ const UserDashboardPage: NextPage = async () => {
 			<EventsCalendar
 				initialPreferences={preferences}
 				createPreference={createPreference}
-				deletePreference={deletePreference} />
+				deletePreference={deletePreference}
+				updatePreference={updatePreference} />
 		</>
 	);
 };

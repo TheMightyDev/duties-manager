@@ -1,6 +1,6 @@
 "use client";
 
-import { type DatesSelection, type GetPreferenceParams } from "@/app/user-dashboard/types";
+import { type DatesSelection, type GetPreferenceParams, type PreferenceOperations } from "@/app/user-dashboard/types";
 import { PreferenceImportance, PreferenceReason, type Preference } from "@prisma/client";
 import { add, format, parse } from "date-fns";
 import React from "react";
@@ -10,7 +10,7 @@ export enum AddPreferenceDialogMode {
 	EDIT,
 }
 
-interface AddPreferenceDialogProps {
+interface AddPreferenceDialogProps extends PreferenceOperations<void> {
 	isOpen: boolean;
 	mode: AddPreferenceDialogMode;
 	datesSelection: DatesSelection;
@@ -19,8 +19,6 @@ interface AddPreferenceDialogProps {
 	selectedPreference?: Preference;
 	
 	getPreference: (params: GetPreferenceParams) => Preference | undefined;
-	createPreference: (newPreference: Preference) => void;
-	deletePreference: (id: string) => void;
 	closeDialog: () => void;
 }
 
@@ -34,6 +32,7 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 	getPreference,
 	createPreference,
 	deletePreference,
+	updatePreference,
 	closeDialog,
 }) => {
 	const inputRefs = {
@@ -83,7 +82,7 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 		closeDialog();
 	};
 	
-	const handleSubmit = () => {
+	const handleCreateSubmit = () => {
 		const reason = inputRefs.reason.current?.value as PreferenceReason;
 		const importance = inputRefs.importance.current?.value as PreferenceImportance;
 		const description = inputRefs.description.current?.value as string;
@@ -101,9 +100,33 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 		closeDialog();
 	};
 	
+	const handleUpdateSubmit = () => {
+		if (!selectedPreference) {
+			return;
+		}
+		
+		const reason = inputRefs.reason.current?.value as PreferenceReason;
+		const importance = inputRefs.importance.current?.value as PreferenceImportance;
+		const description = inputRefs.description.current?.value as string;
+		
+		updatePreference({
+			id: selectedPreference.id,
+			userId: selectedPreference.userId,
+			reason,
+			importance,
+			description,
+			startDate: datesSelection.start,
+			endDate: datesSelection.end,
+		});
+		
+		closeDialog();
+	};
+	
 	const handleDelete = () => {
 		if (selectedPreference) {
-			deletePreference(selectedPreference.id);
+			deletePreference({
+				id: selectedPreference.id,
+			});
 		}
 		
 		closeDialog();
@@ -212,7 +235,7 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 						<button
 							type="submit"
 							disabled={preference}
-							onClick={handleSubmit}>
+							onClick={handleCreateSubmit}>
 							הגשת הסתייגות
 						</button>
 					}
@@ -221,7 +244,7 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 						<button
 							type="submit"
 							disabled={preference}
-							onClick={handleSubmit}>
+							onClick={handleUpdateSubmit}>
 							החלת השינויים
 						</button>
 					}
