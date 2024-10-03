@@ -288,7 +288,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 				limit={2}
 				rtl={true}
 				position="bottom-left"
-				toastClassName="bottom-10"/>
+				toastClassName="bottom-10 md:bottom-0"/>
 		</>
 	);
 };
