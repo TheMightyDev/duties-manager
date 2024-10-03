@@ -7,7 +7,7 @@ import heLocale from "@fullcalendar/core/locales/he";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import FullCalendar from "@fullcalendar/react";
-import { type Preference, PreferenceReason } from "@prisma/client";
+import { type Preference, PreferenceImportance, PreferenceReason } from "@prisma/client";
 import { addMinutes, subMinutes } from "date-fns";
 import React from "react";
 import { toast, ToastContainer } from "react-toastify";
@@ -33,18 +33,43 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 	const [ preferences, updatePreferences ] = useImmer<Preference[]>(initialPreferences);
 	const [ selectedUserId, setSelectedUserId ] = React.useState<string>("user1");
 	
+	const preferenceImportanceEmojis = {
+		[PreferenceImportance.ABSENT]: "⛵",
+		[PreferenceImportance.HIGH_PRIORITY]: "⚠",
+		[PreferenceImportance.NORMAL_PRIORITY]: "",
+		[PreferenceImportance.PREFERS_NOT_TO]: "✋",
+	} as const satisfies Record<PreferenceImportance, string>;
+	
+	const preferenceReasonsEmojis = {
+		[PreferenceReason.VACATION]: "🌴",
+		[PreferenceReason.CELEBRATION]: "🎉",
+		[PreferenceReason.FAMILY_EVENT]: "🌆",
+		[PreferenceReason.EDUCATION]: "🎓",
+		[PreferenceReason.MEDICAL]: "🏥",
+		[PreferenceReason.RELIGION]: "🕍",
+		[PreferenceReason.APPOINTMENT]: "🩺",
+		[PreferenceReason.OTHER]: "📅",
+	} as const satisfies Record<PreferenceReason, string>;
+	
 	const preferencesFormattedForEvent = React.useMemo(
 		() => {
 			console.log("@preferences", preferences);
 			
-			return preferences.map<EventInput>((preference) => ({
-				id: preference.id,
+			return preferences.map<EventInput>(({
+				id,
+				startDate,
+				endDate,
+				importance,
+				description,
+				reason,
+			}) => ({
+				id: id,
 				allDay: true,
-				title: preference.description,
-				start: preference.startDate,
-				end: addMinutes(preference.endDate, 1),
+				title: `${preferenceReasonsEmojis[reason]} ${preferenceImportanceEmojis[importance]} ${description}`,
+				start: startDate,
+				end: addMinutes(endDate, 1),
 				
-				className: preference.reason === PreferenceReason.CELEBRATION ? "bg-pink-700 border-pink-900" : "",
+				className: reason === PreferenceReason.CELEBRATION ? "bg-pink-700 border-pink-900" : "",
 				// color: preference.reason === PreferenceReason.CELEBRATION ? "pink" : "",
 			}));
 		},
