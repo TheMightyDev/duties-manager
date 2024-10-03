@@ -191,8 +191,11 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 						{
 							Object.keys(PreferenceReason).map((reason) => (
 								<option
-									className="bg-red-300"
-									value={reason}>{reason}</option>
+									value={reason}
+									key={`preference-reason-option-${reason}`}
+									className="bg-red-300">
+									{reason}
+								</option>
 							))
 						}
 					</select>
@@ -209,7 +212,11 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 							Object.keys(PreferenceImportance).map((importance) => (
 								// Only the admin can declare that someone is temporarily absent from doing duties
 								importance !== PreferenceImportance.ABSENT &&
-								<option value={importance}>{importance}</option>
+								<option
+									value={importance}
+									key={`preference-importance-option-${importance}`}>
+									{importance}
+								</option>
 							))
 						}
 					</select>
