@@ -128,10 +128,12 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 				updatePreferences((draft) => {
 					const index = draft.findIndex((preference) => preference.id === preferenceUpdates.id);
 					
-					draft[index] = {
-						...draft[index],
-						...preferenceUpdates,
-					};
+					if (draft[index]) {
+						draft[index] = {
+							...draft[index],
+							...preferenceUpdates,
+						};
+					}
 				});
 			},
 			() => {
@@ -284,7 +286,9 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 			
 			<ToastContainer
 				limit={2}
-				rtl={true} />
+				rtl={true}
+				position="bottom-left"
+				toastClassName="bottom-10"/>
 		</>
 	);
 };
