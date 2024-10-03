@@ -102,7 +102,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 				});
 			},
 			() => {
-				toast.error("עדכון ההסתייגות נכשלה");
+				toast.error("עדכון ההסתייגות נכשל");
 			}
 		);
 	};
