@@ -1,6 +1,6 @@
 "use client";
 
-import { AddPreferenceDialog, AddPreferenceDialogMode } from "@/app/user-dashboard/AddPreferenceDialog";
+import { AddPreferenceDialog, AddPreferenceDialogMode } from "@/app/user-dashboard/calendar/AddPreferenceDialog";
 import { type DatesSelection, type GetPreferenceParams, type PreferenceOperations } from "@/app/user-dashboard/types";
 import { type DateSelectArg, type EventClickArg, type EventInput } from "@fullcalendar/core/index.js";
 import heLocale from "@fullcalendar/core/locales/he";
