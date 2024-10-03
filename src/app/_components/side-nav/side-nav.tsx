@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function SideNav() {
 	return (
-		<div className="h-full flex-col px-3 py-4 md:px-2 hidden md:flex">
+		<div className="flex-col ps-2 pe-5 py-4 hidden md:flex [height:100vh]">
 			<Link
 				className="mb-2 flex h-20 items-end justify-start rounded-md bg-blue-600 p-4 md:h-40"
 				href="/">
