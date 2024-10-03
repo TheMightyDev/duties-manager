@@ -22,6 +22,7 @@
     "@auth/prisma-adapter": "^1.6.0",
     "@fullcalendar/core": "^6.1.15",
     "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/interaction": "^6.1.15",
     "@fullcalendar/react": "^6.1.15",
     "@paralleldrive/cuid2": "^2.2.2",
     "@prisma/client": "^5.14.0",
@@ -36,8 +37,10 @@
     "next-auth": "^4.24.7",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-toastify": "^10.0.5",
     "server-only": "^0.0.1",
     "superjson": "^2.2.1",
+    "use-immer": "^0.10.0",
     "zod": "^3.23.3"
   },
   "devDependencies": {
