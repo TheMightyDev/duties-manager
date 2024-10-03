@@ -15,5 +15,7 @@ export interface GetPreferenceParams {
 export interface PreferenceOperations<ReturnType> {
 	createPreference: (newPreference: Preference) => ReturnType;
 	deletePreference: (params: { id: string }) => ReturnType;
-	updatePreference: (updatedPreference: Preference) => ReturnType;
+	updatePreference: (updatedPreference: Partial<Preference> & {
+		id: string;
+	}) => ReturnType;
 }

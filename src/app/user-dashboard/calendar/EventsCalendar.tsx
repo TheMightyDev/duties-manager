@@ -119,14 +119,19 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		);
 	};
 	
-	const updatePreferenceWrapper = (preferenceWithUpdates: Preference) => {
-		updatePreference(preferenceWithUpdates).then(
+	const updatePreferenceWrapper = (preferenceUpdates: Partial<Preference> & {
+		id: string;
+	}) => {
+		updatePreference(preferenceUpdates).then(
 			() => {
 				toast.success("ההסתייגות עודכנה בהצלחה");
 				updatePreferences((draft) => {
-					const index = draft.findIndex((preference) => preference.id === preferenceWithUpdates.id);
+					const index = draft.findIndex((preference) => preference.id === preferenceUpdates.id);
 					
-					draft[index] = preferenceWithUpdates;
+					draft[index] = {
+						...draft[index],
+						...preferenceUpdates,
+					};
 				});
 			},
 			() => {
@@ -205,10 +210,12 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		const affectedPreference = preferences[affectedPreferenceIndex];
 		
 		if (affectedPreference && arg.event.start && arg.event.end) {
+			const nextStartDate = arg.event.start;
+			const nextEndDate = subMinutes(arg.event.end, 1);
 			updatePreference({
-				...affectedPreference,
-				startDate: arg.event.start,
-				endDate: subMinutes(arg.event.end, 1),
+				id: affectedPreferenceId,
+				startDate: nextStartDate,
+				endDate: nextEndDate,
 			}).then(
 				() => {
 					toast.success("התאריכים עודכנו בהצלחה");

@@ -31,7 +31,9 @@ const UserDashboardPage: NextPage = async () => {
 	/** The argument must be an existing preference. the preference
 	 * with the same ID in the DB will be overrode.
 	 */
-	const updatePreference = async (updatedPreference: Preference) => {
+	const updatePreference = async (updatedPreference: Partial<Preference> & {
+		id: string;
+	}) => {
 		"use server";
 		
 		return await api.preference.update(updatedPreference);
