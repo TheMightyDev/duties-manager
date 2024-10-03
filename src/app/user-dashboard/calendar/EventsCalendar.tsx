@@ -2,7 +2,7 @@
 
 import { AddPreferenceDialog, AddPreferenceDialogMode } from "@/app/user-dashboard/calendar/AddPreferenceDialog";
 import { type DatesSelection, type GetPreferenceParams, type PreferenceOperations } from "@/app/user-dashboard/types";
-import { type DateSelectArg, type EventClickArg, type EventContentArg, type EventInput } from "@fullcalendar/core/index.js";
+import { type DateSelectArg, type EventClickArg, type EventDropArg, type EventInput } from "@fullcalendar/core/index.js";
 import heLocale from "@fullcalendar/core/locales/he";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -170,7 +170,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		setDialogMode(AddPreferenceDialogMode.EDIT);
 		setIsDialogOpen(true);
 		const nextPreference = preferences.find((preference) => preference.id === m);
-
+		
 		setDatesSelection({
 			start: nextPreference!.startDate,
 			end: nextPreference!.endDate,
@@ -199,6 +199,36 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		);
 	};
 	
+	const handleEventDrop = (arg: EventDropArg) => {
+		const affectedPreferenceId = arg.event.id;
+		const affectedPreferenceIndex = preferences.findIndex((preference) => preference.id === affectedPreferenceId)!;
+		const affectedPreference = preferences[affectedPreferenceIndex];
+		
+		if (affectedPreference && arg.event.start && arg.event.end) {
+			updatePreference({
+				...affectedPreference,
+				startDate: arg.event.start,
+				endDate: subMinutes(arg.event.end, 1),
+			}).then(
+				() => {
+					toast.success("התאריכים עודכנו בהצלחה");
+				},
+				() => {
+					toast.error("עדכון התאריכים נכשל");
+				}
+			);
+			
+			updatePreferences((draft) => {
+				const affected = draft[affectedPreferenceIndex];
+				
+				if (affected && arg.event.start && arg.event.end) {
+					affected.startDate = arg.event.start;
+					affected.endDate = subMinutes(arg.event.end, 1);
+				}
+			});
+		}
+	};
+	
 	return (
 		<>
 			<p>
@@ -210,6 +240,9 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 					onChange={handleUserIdChange} />
 			</p>
 			<FullCalendar
+				editable={true}
+				eventOverlap={false}
+				eventDrop={handleEventDrop}
 				showNonCurrentDates={false}
 				locale={heLocale}
 				plugins={[ dayGridPlugin, interactionPlugin ]}
@@ -245,16 +278,6 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 			<ToastContainer
 				limit={2}
 				rtl={true} />
-		</>
-	);
-};
-
-const renderEventContent = (eventInfo: EventContentArg) => {
-	console.log("@eventInfo", eventInfo);
-	
-	return (
-		<>
-			{eventInfo.event.title}
 		</>
 	);
 };
