@@ -3,17 +3,19 @@ import { EventsCalendar } from "@/app/user-dashboard/calendar/EventsCalendar";
 import { api } from "@/trpc/server";
 import { type Preference } from "@prisma/client";
 import { type NextPage } from "next";
-import { seedUsers } from "prisma/seedData/seedUsers";
 
 const UserDashboardPage: NextPage = async () => {
-	const preferences = await api.preference.getUserPreferencesInMonth({
-		userId: seedUsers[0].id,
-		month: new Date().getMonth(),
-		year: new Date().getFullYear(),
+	const fetchPreferences = async ({ userId }: {
+		userId: string;
+	}) => {
+		"use server";
+		
+		return await api.preference.getUserPreferencesById(userId);
+	};
+	
+	const initialPreferences = await fetchPreferences({
+		userId: "user1",
 	});
-	
-	console.log("@preferences", preferences);
-	
 	const createPreference = async (newPreference: Preference) => {
 		"use server";
 
@@ -38,7 +40,8 @@ const UserDashboardPage: NextPage = async () => {
 	return (
 		<>
 			<EventsCalendar
-				initialPreferences={preferences}
+				initialPreferences={initialPreferences}
+				fetchPreferences={fetchPreferences}
 				createPreference={createPreference}
 				deletePreference={deletePreference}
 				updatePreference={updatePreference} />

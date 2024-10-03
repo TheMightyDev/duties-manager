@@ -13,6 +13,7 @@ export enum AddPreferenceDialogMode {
 interface AddPreferenceDialogProps extends PreferenceOperations<void> {
 	isOpen: boolean;
 	mode: AddPreferenceDialogMode;
+	userId: string;
 	datesSelection: DatesSelection;
 	setDatesSelection: React.Dispatch<React.SetStateAction<DatesSelection | null>>;
 	/** Required if on "edit" mode */
@@ -25,6 +26,7 @@ interface AddPreferenceDialogProps extends PreferenceOperations<void> {
 export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 	mode,
 	isOpen,
+	userId,
 	datesSelection,
 	setDatesSelection,
 	selectedPreference,
@@ -89,7 +91,7 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 		
 		createPreference({
 			id: Math.round(Math.random() * 500_000).toString(),
-			userId: "user1",
+			userId,
 			reason,
 			importance,
 			description,

@@ -16,10 +16,12 @@ import { useImmer } from "use-immer";
 
 interface EventsCalendarProps extends PreferenceOperations<Promise<boolean>> {
 	initialPreferences: Preference[];
+	fetchPreferences: (params: { userId: string }) => Promise<Preference[]>;
 }
 
 export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 	initialPreferences,
+	fetchPreferences,
 	createPreference,
 	deletePreference,
 	updatePreference,
@@ -29,7 +31,8 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 	const [ isDialogOpen, setIsDialogOpen ] = React.useState<boolean>(false);
 	const [ datesSelection, setDatesSelection ] = React.useState<DatesSelection | null>(null);
 	const [ preferences, updatePreferences ] = useImmer<Preference[]>(initialPreferences);
-
+	const [ selectedUserId, setSelectedUserId ] = React.useState<string>("user1");
+	
 	const preferencesFormattedForEvent = React.useMemo(
 		() => {
 			console.log("@preferences", preferences);
@@ -152,8 +155,35 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 
 	const selectedPreference = preferences.find((preference) => preference.id === selectedPreferenceId);
 
+	const handleUserIdChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+		const nextUserId = "user" + event.target.value;
+		setSelectedUserId(nextUserId);
+		console.log("@nextUserId", nextUserId);
+		
+		fetchPreferences({
+			userId: nextUserId,
+		}).then(
+			(result) => {
+				console.log("@result", result);
+				
+				updatePreferences((draft) => {
+					draft.length = 0;
+					draft.push(...result);
+				});
+			}
+		);
+	};
+	
 	return (
 		<>
+			<p>
+				<label htmlFor="selected-user-id">User ID </label>
+				<input
+					value={Number(selectedUserId.replace("user", ""))}
+					type="number"
+					id="selected-user-id"
+					onChange={handleUserIdChange} />
+			</p>
 			<FullCalendar
 				showNonCurrentDates={false}
 				locale={heLocale}
@@ -173,6 +203,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 				<AddPreferenceDialog
 					mode={dialogMode}
 					isOpen={isDialogOpen}
+					userId={selectedUserId}
 					datesSelection={datesSelection}
 					setDatesSelection={setDatesSelection}
 					selectedPreference={selectedPreference}
