@@ -2,7 +2,7 @@
 
 import { AddPreferenceDialog, AddPreferenceDialogMode } from "@/app/user-dashboard/calendar/AddPreferenceDialog";
 import { type DatesSelection, type GetPreferenceParams, type PreferenceOperations } from "@/app/user-dashboard/types";
-import { type DateSelectArg, type EventClickArg, type EventInput } from "@fullcalendar/core/index.js";
+import { type DateSelectArg, type EventClickArg, type EventContentArg, type EventInput } from "@fullcalendar/core/index.js";
 import heLocale from "@fullcalendar/core/locales/he";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -190,9 +190,55 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 				plugins={[ dayGridPlugin, interactionPlugin ]}
 				initialView="dayGridMonth"
 				selectable={true}
+				nextDayThreshold="11:00:00"
 				select={dateSelectHandler}
-				events={preferencesFormattedForEvent}
-			
+				eventContent={renderEventContent}
+				events={[
+					...preferencesFormattedForEvent,
+					{
+						start: new Date(2024, 9, 9, 10, 0),
+						end: new Date(2024, 9, 10, 10, 0),
+						title: "🎓 1/5",
+						className: "bg-purple-500 border-none my-0.5",
+						id: "21",
+					},
+					{
+						start: new Date(2024, 9, 9, 10, 0),
+						end: new Date(2024, 9, 10, 10, 0),
+						title: "⛑ 1/1",
+						className: "bg-sky-400 border-none my-0.5",
+						id: "22",
+					},
+					{
+						start: new Date(2024, 9, 9, 10, 0),
+						end: new Date(2024, 9, 10, 10, 0),
+						title: "🎅 0/1",
+						className: "bg-sky-600 border-none my-0.5",
+						id: "23",
+					},
+					{
+						start: new Date(2024, 9, 10, 10, 0),
+						end: new Date(2024, 9, 13, 10, 0),
+						title: "🎓 1/5",
+						className: "bg-purple-500 border-none my-0.5",
+						id: "1",
+					},
+					{
+						start: new Date(2024, 9, 10, 10, 0),
+						end: new Date(2024, 9, 13, 10, 0),
+						title: "⛑ 1/1",
+						className: "bg-sky-400 border-none my-0.5",
+						id: "8392932",
+					},
+					{
+						start: new Date(2024, 9, 10, 10, 0),
+						end: new Date(2024, 9, 13, 10, 0),
+						title: "🎅 0/1",
+						className: "bg-sky-600 border-none my-0.5",
+						id: "8392939",
+					},
+				]}
+				
 				height="70vh"
 				eventClick={eventClick}/>
 			<p>
@@ -220,6 +266,16 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 			<ToastContainer
 				limit={2}
 				rtl={true} />
+		</>
+	);
+};
+
+const renderEventContent = (eventInfo: EventContentArg) => {
+	console.log("@eventInfo", eventInfo);
+	
+	return (
+		<>
+			{eventInfo.event.title}
 		</>
 	);
 };
