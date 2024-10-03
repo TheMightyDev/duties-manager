@@ -149,6 +149,7 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 	return (
 		<div className="bg-black bg-opacity-50 inset-0 z-10  fixed">
 			<div className="bg-white absolute top-0 left-0 right-0 m-auto bottom-0 [width:100vw] [height:100vh] md:w-96 md:h-96 md:rounded-xl">
+				<div className="h-12"></div>
 				<div>
 					<label htmlFor="preference-start-date">
 						החל מ

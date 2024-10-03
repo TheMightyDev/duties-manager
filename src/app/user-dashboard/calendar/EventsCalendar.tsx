@@ -5,10 +5,10 @@ import { type DatesSelection, type GetPreferenceParams, type PreferenceOperation
 import { type DateSelectArg, type EventClickArg, type EventDropArg, type EventInput } from "@fullcalendar/core/index.js";
 import heLocale from "@fullcalendar/core/locales/he";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin from "@fullcalendar/interaction";
+import interactionPlugin, { type DateClickArg } from "@fullcalendar/interaction";
 import FullCalendar from "@fullcalendar/react";
 import { type Preference, PreferenceImportance, PreferenceReason } from "@prisma/client";
-import { addMinutes, subMinutes } from "date-fns";
+import { add, addMinutes, isSameDay, subMinutes } from "date-fns";
 import React from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -53,8 +53,6 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 	
 	const preferencesFormattedForEvent = React.useMemo(
 		() => {
-			console.log("@preferences", preferences);
-			
 			return preferences.map<EventInput>(({
 				id,
 				startDate,
@@ -142,9 +140,33 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		);
 	};
 	
-	const dateSelectHandler = (arg: DateSelectArg) => {
-		console.log("@selected", arg);
+	const dateClickHandler = (arg: DateClickArg) => {
+		const datesSelection: DatesSelection = {
+			start: arg.date,
+			// When we select a dates range in full calendar, the end date is midnight of the next selected date
+			end: add(arg.date, {
+				days: 1,
+				minutes: -1,
+			}),
+		};
 		
+		const preferenceInDateRange = getPreference({
+			datesSelection,
+		});
+		
+		if (preferenceInDateRange) {
+			setSelectedPreferenceId(preferenceInDateRange.id);
+			openDialogOnEditMode({
+				preferenceId: preferenceInDateRange.id,
+			});
+		} else {
+			setSelectedPreferenceId(null);
+			setIsDialogOpen(true);
+			setDialogMode(AddPreferenceDialogMode.ADD);
+			setDatesSelection(datesSelection);
+		}
+	};
+	const handleDateSelect = (arg: DateSelectArg) => {
 		const datesSelection: DatesSelection = {
 			start: arg.start,
 			// When we select a dates range in full calendar, the end date is midnight of the next selected date
@@ -155,14 +177,19 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 			datesSelection,
 		});
 		
-		console.log("@preferenceInDateRange", preferenceInDateRange);
 		if (preferenceInDateRange) {
+			if (isSameDay(datesSelection.start, datesSelection.end)) {
+				// The `dateClick` event and this event are fired simultaneously.
+				// If a user just pressed a cell in the calendar,
+				// and there's an event in that cell - we will just open
+				// the dialog on edit mode, which is handled by the `dateClick` event handler
+				return;
+			}
+			
 			setSelectedPreferenceId(preferenceInDateRange.id);
 			setIsDialogOpen(false);
 			setDatesSelection(null);
-			toast.error("כבר הוגשה הסתייגות בטווח התאריכים שנבחר", {
-				rtl: true,
-			});
+			toast.error("כבר הוגשה הסתייגות בטווח התאריכים שנבחר");
 		} else {
 			setSelectedPreferenceId(null);
 			setIsDialogOpen(true);
@@ -171,18 +198,23 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		}
 	};
 	
-	const eventClick = (arg: EventClickArg) => {
-		const m = arg.event.id;
-		setSelectedPreferenceId(m);
+	const openDialogOnEditMode = ({ preferenceId }: { preferenceId: string } ) => {
+		setSelectedPreferenceId(preferenceId);
 		setDialogMode(AddPreferenceDialogMode.EDIT);
 		setIsDialogOpen(true);
-		const nextPreference = preferences.find((preference) => preference.id === m);
+		const nextPreference = preferences.find((preference) => preference.id === preferenceId);
 		
 		setDatesSelection({
 			start: nextPreference!.startDate,
 			end: nextPreference!.endDate,
 		});
-		console.log("@eventClick", arg.event);
+	};
+	
+	const eventClick = (arg: EventClickArg) => {
+		const preferenceId = arg.event.id;
+		openDialogOnEditMode({
+			preferenceId,
+		});
 	};
 
 	const selectedPreference = preferences.find((preference) => preference.id === selectedPreferenceId);
@@ -190,14 +222,11 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 	const handleUserIdChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
 		const nextUserId = "user" + event.target.value;
 		setSelectedUserId(nextUserId);
-		console.log("@nextUserId", nextUserId);
 		
 		fetchPreferences({
 			userId: nextUserId,
 		}).then(
 			(result) => {
-				console.log("@result", result);
-				
 				updatePreferences((draft) => {
 					draft.length = 0;
 					draft.push(...result);
@@ -252,13 +281,14 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 				editable={true}
 				eventOverlap={false}
 				eventDrop={handleEventDrop}
+				dateClick={dateClickHandler}
 				showNonCurrentDates={false}
 				locale={heLocale}
 				plugins={[ dayGridPlugin, interactionPlugin ]}
 				initialView="dayGridMonth"
 				selectable={true}
 				nextDayThreshold="11:00:00"
-				select={dateSelectHandler}
+				select={handleDateSelect}
 				events={preferencesFormattedForEvent}
 				height="70vh"
 				eventClick={eventClick}/>
