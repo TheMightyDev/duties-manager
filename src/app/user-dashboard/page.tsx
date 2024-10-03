@@ -14,24 +14,33 @@ const UserDashboardPage: NextPage = async () => {
 	
 	console.log("@preferences", preferences);
 	
-	const addNewPreference = async (newPreference: Preference) => {
+	const createPreference = async (newPreference: Preference) => {
 		"use server";
 
-		return await api.preference.addNew(newPreference);
+		return await api.preference.create(newPreference);
 	};
 	
-	const deletePreferenceById = async (id: string) => {
+	const deletePreference = async (params: { id: string }) => {
 		"use server";
 		
-		return await api.preference.deleteById(id);
+		return await api.preference.delete(params);
+	};
+	
+	/** The argument must be an existing preference. the preference
+	 * with the same ID in the DB will be overrode.
+	 */
+	const updatePreference = async (updatedPreference: Preference) => {
+		"use server";
+		
+		return await api.preference.update(updatedPreference);
 	};
 	
 	return (
 		<>
 			<EventsCalendar
 				initialPreferences={preferences}
-				addNewPreference={addNewPreference}
-				deletePreferenceById={deletePreferenceById} />
+				createPreference={createPreference}
+				deletePreference={deletePreference} />
 		</>
 	);
 };

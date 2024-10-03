@@ -4,3 +4,8 @@ interface RangeSelection<T> {
 }
 
 export type DatesSelection = RangeSelection<Date>;
+
+export interface GetPreferenceParams {
+	datesSelection: DatesSelection;
+	excludedPreferenceId?: string;
+}

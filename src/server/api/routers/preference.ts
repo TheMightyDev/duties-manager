@@ -6,6 +6,16 @@ import {
 } from "@/server/api/trpc";
 import { PreferenceImportance, PreferenceReason } from "@prisma/client";
 
+const preferenceSchema = z.object({
+	id: z.string(),
+	userId: z.string(),
+	startDate: z.date(),
+	endDate: z.date(),
+	reason: z.nativeEnum(PreferenceReason),
+	importance: z.nativeEnum(PreferenceImportance),
+	description: z.string(),
+});
+
 export const preferenceRouter = createTRPCRouter({
 	getUserPreferencesInMonth: publicProcedure
 		.input(z.object({
@@ -17,24 +27,14 @@ export const preferenceRouter = createTRPCRouter({
 			return ctx.db.preference.findMany();
 		})),
 		
-	addNew: publicProcedure
-		.input(z.object({
-			id: z.string(),
-			userId: z.string(),
-			startDate: z.date(),
-			endDate: z.date(),
-			reason: z.nativeEnum(PreferenceReason),
-			importance: z.nativeEnum(PreferenceImportance),
-			description: z.string(),
-		}))
+	create: publicProcedure
+		.input(preferenceSchema)
 		.query((async ({ ctx, input }) => {
 			try {
-				const createdRecord = await ctx.db.preference.create({
+				await ctx.db.preference.create({
 					data: input,
 				});
 				
-				console.log("@createdRecord", createdRecord);
-
 				return true;
 			} catch (e) {
 				console.error("error", e);
@@ -42,14 +42,18 @@ export const preferenceRouter = createTRPCRouter({
 				return false;
 			}
 		})),
-		
-	deleteById: publicProcedure
-		.input(z.string())
-		.query((async ({ ctx, input: id }) => {
+	
+	update: publicProcedure
+		.input(preferenceSchema.partial())
+		.query((async ({ ctx, input }) => {
 			try {
-				await ctx.db.preference.delete({
+				if (!input.id) {
+					throw new Error("Missing ID when updating a preference");
+				}
+				await ctx.db.preference.update({
+					data: input,
 					where: {
-						id,
+						id: input.id,
 					},
 				});
 			
@@ -60,4 +64,25 @@ export const preferenceRouter = createTRPCRouter({
 				return false;
 			}
 		})),
+		
+	delete: publicProcedure
+		.input(z.object({
+			id: z.string(),
+		}))
+		.query((async ({ ctx, input }) => {
+			try {
+				await ctx.db.preference.delete({
+					where: {
+						id: input.id,
+					},
+				});
+			
+				return true;
+			} catch (e) {
+				console.error("error", e);
+			
+				return false;
+			}
+		})),
+		
 });

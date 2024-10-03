@@ -1,8 +1,8 @@
 "use client";
 
-import { type DatesSelection } from "@/app/user-dashboard/types";
+import { type DatesSelection, type GetPreferenceParams } from "@/app/user-dashboard/types";
 import { PreferenceImportance, PreferenceReason, type Preference } from "@prisma/client";
-import { add, addDays, format, parse } from "date-fns";
+import { add, format, parse } from "date-fns";
 import React from "react";
 
 export enum AddPreferenceDialogMode {
@@ -18,7 +18,7 @@ interface AddPreferenceDialogProps {
 	/** Required if on "edit" mode */
 	selectedPreference?: Preference;
 	
-	getPreferenceInDateRange: (datesSelection: DatesSelection) => Preference | undefined;
+	getPreference: (params: GetPreferenceParams) => Preference | undefined;
 	createPreference: (newPreference: Preference) => void;
 	deletePreference: (id: string) => void;
 	closeDialog: () => void;
@@ -31,7 +31,7 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 	setDatesSelection,
 	selectedPreference,
 	
-	getPreferenceInDateRange,
+	getPreference,
 	createPreference,
 	deletePreference,
 	closeDialog,
@@ -42,9 +42,9 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 		description: React.useRef<HTMLTextAreaElement>(null),
 	};
 	
-	const preference = getPreferenceInDateRange({
-		start: datesSelection.start,
-		end: addDays(datesSelection.end, 1),
+	const preference = getPreference({
+		datesSelection,
+		excludedPreferenceId: selectedPreference?.id,
 	}) !== undefined;
 	console.log("@preference", preference);
 	
@@ -207,11 +207,24 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 					<button onClick={handleCancel}>
 						ביטול
 					</button>
-					<button
-						disabled={preference}
-						onClick={handleSubmit}>
-						הגשת הסתייגות
-					</button>
+					{
+						mode === AddPreferenceDialogMode.ADD &&
+						<button
+							type="submit"
+							disabled={preference}
+							onClick={handleSubmit}>
+							הגשת הסתייגות
+						</button>
+					}
+					{
+						mode === AddPreferenceDialogMode.EDIT &&
+						<button
+							type="submit"
+							disabled={preference}
+							onClick={handleSubmit}>
+							החלת השינויים
+						</button>
+					}
 				</div>
 			</div>
 		</div>

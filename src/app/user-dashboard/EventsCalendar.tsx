@@ -1,15 +1,14 @@
 "use client";
 
 import { AddPreferenceDialog, AddPreferenceDialogMode } from "@/app/user-dashboard/AddPreferenceDialog";
-import { type DatesSelection } from "@/app/user-dashboard/types";
+import { type DatesSelection, type GetPreferenceParams } from "@/app/user-dashboard/types";
 import { type DateSelectArg, type EventClickArg, type EventInput } from "@fullcalendar/core/index.js";
 import heLocale from "@fullcalendar/core/locales/he";
 import dayGridPlugin from "@fullcalendar/daygrid";
-import interactionPlugin, { type DateClickArg } from "@fullcalendar/interaction";
+import interactionPlugin from "@fullcalendar/interaction";
 import FullCalendar from "@fullcalendar/react";
-import { type Preference, PreferenceImportance, PreferenceReason } from "@prisma/client";
+import { type Preference, PreferenceReason } from "@prisma/client";
 import { addMinutes, subMinutes } from "date-fns";
-import { seedUsers } from "prisma/seedData/seedUsers";
 import React from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -17,24 +16,14 @@ import { useImmer } from "use-immer";
 
 interface EventsCalendarProps {
 	initialPreferences: Preference[];
-	addNewPreference: (newPreference: Preference) => Promise<boolean>;
-	deletePreferenceById: (id: string) => Promise<boolean>;
+	createPreference: (newPreference: Preference) => Promise<boolean>;
+	deletePreference: (params: { id: string }) => Promise<boolean>;
 }
-
-const mockPreferences = [ {
-	id: "123",
-	userId: seedUsers[0].id,
-	startDate: new Date(2024, 9, 25),
-	endDate: new Date(2024, 9, 27, 10, 0, 20),
-	reason: PreferenceReason.APPOINTMENT,
-	description: "heh",
-	importance: PreferenceImportance.HIGH_PRIORITY,
-} ];
 
 export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 	initialPreferences,
-	addNewPreference,
-	deletePreferenceById: deletePreferenceById,
+	createPreference,
+	deletePreference,
 }) => {
 	const [ dialogMode, setDialogMode ] = React.useState<AddPreferenceDialogMode>(AddPreferenceDialogMode.ADD);
 	const [ selectedPreferenceId, setSelectedPreferenceId ] = React.useState<string | null>(null);
@@ -60,20 +49,20 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		[ preferences ]
 	);
 	
-	const getPreferenceInDateRange = ({ start, end }: DatesSelection): Preference | undefined => (
+	const getPreference = ({
+		datesSelection: { start, end },
+		excludedPreferenceId,
+	}: GetPreferenceParams): Preference | undefined => (
 		preferences.find((preference) => {
-			return ((preference.startDate >= start && preference.startDate < end) ||
+			return (excludedPreferenceId ? preference.id !== excludedPreferenceId : true) && (
+				(preference.startDate >= start && preference.startDate < end) ||
 				(preference.endDate >= start && preference.endDate < end) ||
 				(start >= preference.startDate && end <= preference.endDate));
 		})
 	);
-	const dateClickHandler = (arg: DateClickArg) => {
-		// console.log("@clicked", arg);
-		// setSelectedPreferenceId(undefined);
-	};
 	
 	const createPreferenceWrapper = (newPreference: Preference) => {
-		addNewPreference(newPreference).then(
+		createPreference(newPreference).then(
 			() => {
 				toast.success("ההסתייגות הוגשה בהצלחה");
 				updatePreferences((draft) => {
@@ -87,7 +76,9 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 	};
 	
 	const deletePreferenceWrapper = (id: string) => {
-		deletePreferenceById(id).then(
+		deletePreference({
+			id,
+		}).then(
 			() => {
 				toast.success("ההסתייגות נמחקה בהצלחה");
 				updatePreferences((draft) => {
@@ -112,14 +103,16 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 			end: subMinutes(arg.end, 1),
 		};
 		
-		const preferenceInDateRange = getPreferenceInDateRange(datesSelection);
+		const preferenceInDateRange = getPreference({
+			datesSelection,
+		});
 		
 		console.log("@preferenceInDateRange", preferenceInDateRange);
 		if (preferenceInDateRange) {
 			setSelectedPreferenceId(preferenceInDateRange.id);
 			setIsDialogOpen(false);
 			setDatesSelection(null);
-			toast.error("כבר קיים אירוע בטווח התאריכים שנבחר", {
+			toast.error("כבר הוגשה הסתייגות בטווח התאריכים שנבחר", {
 				rtl: true,
 			});
 		} else {
@@ -153,7 +146,6 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 				locale={heLocale}
 				plugins={[ dayGridPlugin, interactionPlugin ]}
 				initialView="dayGridMonth"
-				dateClick={dateClickHandler}
 				selectable={true}
 				select={dateSelectHandler}
 				events={preferencesFormattedForEvent}
@@ -171,7 +163,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 					datesSelection={datesSelection}
 					setDatesSelection={setDatesSelection}
 					selectedPreference={selectedPreference}
-					getPreferenceInDateRange={getPreferenceInDateRange}
+					getPreference={getPreference}
 					createPreference={createPreferenceWrapper}
 					deletePreference={deletePreferenceWrapper}
 					closeDialog={() => {
