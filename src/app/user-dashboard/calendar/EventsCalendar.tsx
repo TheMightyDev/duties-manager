@@ -192,53 +192,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 				selectable={true}
 				nextDayThreshold="11:00:00"
 				select={dateSelectHandler}
-				eventContent={renderEventContent}
-				events={[
-					...preferencesFormattedForEvent,
-					{
-						start: new Date(2024, 9, 9, 10, 0),
-						end: new Date(2024, 9, 10, 10, 0),
-						title: "🎓 1/5",
-						className: "bg-purple-500 border-none my-0.5",
-						id: "21",
-					},
-					{
-						start: new Date(2024, 9, 9, 10, 0),
-						end: new Date(2024, 9, 10, 10, 0),
-						title: "⛑ 1/1",
-						className: "bg-sky-400 border-none my-0.5",
-						id: "22",
-					},
-					{
-						start: new Date(2024, 9, 9, 10, 0),
-						end: new Date(2024, 9, 10, 10, 0),
-						title: "🎅 0/1",
-						className: "bg-sky-600 border-none my-0.5",
-						id: "23",
-					},
-					{
-						start: new Date(2024, 9, 10, 10, 0),
-						end: new Date(2024, 9, 13, 10, 0),
-						title: "🎓 1/5",
-						className: "bg-purple-500 border-none my-0.5",
-						id: "1",
-					},
-					{
-						start: new Date(2024, 9, 10, 10, 0),
-						end: new Date(2024, 9, 13, 10, 0),
-						title: "⛑ 1/1",
-						className: "bg-sky-400 border-none my-0.5",
-						id: "8392932",
-					},
-					{
-						start: new Date(2024, 9, 10, 10, 0),
-						end: new Date(2024, 9, 13, 10, 0),
-						title: "🎅 0/1",
-						className: "bg-sky-600 border-none my-0.5",
-						id: "8392939",
-					},
-				]}
-				
+				events={preferencesFormattedForEvent}
 				height="70vh"
 				eventClick={eventClick}/>
 			<p>
