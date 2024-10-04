@@ -1,5 +1,6 @@
 "use client";
 
+import { AcceptCloseDialog } from "@/app/user-dashboard/calendar/AcceptCloseDialog";
 import { AddPreferenceDialogMode } from "@/app/user-dashboard/calendar/AddPreferenceDialog";
 import { AddPreference } from "@/app/user-dashboard/calendar/floating-dialog-contents";
 import { FloatingDialog, type FloatingDialogData } from "@/app/user-dashboard/calendar/FloatingDialog";
@@ -240,10 +241,10 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		setIsDialogOpen(true);
 		const nextPreference = preferences.find((preference) => preference.id === preferenceId);
 		
-		setDatesSelection({
-			start: nextPreference!.startDate,
-			end: nextPreference!.endDate,
-		});
+		// setDatesSelection({
+		// 	start: nextPreference!.startDate,
+		// 	end: nextPreference!.endDate,
+		// });
 	};
 	
 	const openFloatingDialog = ({ rect }: {
@@ -439,6 +440,12 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 				rtl={true}
 				position="bottom-left"
 				toastClassName="bottom-10 md:bottom-0"/>
+			<AcceptCloseDialog
+				isOpen={false}
+				actionButtonText="מחיקה"
+				cancelButtonText="ביטול">
+				למחוק את ההסתייגות?
+			</AcceptCloseDialog>
 		</>
 	);
 };
