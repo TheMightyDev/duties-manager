@@ -215,6 +215,9 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		openDialogOnEditMode({
 			preferenceId,
 		});
+		
+		const rect = arg.el.getBoundingClientRect();
+		console.log("@rect", rect);
 	};
 
 	const selectedPreference = preferences.find((preference) => preference.id === selectedPreferenceId);

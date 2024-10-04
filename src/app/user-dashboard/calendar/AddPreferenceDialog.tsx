@@ -147,32 +147,38 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 	}, [ isOpen ]);
 
 	return (
-		<div className="bg-black bg-opacity-50 inset-0 z-10  fixed">
+		<div className="dialog-backdrop">
 			<div className="bg-white absolute top-0 left-0 right-0 m-auto bottom-0 [width:100vw] [height:100vh] md:w-96 md:h-96 md:rounded-xl">
 				<div className="h-12"></div>
-				<div>
-					<label htmlFor="preference-start-date">
-						החל מ
-					</label>
-					<input
-						type="date"
-						id="preference-start-date"
-						className="text-black"
-						value={format(datesSelection.start, "yyyy-MM-dd")}
-						onChange={startDateChangeHandler}
-						required/>
-				</div>
-				<div>
-					<label htmlFor="preference-end-date">
-						עד
-					</label>
-					<input
-						type="date"
-						id="preference-end-date"
-						className="text-black"
-						value={format(datesSelection.end, "yyyy-MM-dd")}
-						onChange={endDateChangeHandler}
-						required/>
+				<div className="flex flex-row">
+					<div>
+						<label
+							htmlFor="preference-start-date"
+							className="block">
+							החל מ
+						</label>
+						<input
+							type="date"
+							id="preference-start-date"
+							className="text-black"
+							value={format(datesSelection.start, "yyyy-MM-dd")}
+							onChange={startDateChangeHandler}
+							required/>
+					</div>
+					<div>
+						<label
+							htmlFor="preference-end-date"
+							className="block">
+							עד
+						</label>
+						<input
+							type="date"
+							id="preference-end-date"
+							className="text-black"
+							value={format(datesSelection.end, "yyyy-MM-dd")}
+							onChange={endDateChangeHandler}
+							required/>
+					</div>
 				</div>
 				{
 					(datesSelection.start > datesSelection.end) &&
@@ -180,47 +186,55 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 						Reorder dates.
 					</p>
 				}
-				<p>
-					{preference ? "there's !!" : "we good"}
-				</p>
-				<div>
-					<label htmlFor="preference-reason-select">סיבת ההסתייגות</label>
-					<select
-						name="preference-reason"
-						id="preference-reason-select"
-						ref={inputRefs.reason}>
-						{
-							Object.keys(PreferenceReason).map((reason) => (
-								<option
-									value={reason}
-									key={`preference-reason-option-${reason}`}
-									className="bg-red-300">
-									{reason}
-								</option>
-							))
-						}
-					</select>
-				</div>
-				<div>
-					<label htmlFor="preference-importance-select">
-						חומרת ההסתייגות
-					</label>
-					<select
-						name="preference-importance"
-						id="preference-importance-select"
-						ref={inputRefs.importance}>
-						{
-							Object.keys(PreferenceImportance).map((importance) => (
+				{preference &&
+					<p>
+						כבר הוגשה הסתייגות בטווח התאריכים החדש
+					</p>
+				}
+				<div className="flex flex-row">
+					<div>
+						<label
+							htmlFor="preference-reason-select"
+							className="block">סיבה</label>
+						<select
+							name="preference-reason"
+							id="preference-reason-select"
+							ref={inputRefs.reason}>
+							{
+								Object.keys(PreferenceReason).map((reason) => (
+									<option
+										value={reason}
+										key={`preference-reason-option-${reason}`}
+										className="bg-red-300">
+										{reason}
+									</option>
+								))
+							}
+						</select>
+					</div>
+					<div>
+						<label
+							htmlFor="preference-importance-select"
+							className="block">
+							רמת חשיבות
+						</label>
+						<select
+							name="preference-importance"
+							id="preference-importance-select"
+							ref={inputRefs.importance}>
+							{
+								Object.keys(PreferenceImportance).map((importance) => (
 								// Only the admin can declare that someone is temporarily absent from doing duties
-								importance !== PreferenceImportance.ABSENT &&
-								<option
-									value={importance}
-									key={`preference-importance-option-${importance}`}>
-									{importance}
-								</option>
-							))
-						}
-					</select>
+									importance !== PreferenceImportance.ABSENT &&
+									<option
+										value={importance}
+										key={`preference-importance-option-${importance}`}>
+										{importance}
+									</option>
+								))
+							}
+						</select>
+					</div>
 				</div>
 				<div>
 					<label htmlFor="preference-description">
@@ -230,16 +244,20 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 						id="preference-description"
 						maxLength={40}
 						ref={inputRefs.description}
-						className="resize-none"></textarea>
+						className="resize-none border-black border-2 rounded-xl" />
 				</div>
-				<div>
+				<div className="absolute end-1 bottom-1">
 					{
 						mode === AddPreferenceDialogMode.EDIT &&
-						<button onClick={handleDelete}>
+						<button
+							onClick={handleDelete}
+							className="btn btn-green">
 							מחיקה
 						</button>
 					}
-					<button onClick={handleCancel}>
+					<button
+						onClick={handleCancel}
+						className="btn btn-purple">
 						ביטול
 					</button>
 					{
@@ -247,7 +265,8 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 						<button
 							type="submit"
 							disabled={preference}
-							onClick={handleCreateSubmit}>
+							onClick={handleCreateSubmit}
+							className="btn btn-purple">
 							הגשת הסתייגות
 						</button>
 					}
@@ -256,7 +275,8 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 						<button
 							type="submit"
 							disabled={preference}
-							onClick={handleUpdateSubmit}>
+							onClick={handleUpdateSubmit}
+							className="btn btn-purple">
 							החלת השינויים
 						</button>
 					}
