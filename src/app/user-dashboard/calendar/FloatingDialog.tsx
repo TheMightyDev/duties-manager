@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import React from "react";
 
 export interface FloatingDialogData {
@@ -23,13 +24,20 @@ export const FloatingDialog: React.FC<FloatingDialogProps> = ({
 		setIsShown(false);
 	};
 
-	return !isShown ? <></> : (
+	return (
 		<div
-			className="fixed left-0 top-0 z-10 size-[200px] rounded-xl bg-red-500 shadow-xl"
+			className={
+				clsx(
+					"fixed left-0 top-0 z-10 size-[200px] rounded-xl bg-red-500 shadow-xl",
+					isShown ? "visible opacity-100" : "invisible opacity-0"
+				)
+			}
 			style={{
 				width: `${widthPx}px`,
 				transform: `translate(${xOffsetPx}px, ${yOffsetPx}px)`,
-				transition: "transform 400ms",
+				transition: `${
+					isShown ? "opacity 200ms ease-in-out" : "visibility 0s 200ms, opacity 200ms linear"
+				}, transform 200ms`,
 			}}>
 			<header className="w-full rounded-t-xl bg-blue-200">
 				סגירה
