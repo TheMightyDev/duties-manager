@@ -187,7 +187,9 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 				</div>
 			</div>
 			<div>
-				<label htmlFor="preference-description">
+				<label
+					htmlFor="preference-description"
+					className="block">
 					פירוט
 				</label>
 				<textarea
@@ -199,7 +201,7 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 			<div className="flex justify-end">
 				<button
 					onClick={handleCancel}
-					className="btn btn-purple">
+					className="btn-clear">
 					ביטול
 				</button>
 				<button

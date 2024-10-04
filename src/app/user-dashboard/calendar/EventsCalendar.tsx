@@ -30,7 +30,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 }) => {
 	const [ floatingDialogData, setFloatingDialogData ] = React.useState<FloatingDialogData>({
 		isShown: false,
-		title: "מו פו צ'י",
+		title: "הוספת הסתייגות",
 		widthPx: 300,
 		xOffsetPx: 0,
 		yOffsetPx: 0,
