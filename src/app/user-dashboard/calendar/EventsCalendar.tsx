@@ -1,6 +1,7 @@
 "use client";
 
-import { AddPreferenceDialog, AddPreferenceDialogMode } from "@/app/user-dashboard/calendar/AddPreferenceDialog";
+import { AddPreferenceDialogMode } from "@/app/user-dashboard/calendar/AddPreferenceDialog";
+import { AddPreference } from "@/app/user-dashboard/calendar/floating-dialog-contents";
 import { FloatingDialog, type FloatingDialogData } from "@/app/user-dashboard/calendar/FloatingDialog";
 import { type DatesSelection, type GetPreferenceParams, type PreferenceOperations } from "@/app/user-dashboard/types";
 import { type DateSelectArg, type EventClickArg, type EventDropArg, type EventInput } from "@fullcalendar/core/index.js";
@@ -29,6 +30,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 }) => {
 	const [ floatingDialogData, setFloatingDialogData ] = React.useState<FloatingDialogData>({
 		isShown: false,
+		title: "מו פו צ'י",
 		widthPx: 300,
 		xOffsetPx: 0,
 		yOffsetPx: 0,
@@ -80,6 +82,26 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		},
 		[ preferences ]
 	);
+	
+	const allEvents = React.useMemo(() => {
+		if (datesSelection) {
+			console.log("datesSelection", datesSelection);
+			
+			return [
+				...preferencesFormattedForEvent,
+				{
+					title: "wokie",
+					id: "placeholder",
+					className: "bg-blue-200",
+					allDay: true,
+					start: datesSelection.start,
+					end: addMinutes(datesSelection.end, 1),
+				},
+			];
+		} else {
+			return preferencesFormattedForEvent;
+		}
+	}, [ preferencesFormattedForEvent, datesSelection ]);
 	
 	const getPreference = ({
 		datesSelection: { start, end },
@@ -178,18 +200,18 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 			...prev,
 			isShown: false,
 		}));
-		const datesSelection: DatesSelection = {
+		const nextDatesSelection: DatesSelection = {
 			start: arg.start,
 			// When we select a dates range in full calendar, the end date is midnight of the next selected date
 			end: subMinutes(arg.end, 1),
 		};
 		
 		const preferenceInDateRange = getPreference({
-			datesSelection,
+			datesSelection: nextDatesSelection,
 		});
 		
 		if (preferenceInDateRange) {
-			if (isSameDay(datesSelection.start, datesSelection.end)) {
+			if (isSameDay(nextDatesSelection.start, nextDatesSelection.end)) {
 				// The `dateClick` event and this event are fired simultaneously.
 				// If a user just pressed a cell in the calendar,
 				// and there's an event in that cell - we will just open
@@ -202,10 +224,12 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 			setDatesSelection(null);
 			toast.error("כבר הוגשה הסתייגות בטווח התאריכים שנבחר");
 		} else {
-			setSelectedPreferenceId(null);
-			setIsDialogOpen(true);
-			setDialogMode(AddPreferenceDialogMode.ADD);
-			setDatesSelection(datesSelection);
+			// const m = arg.jsEvent?.
+			// setSelectedPreferenceId(null);
+			// setIsDialogOpen(true);
+			// setDialogMode(AddPreferenceDialogMode.ADD);
+			
+			setDatesSelection(nextDatesSelection);
 		}
 	};
 	
@@ -221,14 +245,9 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		});
 	};
 	
-	const eventClick = (arg: EventClickArg) => {
-		const preferenceId = arg.event.id;
-		// openDialogOnEditMode({
-		// 	preferenceId,
-		// });
-		
-		const rect = arg.el.getBoundingClientRect();
-		console.log("@rect", rect);
+	const openFloatingDialog = ({ rect }: {
+		rect: DOMRect;
+	}) => {
 		setFloatingDialogData((prev) => {
 			// Note that `x` and `y` are the coordinates of the top-left corner
 			// By default the dialog opens to the left of the event
@@ -255,11 +274,22 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 			console.log("@final xOffsetPx", xOffsetPx);
 
 			return {
+				...prev,
 				isShown: true,
-				widthPx: prev.widthPx,
 				xOffsetPx,
 				yOffsetPx,
 			};
+		});
+	};
+	const eventClick = (arg: EventClickArg) => {
+		const preferenceId = arg.event.id;
+		// openDialogOnEditMode({
+		// 	preferenceId,
+		// });
+		
+		const rect = arg.el.getBoundingClientRect();
+		openFloatingDialog({
+			rect,
 		});
 	};
 
@@ -342,13 +372,38 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 				selectable={true}
 				nextDayThreshold="11:00:00"
 				select={handleDateSelect}
-				events={preferencesFormattedForEvent}
+				events={allEvents}
 				height="70vh"
-				eventClick={eventClick}/>
+				eventClick={eventClick}
+				eventDidMount={(a) => {
+					console.log("@eventDidMount", a.event.id);
+					if (a.event.id === "placeholder") {
+						a.el.click();
+					}
+				}}/>
 			<FloatingDialog
 				{...floatingDialogData}
-				setIsShown={setIsFloatingDialogShown}/>
-			{
+				setIsShown={setIsFloatingDialogShown}>
+				{
+					datesSelection &&
+					<AddPreference
+						isOpen={isDialogOpen}
+						userId={selectedUserId}
+						datesSelection={datesSelection}
+						setDatesSelection={setDatesSelection}
+						selectedPreference={selectedPreference}
+						getPreference={getPreference}
+						createPreference={createPreferenceWrapper}
+						deletePreference={deletePreferenceWrapper}
+						updatePreference={updatePreferenceWrapper}
+						closeDialog={() => {
+							setIsDialogOpen(false);
+							setDatesSelection(null);
+						}}/>
+				}
+				
+			</FloatingDialog>
+			{/* {
 				datesSelection &&
 				<AddPreferenceDialog
 					mode={dialogMode}
@@ -365,7 +420,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 						setIsDialogOpen(false);
 						setDatesSelection(null);
 					}}/>
-			}
+			} */}
 			
 			<ToastContainer
 				limit={2}
