@@ -5,27 +5,37 @@ import { PreferenceImportance, PreferenceReason, type Preference } from "@prisma
 import { add, format, parse } from "date-fns";
 import React from "react";
 
-interface AddPreferenceProps extends PreferenceOperations<void> {
+interface EditPreferenceProps extends PreferenceOperations<void> {
 	isOpen: boolean;
-	userId: string;
-	datesSelection: DatesSelection;
-	setDatesSelection: React.Dispatch<React.SetStateAction<DatesSelection | null>>;
-	/** Required if on "edit" mode */
-	selectedPreference?: Preference;
+	preference: Preference;
 	getPreference: (params: GetPreferenceParams) => Preference | undefined;
 	closeDialog: () => void;
 }
 
-export const AddPreference: React.FC<AddPreferenceProps> = ({
-	isOpen,
-	userId,
-	datesSelection,
-	setDatesSelection,
+export const EditPreference: React.FC<EditPreferenceProps> = ({
+	preference,
 	
 	getPreference,
-	createPreference,
+	updatePreference,
+	deletePreference,
 	closeDialog,
 }) => {
+	const [ datesSelection, setDatesSelection ] = React.useState<DatesSelection>({
+		start: preference.startDate,
+		end: preference.endDate,
+	});
+	
+	React.useEffect(() => {
+		inputRefs.description.current!.value = preference.description;
+	}, [ preference.description ]);
+	
+	React.useEffect(() => {
+		setDatesSelection({
+			start: preference.startDate,
+			end: preference.endDate,
+		});
+	}, [ preference.startDate, preference.endDate ]);
+	
 	const inputRefs = {
 		reason: React.useRef<HTMLSelectElement>(null),
 		importance: React.useRef<HTMLSelectElement>(null),
@@ -35,6 +45,7 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 	const isTherePreferenceFallInDateRange = React.useMemo(() => (
 		getPreference({
 			datesSelection,
+			excludedPreferenceId: preference.id,
 		}) !== undefined
 	), [ datesSelection ]);
 	
@@ -43,21 +54,32 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 		console.log("nextValue", nextValue);
 		
 		setDatesSelection((prev) => {
-			if (prev) {
-				const parsedDate = parse(nextValue, "yyyy-MM-dd", new Date());
+			const parsedDate = parse(nextValue, "yyyy-MM-dd", new Date());
 				
-				const nextDatesSelection = {
-					...prev,
-					[which]: which === "start" ? parsedDate : add(parsedDate, {
-						days: 1,
-						minutes: -1,
-					}),
-				};
-				
-				return nextDatesSelection;
-			} else {
-				return null;
+			const nextDatesSelection = {
+				...prev,
+				[which]: which === "start" ? parsedDate : add(parsedDate, {
+					days: 1,
+					minutes: -1,
+				}),
+			};
+			
+			const existingPreferenceOnNewDateRange = getPreference({
+				datesSelection: nextDatesSelection,
+				excludedPreferenceId: preference.id,
+			});
+			
+			console.log("@existingPreferenceOnNewDateRange", existingPreferenceOnNewDateRange);
+			
+			if (!existingPreferenceOnNewDateRange) {
+				updatePreference({
+					id: preference.id,
+					startDate: nextDatesSelection.start,
+					endDate: nextDatesSelection.end,
+				});
 			}
+				
+			return nextDatesSelection;
 		});
 	};
 	
@@ -68,37 +90,40 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 	const endDateChangeHandler: React.ChangeEventHandler<HTMLInputElement> = (event) => {
 		generalSetDateChangeHandler(event, "end");
 	};
-	
-	const handleCancel = () => {
-		console.log("closing");
-		
-		closeDialog();
-	};
-	
-	const handleCreateSubmit = () => {
-		const reason = inputRefs.reason.current?.value as PreferenceReason;
-		const importance = inputRefs.importance.current?.value as PreferenceImportance;
-		const description = inputRefs.description.current?.value as string;
-		
-		createPreference({
-			id: Math.round(Math.random() * 500_000).toString(),
-			userId,
-			reason,
-			importance,
-			description,
-			startDate: datesSelection.start,
-			endDate: datesSelection.end,
-		});
-		
-		closeDialog();
-	};
-	
-	React.useEffect(() => {
-		inputRefs.reason.current!.value = PreferenceReason.VACATION;
-		inputRefs.importance.current!.value = PreferenceImportance.NORMAL_PRIORITY;
-		inputRefs.description.current!.value = "";
-	}, [ isOpen ]);
 
+	const handleReasonChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		const nextReason = event.target.value as PreferenceReason;
+		
+		updatePreference({
+			id: preference.id,
+			reason: nextReason,
+		});
+	};
+	
+	const handleImportanceChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+		const nextImportance = event.target.value as PreferenceImportance;
+		
+		updatePreference({
+			id: preference.id,
+			importance: nextImportance,
+		});
+	};
+	
+	const handleDescriptionInput = (event: React.FormEvent<HTMLTextAreaElement>) => {
+		const nextDescription = event.currentTarget.value;
+		updatePreference({
+			id: preference.id,
+			description: nextDescription,
+		});
+	};
+	
+	const handleDelete = () => {
+		deletePreference({
+			id: preference.id,
+		});
+		closeDialog();
+	};
+	
 	return (
 		<div>
 			<div className="flex flex-row">
@@ -131,12 +156,6 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 						required/>
 				</div>
 			</div>
-			{
-				(datesSelection.start > datesSelection.end) &&
-				<p>
-					Reorder dates.
-				</p>
-			}
 			{isTherePreferenceFallInDateRange &&
 				<p className="alert alert-error">
 					כבר הוגשה הסתייגות בטווח התאריכים החדש
@@ -150,12 +169,15 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 					<select
 						name="preference-reason"
 						id="preference-reason-select"
-						ref={inputRefs.reason}>
+						ref={inputRefs.reason}
+						value={preference.reason}
+						onChange={handleReasonChange}>
 						{
 							Object.keys(PreferenceReason).map((reason) => (
 								<option
 									value={reason}
 									key={`preference-reason-option-${reason}`}
+									
 									className="bg-red-300">
 									{reason}
 								</option>
@@ -172,7 +194,9 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 					<select
 						name="preference-importance"
 						id="preference-importance-select"
-						ref={inputRefs.importance}>
+						ref={inputRefs.importance}
+						value={preference.importance}
+						onChange={handleImportanceChange}>
 						{
 							Object.keys(PreferenceImportance).map((importance) => (
 								// Only the admin can declare that someone is temporarily absent from doing duties
@@ -197,20 +221,19 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 					id="preference-description"
 					maxLength={40}
 					ref={inputRefs.description}
+					onBlur={handleDescriptionInput}
 					className="resize-none rounded-xl border-2 border-black" />
 			</div>
 			<div className="flex justify-end">
 				<button
-					onClick={handleCancel}
+					onClick={handleDelete}
 					className="btn-clear">
-					ביטול
+					מחיקה
 				</button>
 				<button
-					type="submit"
-					disabled={isTherePreferenceFallInDateRange}
-					onClick={handleCreateSubmit}
+					onClick={closeDialog}
 					className="btn btn-purple">
-					שמירה
+					אישור
 				</button>
 			</div>
 		</div>

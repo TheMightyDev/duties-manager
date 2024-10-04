@@ -2,7 +2,7 @@
 
 import { AcceptCloseDialog } from "@/app/user-dashboard/calendar/AcceptCloseDialog";
 import { AddPreferenceDialogMode } from "@/app/user-dashboard/calendar/AddPreferenceDialog";
-import { AddPreference } from "@/app/user-dashboard/calendar/floating-dialog-contents";
+import { AddPreference, EditPreference } from "@/app/user-dashboard/calendar/floating-dialog-contents";
 import { FloatingDialog, type FloatingDialogData } from "@/app/user-dashboard/calendar/FloatingDialog";
 import { type DatesSelection, type GetPreferenceParams, type PreferenceOperations } from "@/app/user-dashboard/types";
 import { type DateSelectArg, type EventClickArg, type EventDropArg, type EventInput } from "@fullcalendar/core/index.js";
@@ -11,7 +11,7 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin, { type DateClickArg } from "@fullcalendar/interaction";
 import FullCalendar from "@fullcalendar/react";
 import { type Preference, PreferenceImportance, PreferenceReason } from "@prisma/client";
-import { add, addMinutes, isSameDay, subMinutes } from "date-fns";
+import { add, addMinutes, subMinutes } from "date-fns";
 import React from "react";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -93,8 +93,9 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 				...preferencesFormattedForEvent,
 				{
 					id: "placeholder",
-					title: "wokie",
+					title: "Placeholder",
 					className: "bg-blue-200",
+					color: "pink",
 					allDay: true,
 					start: datesSelection.start,
 					end: addMinutes(datesSelection.end, 1),
@@ -172,7 +173,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 	};
 	
 	const dateClickHandler = (arg: DateClickArg) => {
-		const datesSelection: DatesSelection = {
+		const nextDatesSelection: DatesSelection = {
 			start: arg.date,
 			// When we select a dates range in full calendar, the end date is midnight of the next selected date
 			end: add(arg.date, {
@@ -182,7 +183,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		};
 		
 		const preferenceInDateRange = getPreference({
-			datesSelection,
+			datesSelection: nextDatesSelection,
 		});
 		
 		if (preferenceInDateRange) {
@@ -194,7 +195,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 			setSelectedPreferenceId(null);
 			setIsDialogOpen(true);
 			setDialogMode(AddPreferenceDialogMode.ADD);
-			setDatesSelection(datesSelection);
+			setDatesSelection(nextDatesSelection);
 		}
 	};
 	const handleDateSelect = (arg: DateSelectArg) => {
@@ -213,27 +214,32 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		});
 		
 		if (preferenceInDateRange) {
-			if (isSameDay(nextDatesSelection.start, nextDatesSelection.end)) {
-				// The `dateClick` event and this event are fired simultaneously.
-				// If a user just pressed a cell in the calendar,
-				// and there's an event in that cell - we will just open
-				// the dialog on edit mode, which is handled by the `dateClick` event handler
-				return;
-			}
+			// if (isSameDay(nextDatesSelection.start, nextDatesSelection.end)) {
+			// 	// The `dateClick` event and this event are fired simultaneously.
+			// 	// If a user just pressed a cell in the calendar,
+			// 	// and there's an event in that cell - we will just open
+			// 	// the dialog on edit mode, which is handled by the `dateClick` event handler
+			// 	return;
+			// }
 			
 			setSelectedPreferenceId(preferenceInDateRange.id);
-			setIsDialogOpen(false);
-			setDatesSelection(null);
+			// setIsDialogOpen(false);
+			// setDatesSelection(null);
 			toast.error("כבר הוגשה הסתייגות בטווח התאריכים שנבחר");
 		} else {
 			// const m = arg.jsEvent?.
 			// setSelectedPreferenceId(null);
 			// setIsDialogOpen(true);
 			// setDialogMode(AddPreferenceDialogMode.ADD);
+			console.log("latest nextDatesSelection", nextDatesSelection);
+			setIsDialogOpen(true);
+			setIsFloatingDialogShown(true);
 			
 			setDatesSelection(nextDatesSelection);
 		}
 	};
+	
+	console.log("@datesSelection", datesSelection);
 	
 	const openDialogOnEditMode = ({ preferenceId }: { preferenceId: string } ) => {
 		setSelectedPreferenceId(preferenceId);
@@ -277,6 +283,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 
 			return {
 				...prev,
+				title: "הוספת הסתייגות",
 				isShown: true,
 				xOffsetPx,
 				yOffsetPx,
@@ -288,6 +295,11 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		// openDialogOnEditMode({
 		// 	preferenceId,
 		// });
+		setFloatingDialogData((prev) => ({
+			...prev,
+			title: "עריכת הסתייגות",
+		}));
+		setSelectedPreferenceId(preferenceId);
 		
 		const rect = arg.el.getBoundingClientRect();
 		openFloatingDialog({
@@ -357,8 +369,6 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 			...prev,
 			isShown: nextIsShown,
 		}));
-		
-		setDatesSelection(null);
 	};
 
 	return (
@@ -397,7 +407,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 				{...floatingDialogData}
 				setIsShown={setIsFloatingDialogShown}>
 				{
-					datesSelection &&
+					(datesSelection && !selectedPreference) &&
 					<AddPreference
 						isOpen={isDialogOpen}
 						userId={selectedUserId}
@@ -411,6 +421,19 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 						closeDialog={() => {
 							setIsDialogOpen(false);
 							setDatesSelection(null);
+							setIsFloatingDialogShown(false);
+						}}/>
+				}
+				{
+					selectedPreference &&
+					<EditPreference
+						getPreference={getPreference}
+						isOpen={floatingDialogData.isShown}
+						preference={selectedPreference}
+						createPreference={createPreferenceWrapper}
+						updatePreference={updatePreferenceWrapper}
+						deletePreference={deletePreferenceWrapper}
+						closeDialog={() => {
 							setIsFloatingDialogShown(false);
 						}}/>
 				}
@@ -438,7 +461,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 			<ToastContainer
 				limit={2}
 				rtl={true}
-				position="bottom-left"
+				position ="bottom-left"
 				toastClassName="bottom-10 md:bottom-0"/>
 			<AcceptCloseDialog
 				isOpen={false}

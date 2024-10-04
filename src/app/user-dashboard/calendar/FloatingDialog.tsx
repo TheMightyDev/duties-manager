@@ -45,7 +45,9 @@ export const FloatingDialog: React.FC<FloatingDialogProps> = ({
 				transition: `opacity 350ms, transform 350ms ${isShown ? "" : ", visibility 350ms"}`,
 			}}>
 			<header className="flex h-10 w-full justify-between bg-blue-200 md:rounded-t-xl">
-				<h3 className="text-xl">{title}</h3>
+				<h3 className="text-xl">
+					{title}
+				</h3>
 				<button
 					className="p-2 text-xl"
 					onClick={closeDialog}>X</button>
