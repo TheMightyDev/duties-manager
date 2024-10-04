@@ -148,7 +148,7 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 
 	return (
 		<div className="dialog-backdrop">
-			<div className="bg-white absolute top-0 left-0 right-0 m-auto bottom-0 [width:100vw] [height:100vh] md:w-96 md:h-96 md:rounded-xl">
+			<div className="absolute inset-0 m-auto bg-white [height:100vh] [width:100vw] md:size-96 md:rounded-xl">
 				<div className="h-12"></div>
 				<div className="flex flex-row">
 					<div>
@@ -187,7 +187,7 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 					</p>
 				}
 				{preference &&
-					<p>
+					<p className="alert alert-error">
 						כבר הוגשה הסתייגות בטווח התאריכים החדש
 					</p>
 				}
@@ -244,9 +244,9 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 						id="preference-description"
 						maxLength={40}
 						ref={inputRefs.description}
-						className="resize-none border-black border-2 rounded-xl" />
+						className="resize-none rounded-xl border-2 border-black" />
 				</div>
-				<div className="absolute end-1 bottom-1">
+				<div className="absolute bottom-1 end-1">
 					{
 						mode === AddPreferenceDialogMode.EDIT &&
 						<button

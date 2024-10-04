@@ -1,8 +1,10 @@
 import stylistic from "@stylistic/eslint-plugin";
 import ts from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
+import tailwind from "eslint-plugin-tailwindcss";
 
 export default [ 
+	...tailwind.configs["flat/recommended"],
 	// stylistic.configs["all-flat"],
 	{
 		"languageOptions": {

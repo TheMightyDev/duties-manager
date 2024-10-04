@@ -295,9 +295,6 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 				events={preferencesFormattedForEvent}
 				height="70vh"
 				eventClick={eventClick}/>
-			<p>
-				selected event: {selectedPreferenceId} {selectedPreference?.description}
-			</p>
 			{
 				datesSelection &&
 				<AddPreferenceDialog
