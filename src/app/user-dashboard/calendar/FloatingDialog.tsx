@@ -35,9 +35,7 @@ export const FloatingDialog: React.FC<FloatingDialogProps> = ({
 			style={{
 				width: `${widthPx}px`,
 				transform: `translate(${xOffsetPx}px, ${yOffsetPx}px)`,
-				transition: `${
-					isShown ? "opacity 200ms ease-in-out" : "visibility 0s 200ms, opacity 200ms linear"
-				}, transform 200ms`,
+				transition: `opacity 350ms, transform 350ms ${isShown ? "" : "visibility 350ms"}`,
 			}}>
 			<header className="w-full rounded-t-xl bg-blue-200">
 				סגירה

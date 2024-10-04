@@ -229,12 +229,38 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		
 		const rect = arg.el.getBoundingClientRect();
 		console.log("@rect", rect);
-		setFloatingDialogData((prev) => ({
-			isShown: true,
-			widthPx: prev.widthPx,
-			xOffsetPx: rect.x - prev.widthPx > 20 ? rect.x - prev.widthPx : rect.x + rect.width,
-			yOffsetPx: rect.y,
-		}));
+		setFloatingDialogData((prev) => {
+			// Note that `x` and `y` are the coordinates of the top-left corner
+			// By default the dialog opens to the left of the event
+			// to adapt to the natural flow of RTL
+			let xOffsetPx = rect.x - prev.widthPx;
+			// By the default the dialog opens inline with the event
+			let yOffsetPx = rect.y;
+			
+			console.log("@initial xOffsetPx", xOffsetPx, "@rect.x", rect.x);
+			
+			// If there's isn't place to the left, tries to the right
+			if (xOffsetPx < 0) {
+				xOffsetPx = rect.x + rect.width;
+			}
+			
+			// If there isn't enough place to the right as well (how sad)
+			if (xOffsetPx + prev.widthPx > document.documentElement.clientWidth) {
+				// We move the dialog to the left edge, but not sticky
+				xOffsetPx = rect.x + rect.width - prev.widthPx;
+				// And place it below the element
+				yOffsetPx += rect.height;
+			}
+			
+			console.log("@final xOffsetPx", xOffsetPx);
+
+			return {
+				isShown: true,
+				widthPx: prev.widthPx,
+				xOffsetPx,
+				yOffsetPx,
+			};
+		});
 	};
 
 	const selectedPreference = preferences.find((preference) => preference.id === selectedPreferenceId);
