@@ -41,6 +41,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 	const [ datesSelection, setDatesSelection ] = React.useState<DatesSelection | null>(null);
 	const [ preferences, updatePreferences ] = useImmer<Preference[]>(initialPreferences);
 	const [ selectedUserId, setSelectedUserId ] = React.useState<string>("user1");
+	const calendarRef = React.useRef<FullCalendar>(null);
 	
 	const preferenceImportanceEmojis = {
 		[PreferenceImportance.ABSENT]: "⛵",
@@ -90,8 +91,8 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 			return [
 				...preferencesFormattedForEvent,
 				{
-					title: "wokie",
 					id: "placeholder",
+					title: "wokie",
 					className: "bg-blue-200",
 					allDay: true,
 					start: datesSelection.start,
@@ -316,21 +317,28 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		const affectedPreferenceIndex = preferences.findIndex((preference) => preference.id === affectedPreferenceId)!;
 		const affectedPreference = preferences[affectedPreferenceIndex];
 		
-		if (affectedPreference && arg.event.start && arg.event.end) {
+		if (arg.event.start && arg.event.end) {
 			const nextStartDate = arg.event.start;
 			const nextEndDate = subMinutes(arg.event.end, 1);
-			updatePreference({
-				id: affectedPreferenceId,
-				startDate: nextStartDate,
-				endDate: nextEndDate,
-			}).then(
-				() => {
-					toast.success("התאריכים עודכנו בהצלחה");
-				},
-				() => {
-					toast.error("עדכון התאריכים נכשל");
-				}
-			);
+			if (affectedPreferenceId === "placeholder") {
+				setDatesSelection({
+					start: nextStartDate,
+					end: nextEndDate,
+				});
+			} else if (affectedPreference) {
+				updatePreference({
+					id: affectedPreferenceId,
+					startDate: nextStartDate,
+					endDate: nextEndDate,
+				}).then(
+					() => {
+						toast.success("התאריכים עודכנו בהצלחה");
+					},
+					() => {
+						toast.error("עדכון התאריכים נכשל");
+					}
+				);
+			}
 			
 			updatePreferences((draft) => {
 				const affected = draft[affectedPreferenceIndex];
@@ -348,6 +356,8 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 			...prev,
 			isShown: nextIsShown,
 		}));
+		
+		setDatesSelection(null);
 	};
 
 	return (
@@ -361,6 +371,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 					onChange={handleUserIdChange} />
 			</p>
 			<FullCalendar
+				ref={calendarRef}
 				editable={true}
 				eventOverlap={false}
 				eventDrop={handleEventDrop}
@@ -399,6 +410,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 						closeDialog={() => {
 							setIsDialogOpen(false);
 							setDatesSelection(null);
+							setIsFloatingDialogShown(false);
 						}}/>
 				}
 				
