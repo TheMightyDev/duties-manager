@@ -1,6 +1,7 @@
 "use client";
 
 import { AddPreferenceDialog, AddPreferenceDialogMode } from "@/app/user-dashboard/calendar/AddPreferenceDialog";
+import { FloatingDialog, type FloatingDialogData } from "@/app/user-dashboard/calendar/FloatingDialog";
 import { type DatesSelection, type GetPreferenceParams, type PreferenceOperations } from "@/app/user-dashboard/types";
 import { type DateSelectArg, type EventClickArg, type EventDropArg, type EventInput } from "@fullcalendar/core/index.js";
 import heLocale from "@fullcalendar/core/locales/he";
@@ -26,6 +27,12 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 	deletePreference,
 	updatePreference,
 }) => {
+	const [ floatingDialogData, setFloatingDialogData ] = React.useState<FloatingDialogData>({
+		isShown: false,
+		widthPx: 300,
+		xOffsetPx: 0,
+		yOffsetPx: 0,
+	});
 	const [ dialogMode, setDialogMode ] = React.useState<AddPreferenceDialogMode>(AddPreferenceDialogMode.ADD);
 	const [ selectedPreferenceId, setSelectedPreferenceId ] = React.useState<string | null>(null);
 	const [ isDialogOpen, setIsDialogOpen ] = React.useState<boolean>(false);
@@ -167,6 +174,10 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		}
 	};
 	const handleDateSelect = (arg: DateSelectArg) => {
+		setFloatingDialogData((prev) => ({
+			...prev,
+			isShown: false,
+		}));
 		const datesSelection: DatesSelection = {
 			start: arg.start,
 			// When we select a dates range in full calendar, the end date is midnight of the next selected date
@@ -212,12 +223,18 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 	
 	const eventClick = (arg: EventClickArg) => {
 		const preferenceId = arg.event.id;
-		openDialogOnEditMode({
-			preferenceId,
-		});
+		// openDialogOnEditMode({
+		// 	preferenceId,
+		// });
 		
 		const rect = arg.el.getBoundingClientRect();
 		console.log("@rect", rect);
+		setFloatingDialogData((prev) => ({
+			isShown: true,
+			widthPx: prev.widthPx,
+			xOffsetPx: rect.x - prev.widthPx > 20 ? rect.x - prev.widthPx : rect.x + rect.width,
+			yOffsetPx: rect.y,
+		}));
 	};
 
 	const selectedPreference = preferences.find((preference) => preference.id === selectedPreferenceId);
@@ -270,6 +287,13 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		}
 	};
 	
+	const setIsFloatingDialogShown = (nextIsShown: boolean) => {
+		setFloatingDialogData((prev) => ({
+			...prev,
+			isShown: nextIsShown,
+		}));
+	};
+
 	return (
 		<>
 			<p>
@@ -295,6 +319,9 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 				events={preferencesFormattedForEvent}
 				height="70vh"
 				eventClick={eventClick}/>
+			<FloatingDialog
+				{...floatingDialogData}
+				setIsShown={setIsFloatingDialogShown}/>
 			{
 				datesSelection &&
 				<AddPreferenceDialog
