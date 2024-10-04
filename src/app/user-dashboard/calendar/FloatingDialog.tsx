@@ -28,20 +28,23 @@ export const FloatingDialog: React.FC<FloatingDialogProps> = ({
 		setIsShown(false);
 	};
 
+	const isOnMobile = document.body.clientWidth < 700;
+
 	return (
 		<div
 			className={
 				clsx(
-					"fixed left-0 top-0 z-10 rounded-xl bg-white shadow-xl shadow-slate-500",
+					"fixed left-0 top-0 z-10 bg-white shadow-xl shadow-black/40 md:rounded-xl",
 					isShown ? "visible opacity-100" : "invisible opacity-0"
 				)
 			}
 			style={{
-				width: `${widthPx}px`,
-				transform: `translate(${xOffsetPx}px, ${yOffsetPx}px)`,
+				width: isOnMobile ? "100vw" : `${widthPx}px`,
+				height: isOnMobile ? "100vh" : "fit-content",
+				transform: isOnMobile ? undefined : `translate(${xOffsetPx}px, ${yOffsetPx}px)`,
 				transition: `opacity 350ms, transform 350ms ${isShown ? "" : ", visibility 350ms"}`,
 			}}>
-			<header className="flex h-10 w-full justify-between rounded-t-xl bg-blue-200">
+			<header className="flex h-10 w-full justify-between bg-blue-200 md:rounded-t-xl">
 				<h3 className="text-xl">{title}</h3>
 				<button
 					className="p-2 text-xl"
