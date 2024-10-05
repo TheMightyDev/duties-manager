@@ -1,5 +1,5 @@
 
-import { EventsCalendar } from "@/app/user-dashboard/calendar/EventsCalendar";
+import { PreferencesCalendar } from "@/app/user-dashboard/calendar/PreferencesCalendar";
 import { api } from "@/trpc/server";
 import { type Preference } from "@prisma/client";
 import { type NextPage } from "next";
@@ -41,12 +41,13 @@ const UserDashboardPage: NextPage = async () => {
 	
 	return (
 		<>
-			<EventsCalendar
+			<PreferencesCalendar
 				initialPreferences={initialPreferences}
 				fetchPreferences={fetchPreferences}
 				createPreference={createPreference}
 				deletePreference={deletePreference}
-				updatePreference={updatePreference} />
+				updatePreference={updatePreference}
+			/>
 		</>
 	);
 };

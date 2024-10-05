@@ -3,7 +3,7 @@
 import { AcceptCloseDialog } from "@/app/user-dashboard/calendar/AcceptCloseDialog";
 import { AddPreference, EditPreference } from "@/app/user-dashboard/calendar/floating-dialog-contents";
 import { FloatingDialog } from "@/app/user-dashboard/calendar/FloatingDialog";
-import { type EventsCalendarProps, useEventsCalendar } from "@/app/user-dashboard/calendar/useEventsCalendar";
+import { type PreferencesCalendarProps, usePreferencesCalendar } from "@/app/user-dashboard/calendar/usePreferencesCalendar";
 import heLocale from "@fullcalendar/core/locales/he";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -12,7 +12,7 @@ import React from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export const EventsCalendar: React.FC<EventsCalendarProps> = ({
+export const PreferencesCalendar: React.FC<PreferencesCalendarProps> = ({
 	initialPreferences,
 	fetchPreferences,
 	createPreference,
@@ -36,7 +36,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 		
 		selectedUserId,
 		handleUserIdChange,
-	} = useEventsCalendar({
+	} = usePreferencesCalendar({
 		createPreference,
 		fetchPreferences,
 		updatePreference,

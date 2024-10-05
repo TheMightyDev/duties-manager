@@ -20,12 +20,12 @@ interface RelevantFcEventHandlers {
 	eventDidMount: (arg: EventMountArg) => void;
 }
 
-export interface EventsCalendarProps extends PreferenceOperations<Promise<boolean>> {
+export interface PreferencesCalendarProps extends PreferenceOperations<Promise<boolean>> {
 	initialPreferences: Preference[];
 	fetchPreferences: (params: { userId: string }) => Promise<Preference[]>;
 }
 
-type Params = EventsCalendarProps;
+type Params = PreferencesCalendarProps;
 
 interface Return {
 	fcEvents: EventInput[];
@@ -53,7 +53,7 @@ interface Return {
 	handleUserIdChange: React.ChangeEventHandler<HTMLInputElement>;
 }
 
-export const useEventsCalendar = ({
+export const usePreferencesCalendar = ({
 	initialPreferences,
 	fetchPreferences,
 	createPreference,
