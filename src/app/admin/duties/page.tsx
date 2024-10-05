@@ -25,7 +25,10 @@ const AdminDutiesPage: NextPage = async () => {
 	
 	return (
 		<>
-			<DutiesCalendar initialDutiesWithAssignments={initialDutiesWithAssignments}/>
+			<DutiesCalendar
+				initialDutiesWithAssignments={initialDutiesWithAssignments}
+				fetchDutiesOnMonth={fetchDutiesInMonth}
+			/>
 			<pre dir="ltr">
 				{ JSON.stringify(initialDutiesWithAssignments, null, 2) }
 			</pre>

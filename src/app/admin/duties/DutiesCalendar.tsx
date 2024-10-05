@@ -9,9 +9,13 @@ import FullCalendar from "@fullcalendar/react";
 import React from "react";
 import "react-toastify/dist/ReactToastify.css";
 
-export const DutiesCalendar: React.FC<DutiesCalendarProps> = ({ initialDutiesWithAssignments }) => {
-	const { fcEvents } = useDutiesCalendar({
+export const DutiesCalendar: React.FC<DutiesCalendarProps> = ({
+	initialDutiesWithAssignments,
+	fetchDutiesOnMonth,
+}) => {
+	const { fcEvents, fcEventHandlers } = useDutiesCalendar({
 		initialDutiesWithAssignments,
+		fetchDutiesOnMonth,
 	});
 	
 	return (
@@ -28,6 +32,8 @@ export const DutiesCalendar: React.FC<DutiesCalendarProps> = ({ initialDutiesWit
 				
 				selectable={true}
 				eventOverlap={true}
+				
+				datesSet={fcEventHandlers.datesSet}
 			/>
 		</>
 	);
