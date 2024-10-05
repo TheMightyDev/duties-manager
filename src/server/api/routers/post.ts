@@ -17,25 +17,35 @@ export const postRouter = createTRPCRouter({
 			};
 		}),
 
-	create: protectedProcedure
-		.input(z.object({
-			name: z.string().min(1),
-		}))
-		.mutation(async ({ ctx, input }) => {
-			return ctx.db.post.create({
-				data: {
-					name: input.name,
-					createdBy: {
-						connect: {
-							id: ctx.session.user.id,
-						},
-					},
+  create: protectedProcedure
+    .input(z.object({ name: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      return ctx.db.post.create({
+        data: {
+          name: input.name,
+          createdBy: { connect: { id: ctx.session.user.id } },
+        },
+      });
+    }),
+	
+	getAllUsersInOrganizations: publicProcedure
+		.input(z.object({ organizationId: z.string() }))
+		.query(async ({ ctx, input }) => {
+			const users = await ctx.db.user.findMany({
+				where: {
+					organizationId: input.organizationId,
 				},
-			});
+			})
+			
+			return users;
 		}),
-
-	getLatest: protectedProcedure.query(async ({ ctx }) => {
-		const post = await ctx.db.user.findFirst();
+		
+  getLatest: publicProcedure.query(async ({ ctx }) => {
+    const post = await ctx.db.user.findFirst({
+			where: {
+				firstName: {equals: "alon"}
+			}
+		});
 
 		return post ?? null;
 	}),

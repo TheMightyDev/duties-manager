@@ -47,3 +47,4 @@ yarn-error.log*
 
 pnpm-lock.yaml
 package-lock.json
+.vscode
