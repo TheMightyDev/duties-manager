@@ -13,7 +13,11 @@ export const DutiesCalendar: React.FC<DutiesCalendarProps> = ({
 	initialDutiesWithAssignments,
 	fetchDutiesOnMonth,
 }) => {
-	const { fcEvents, fcEventHandlers } = useDutiesCalendar({
+	const {
+		calendarRef,
+		fcEvents,
+		fcEventHandlers,
+	} = useDutiesCalendar({
 		initialDutiesWithAssignments,
 		fetchDutiesOnMonth,
 	});
@@ -21,6 +25,7 @@ export const DutiesCalendar: React.FC<DutiesCalendarProps> = ({
 	return (
 		<>
 			<FullCalendar
+				ref={calendarRef}
 				events={fcEvents}
 				
 				displayEventTime={false}
@@ -33,6 +38,7 @@ export const DutiesCalendar: React.FC<DutiesCalendarProps> = ({
 				selectable={true}
 				eventOverlap={true}
 				
+				select={fcEventHandlers.select}
 				datesSet={fcEventHandlers.datesSet}
 			/>
 		</>
