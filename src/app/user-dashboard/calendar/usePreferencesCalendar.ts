@@ -283,6 +283,7 @@ export const usePreferencesCalendar = ({
 			if (preferenceInDateRange) {
 				setSelectedPreferenceId(preferenceInDateRange.id);
 				toast.error("כבר הוגשה הסתייגות בטווח התאריכים שנבחר");
+				setProposedEventDatesSelection(null);
 			} else {
 				setIsAddPreferenceDialogOpen(true);
 				setIsFloatingDialogShown(true);
