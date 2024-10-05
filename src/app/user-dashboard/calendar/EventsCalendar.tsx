@@ -401,6 +401,10 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 				events={allEvents}
 				height="70vh"
 				eventClick={eventClick}
+				datesSet={() => {
+					setDatesSelection(null);
+					setIsFloatingDialogShown(false);
+				}}
 				eventDidMount={(a) => {
 					console.log("@eventDidMount", a.event.id);
 					if (a.event.id === "placeholder") {
