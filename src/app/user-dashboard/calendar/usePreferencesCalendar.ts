@@ -1,3 +1,4 @@
+import { calcFloatingDialogXyOffsetsPx } from "@/app/_utils/calcFloatingDialogXyOffsetsPx";
 import { type FloatingDialogData } from "@/app/user-dashboard/calendar/FloatingDialog";
 import { preferenceImportanceEmojis } from "@/app/user-dashboard/calendar/preferenceImportanceEmojis";
 import { preferenceReasonsEmojis } from "@/app/user-dashboard/calendar/preferenceReasonsEmojis";
@@ -199,36 +200,14 @@ export const usePreferencesCalendar = ({
 		rect: DOMRect;
 	}) => {
 		setFloatingDialogData((prev) => {
-			// Note that `x` and `y` are the coordinates of the top-left corner
-			// By default the dialog opens to the left of the event
-			// to adapt to the natural flow of RTL
-			let xOffsetPx = rect.x - prev.widthPx;
-			// By the default the dialog opens inline with the event
-			let yOffsetPx = rect.y;
-			
-			console.log("@initial xOffsetPx", xOffsetPx, "@rect.x", rect.x);
-			
-			// If there's isn't place to the left, tries to the right
-			if (xOffsetPx < 0) {
-				xOffsetPx = rect.x + rect.width;
-			}
-			
-			// If there isn't enough place to the right as well (how sad)
-			if (xOffsetPx + prev.widthPx > document.documentElement.clientWidth) {
-				// We move the dialog to the left edge, but not sticky
-				xOffsetPx = rect.x + rect.width - prev.widthPx;
-				// And place it below the element
-				yOffsetPx += rect.height;
-			}
-			
-			console.log("@final xOffsetPx", xOffsetPx);
-
 			return {
 				...prev,
 				title: "הוספת הסתייגות",
 				isShown: true,
-				xOffsetPx,
-				yOffsetPx,
+				...calcFloatingDialogXyOffsetsPx({
+					rect,
+					dialogWidthPx: prev.widthPx,
+				}),
 			};
 		});
 	};
