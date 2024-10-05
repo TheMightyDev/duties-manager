@@ -25,7 +25,8 @@ export const AcceptCloseDialog: React.FC<AcceptCloseDialogProps> = ({
 				}
 				style={{
 					transition: `opacity 250ms ${isOpen ? "" : ", visibility 250ms"}`,
-				}}>
+				}}
+			>
 			
 			</div>
 			<div
@@ -38,7 +39,8 @@ export const AcceptCloseDialog: React.FC<AcceptCloseDialogProps> = ({
 				}
 				style={{
 					transition: `opacity 250ms ${isOpen ? "" : ", visibility 250ms"}`,
-				}}>
+				}}
+			>
 				{children}
 			</div>
 		</>

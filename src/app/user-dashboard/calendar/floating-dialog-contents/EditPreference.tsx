@@ -126,11 +126,19 @@ export const EditPreference: React.FC<EditPreferenceProps> = ({
 	
 	return (
 		<div>
+			<pre>
+				{datesSelection.start.toUTCString()}
+			</pre>
+			<pre>
+				{datesSelection.end.toUTCString()}
+			</pre>
 			<div className="flex flex-row">
+				
 				<div>
 					<label
 						htmlFor="preference-start-date"
-						className="block">
+						className="block"
+					>
 						החל מ
 					</label>
 					<input
@@ -139,12 +147,14 @@ export const EditPreference: React.FC<EditPreferenceProps> = ({
 						className="text-black"
 						value={format(datesSelection.start, "yyyy-MM-dd")}
 						onChange={startDateChangeHandler}
-						required/>
+						required
+					/>
 				</div>
 				<div>
 					<label
 						htmlFor="preference-end-date"
-						className="block">
+						className="block"
+					>
 						עד
 					</label>
 					<input
@@ -153,7 +163,8 @@ export const EditPreference: React.FC<EditPreferenceProps> = ({
 						className="text-black"
 						value={format(datesSelection.end, "yyyy-MM-dd")}
 						onChange={endDateChangeHandler}
-						required/>
+						required
+					/>
 				</div>
 			</div>
 			{isTherePreferenceFallInDateRange &&
@@ -165,20 +176,23 @@ export const EditPreference: React.FC<EditPreferenceProps> = ({
 				<div>
 					<label
 						htmlFor="preference-reason-select"
-						className="block">סיבה</label>
+						className="block"
+					>סיבה</label>
 					<select
 						name="preference-reason"
 						id="preference-reason-select"
 						ref={inputRefs.reason}
 						value={preference.reason}
-						onChange={handleReasonChange}>
+						onChange={handleReasonChange}
+					>
 						{
 							Object.keys(PreferenceReason).map((reason) => (
 								<option
 									value={reason}
 									key={`preference-reason-option-${reason}`}
 									
-									className="bg-red-300">
+									className="bg-red-300"
+								>
 									{reason}
 								</option>
 							))
@@ -188,7 +202,8 @@ export const EditPreference: React.FC<EditPreferenceProps> = ({
 				<div>
 					<label
 						htmlFor="preference-importance-select"
-						className="block">
+						className="block"
+					>
 						רמת חשיבות
 					</label>
 					<select
@@ -196,14 +211,16 @@ export const EditPreference: React.FC<EditPreferenceProps> = ({
 						id="preference-importance-select"
 						ref={inputRefs.importance}
 						value={preference.importance}
-						onChange={handleImportanceChange}>
+						onChange={handleImportanceChange}
+					>
 						{
 							Object.keys(PreferenceImportance).map((importance) => (
 								// Only the admin can declare that someone is temporarily absent from doing duties
 								importance !== PreferenceImportance.ABSENT &&
 								<option
 									value={importance}
-									key={`preference-importance-option-${importance}`}>
+									key={`preference-importance-option-${importance}`}
+								>
 									{importance}
 								</option>
 							))
@@ -214,7 +231,8 @@ export const EditPreference: React.FC<EditPreferenceProps> = ({
 			<div>
 				<label
 					htmlFor="preference-description"
-					className="block">
+					className="block"
+				>
 					פירוט
 				</label>
 				<textarea
@@ -222,17 +240,20 @@ export const EditPreference: React.FC<EditPreferenceProps> = ({
 					maxLength={40}
 					ref={inputRefs.description}
 					onBlur={handleDescriptionInput}
-					className="resize-none rounded-xl border-2 border-black" />
+					className="resize-none rounded-xl border-2 border-black"
+				/>
 			</div>
 			<div className="flex justify-end">
 				<button
 					onClick={handleDelete}
-					className="btn-clear">
+					className="btn-clear"
+				>
 					מחיקה
 				</button>
 				<button
 					onClick={closeDialog}
-					className="btn btn-purple">
+					className="btn btn-purple"
+				>
 					אישור
 				</button>
 			</div>

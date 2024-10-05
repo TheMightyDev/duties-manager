@@ -105,7 +105,8 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 				<div>
 					<label
 						htmlFor="preference-start-date"
-						className="block">
+						className="block"
+					>
 						החל מ
 					</label>
 					<input
@@ -114,12 +115,14 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 						className="text-black"
 						value={format(datesSelection.start, "yyyy-MM-dd")}
 						onChange={startDateChangeHandler}
-						required/>
+						required
+					/>
 				</div>
 				<div>
 					<label
 						htmlFor="preference-end-date"
-						className="block">
+						className="block"
+					>
 						עד
 					</label>
 					<input
@@ -128,7 +131,8 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 						className="text-black"
 						value={format(datesSelection.end, "yyyy-MM-dd")}
 						onChange={endDateChangeHandler}
-						required/>
+						required
+					/>
 				</div>
 			</div>
 			{
@@ -146,17 +150,20 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 				<div>
 					<label
 						htmlFor="preference-reason-select"
-						className="block">סיבה</label>
+						className="block"
+					>סיבה</label>
 					<select
 						name="preference-reason"
 						id="preference-reason-select"
-						ref={inputRefs.reason}>
+						ref={inputRefs.reason}
+					>
 						{
 							Object.keys(PreferenceReason).map((reason) => (
 								<option
 									value={reason}
 									key={`preference-reason-option-${reason}`}
-									className="bg-red-300">
+									className="bg-red-300"
+								>
 									{reason}
 								</option>
 							))
@@ -166,20 +173,23 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 				<div>
 					<label
 						htmlFor="preference-importance-select"
-						className="block">
+						className="block"
+					>
 						רמת חשיבות
 					</label>
 					<select
 						name="preference-importance"
 						id="preference-importance-select"
-						ref={inputRefs.importance}>
+						ref={inputRefs.importance}
+					>
 						{
 							Object.keys(PreferenceImportance).map((importance) => (
 								// Only the admin can declare that someone is temporarily absent from doing duties
 								importance !== PreferenceImportance.ABSENT &&
 								<option
 									value={importance}
-									key={`preference-importance-option-${importance}`}>
+									key={`preference-importance-option-${importance}`}
+								>
 									{importance}
 								</option>
 							))
@@ -190,26 +200,30 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 			<div>
 				<label
 					htmlFor="preference-description"
-					className="block">
+					className="block"
+				>
 					פירוט
 				</label>
 				<textarea
 					id="preference-description"
 					maxLength={40}
 					ref={inputRefs.description}
-					className="resize-none rounded-xl border-2 border-black" />
+					className="resize-none rounded-xl border-2 border-black"
+				/>
 			</div>
 			<div className="flex justify-end">
 				<button
 					onClick={handleCancel}
-					className="btn-clear">
+					className="btn-clear"
+				>
 					ביטול
 				</button>
 				<button
 					type="submit"
 					disabled={isTherePreferenceFallInDateRange}
 					onClick={handleCreateSubmit}
-					className="btn btn-purple">
+					className="btn btn-purple"
+				>
 					שמירה
 				</button>
 			</div>
