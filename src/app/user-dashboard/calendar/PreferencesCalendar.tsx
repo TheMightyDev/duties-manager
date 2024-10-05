@@ -65,9 +65,10 @@ export const PreferencesCalendar: React.FC<PreferencesCalendarProps> = ({
 				initialView="dayGridMonth"
 				
 				editable={true}
+				eventDurationEditable={false}
 				selectable={true}
 				eventOverlap={false}
-				
+
 				select={fcEventHandlers.select}
 				eventClick={fcEventHandlers.eventClick}
 				eventDrop={fcEventHandlers.eventDrop}
