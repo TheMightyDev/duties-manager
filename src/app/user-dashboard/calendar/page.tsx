@@ -1,4 +1,3 @@
-
 import { PreferencesCalendar } from "@/app/user-dashboard/calendar/PreferencesCalendar";
 import { api } from "@/trpc/server";
 import { type Preference } from "@prisma/client";
