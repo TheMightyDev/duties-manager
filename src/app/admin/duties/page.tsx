@@ -1,3 +1,4 @@
+import { DutiesCalendar } from "@/app/admin/duties/DutiesCalendar";
 import { api } from "@/trpc/server";
 import { type NextPage } from "next";
 
@@ -17,16 +18,18 @@ const AdminDutiesPage: NextPage = async () => {
 		});
 	};
 	
-	const initialDuties = await fetchDutiesInMonth({
+	const initialDutiesWithAssignments = await fetchDutiesInMonth({
 		monthIndex: new Date().getUTCMonth(),
 		year: new Date().getUTCFullYear(),
 	});
 	
 	return (
 		<>
+			<DutiesCalendar initialDutiesWithAssignments={initialDutiesWithAssignments}/>
 			<pre dir="ltr">
-				{ JSON.stringify(initialDuties, null, 2) }
+				{ JSON.stringify(initialDutiesWithAssignments, null, 2) }
 			</pre>
+			
 		</>
 	);
 };
