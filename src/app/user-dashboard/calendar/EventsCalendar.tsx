@@ -299,6 +299,9 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 			...prev,
 			title: "עריכת הסתייגות",
 		}));
+		if (preferenceId !== "placeholder") {
+			setDatesSelection(null);
+		}
 		setSelectedPreferenceId(preferenceId);
 		
 		const rect = arg.el.getBoundingClientRect();
@@ -369,6 +372,7 @@ export const EventsCalendar: React.FC<EventsCalendarProps> = ({
 			...prev,
 			isShown: nextIsShown,
 		}));
+		setDatesSelection(null);
 	};
 
 	return (
