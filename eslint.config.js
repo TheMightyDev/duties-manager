@@ -100,8 +100,8 @@ export default [
 			"@stylistic/jsx-closing-bracket-location": [
 					"error",
 					{
-							"nonEmpty": "after-props",
-							"selfClosing": "after-props"
+							"nonEmpty": "tag-aligned",
+							"selfClosing": "tag-aligned"
 					}
 			],
 			"@stylistic/jsx-first-prop-new-line": [
