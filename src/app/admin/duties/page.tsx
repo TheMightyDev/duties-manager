@@ -23,9 +23,11 @@ const AdminDutiesPage: NextPage = async () => {
 	});
 	
 	return (
-		<pre>
-			{ JSON.stringify(initialDuties, null, 2) }
-		</pre>
+		<>
+			<pre dir="ltr">
+				{ JSON.stringify(initialDuties, null, 2) }
+			</pre>
+		</>
 	);
 };
 

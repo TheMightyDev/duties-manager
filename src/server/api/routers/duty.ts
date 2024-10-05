@@ -26,7 +26,7 @@ export const dutyRouter = createTRPCRouter({
 		}))
 		.query((async ({ ctx, input: { year, monthIndex } }) => {
 			const firstDayInMonth = new Date(year, monthIndex, 1);
-			const lastDayInMonth = new Date(year, monthIndex + 1, 23, 59, 59, 999);
+			const lastDayInMonth = new Date(year, monthIndex + 1, 0, 59, 59, 999);
 			
 			return ctx.db.duty.findMany({
 				where: {
@@ -45,6 +45,26 @@ export const dutyRouter = createTRPCRouter({
 						},
 					],
 				},
+				include: {
+					assignments: {
+						include: {
+							user: {
+								select: {
+									id: true,
+									firstName: true,
+									lastName: true,
+								}
+							},
+							reserve: {
+								select: {
+									id: true,
+									firstName: true,
+									lastName: true,
+								}
+							},
+						}
+					}
+				}
 			});
 		})),
 });
