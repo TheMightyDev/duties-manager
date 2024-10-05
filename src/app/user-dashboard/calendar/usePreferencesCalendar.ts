@@ -345,10 +345,7 @@ export const usePreferencesCalendar = ({
 						id: affectedPreferenceId,
 						startDate: nextStartDate,
 						endDate: nextEndDate,
-					}).then(
-						() => {
-							toast.success("התאריכים עודכנו בהצלחה");
-						},
+					}).catch(
 						() => {
 							toast.error("עדכון התאריכים נכשל");
 						}
