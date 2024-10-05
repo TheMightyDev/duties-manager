@@ -4,6 +4,7 @@ import {
 	createTRPCRouter,
 	publicProcedure
 } from "@/server/api/trpc";
+import { dutyWithAssignmentsInclude } from "@/server/api/types/DutyWithAssignments";
 
 // const dutySchema = z.object({
 // 	id: z.string(),
@@ -45,26 +46,7 @@ export const dutyRouter = createTRPCRouter({
 						},
 					],
 				},
-				include: {
-					assignments: {
-						include: {
-							user: {
-								select: {
-									id: true,
-									firstName: true,
-									lastName: true,
-								}
-							},
-							reserve: {
-								select: {
-									id: true,
-									firstName: true,
-									lastName: true,
-								}
-							},
-						}
-					}
-				}
+				include: dutyWithAssignmentsInclude,
 			});
 		})),
 });
