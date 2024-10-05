@@ -2,7 +2,7 @@ import { type DatesSelection } from "@/app/user-dashboard/types";
 import { type DutyWithAssignments } from "@/server/api/types/DutyWithAssignments";
 import { type DateSelectArg, type DatesSetArg, type EventInput } from "@fullcalendar/core/index.js";
 import type FullCalendar from "@fullcalendar/react";
-import { add, addMinutes, subDays, subMinutes } from "date-fns";
+import { add, addMinutes, subDays } from "date-fns";
 import React, { useMemo, useRef } from "react";
 import { useImmer } from "use-immer";
 
@@ -71,21 +71,18 @@ export const useDutiesCalendar = ({
 			// the admin most likely wants to add a weekend guarding duty
 
 			const isLikelyWeekendGuarding = 4 <= dayOfTheWeek && dayOfTheWeek <= 6;
-			const nextDatesSelection: DatesSelection = isLikelyWeekendGuarding ?
-				{
-				// We move the start day to Thursday
-					start: subDays(arg.start, dayOfTheWeek - 4),
-					// We fixate the end day to Saturday midnight
-					end: add(subDays(arg.start, dayOfTheWeek - 4), {
-						days: 3,
-						minutes: -1,
-					}),
-				}
-				: {
-					start: arg.start,
-					// When we select a dates range in full calendar, the end date is midnight of the next selected date
-					end: subMinutes(arg.end, 1),
-				};
+			// If likely a weekend guarding, we move the start day to Thursday
+			const nextStartDate = isLikelyWeekendGuarding ? subDays(arg.start, dayOfTheWeek - 4) : arg.start;
+			// If likely a weekend guarding, we fixate the end day to Saturday midnight
+			const nextEndDate = add(nextStartDate, {
+				days: isLikelyWeekendGuarding ? 3 : 0,
+				minutes: -1,
+			});
+			
+			const nextDatesSelection: DatesSelection = {
+				start: nextStartDate,
+				end: nextEndDate,
+			};
 			
 			setProposedEventDatesSelection(nextDatesSelection);
 		},

@@ -28,6 +28,7 @@ export const DutiesCalendar: React.FC<DutiesCalendarProps> = ({
 				ref={calendarRef}
 				events={fcEvents}
 				
+				height="70vh"
 				displayEventTime={false}
 				showNonCurrentDates={false}
 				nextDayThreshold="11:00:00"
