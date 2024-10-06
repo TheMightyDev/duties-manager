@@ -1,6 +1,7 @@
 "use client";
 
 import { FloatingDialogClassicHeader } from "@/app/_components";
+import { MIN_PREFERENCE_DETAILS_LENGTH } from "@/app/_utils/constants";
 import { type DatesSelection, type GetPreferenceParams, type PreferenceOperations } from "@/app/user-dashboard/types";
 import { PreferenceImportance, PreferenceReason, type Preference } from "@prisma/client";
 import { add, format, parse } from "date-fns";
@@ -111,11 +112,18 @@ export const EditPreference: React.FC<EditPreferenceProps> = ({
 	};
 	
 	const handleDescriptionInput = (event: React.FormEvent<HTMLTextAreaElement>) => {
-		const nextDescription = event.currentTarget.value;
-		updatePreference({
-			id: preference.id,
-			description: nextDescription,
-		});
+		const nextDescription = event.currentTarget.value.trim();
+		event.currentTarget.value = nextDescription;
+		
+		if (nextDescription.replaceAll(" ", "").length >= MIN_PREFERENCE_DETAILS_LENGTH) {
+			updatePreference({
+				id: preference.id,
+				description: nextDescription,
+			});
+		} else {
+			// This prevents the user from emptying the description area (to emphasize the changes were not applied)
+			event.currentTarget.value = preference.description;
+		}
 	};
 	
 	const handleDelete = () => {
@@ -235,7 +243,7 @@ export const EditPreference: React.FC<EditPreferenceProps> = ({
 					htmlFor="preference-description"
 					className="block"
 				>
-					פירוט
+					תיאור*
 				</label>
 				<textarea
 					id="preference-description"

@@ -1,10 +1,11 @@
 "use client";
 
 import { FloatingDialogClassicHeader } from "@/app/_components";
+import { MIN_PREFERENCE_DETAILS_LENGTH } from "@/app/_utils/constants";
 import { type DatesSelection, type GetPreferenceParams, type PreferenceOperations } from "@/app/user-dashboard/types";
 import { PreferenceImportance, PreferenceReason, type Preference } from "@prisma/client";
 import { add, format, parse } from "date-fns";
-import React from "react";
+import React, { useMemo, useRef, useState } from "react";
 
 interface AddPreferenceProps extends PreferenceOperations<void> {
 	isOpen: boolean;
@@ -27,13 +28,18 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 	createPreference,
 	closeDialog,
 }) => {
+	// Description gets a state because you can't submit a preference without a description.
+	// For performance reasons we update the reason only on blur (when the input loses focus)
+	const [ description, setDescription ] = useState<string>("");
+	
 	const inputRefs = {
-		reason: React.useRef<HTMLSelectElement>(null),
-		importance: React.useRef<HTMLSelectElement>(null),
-		description: React.useRef<HTMLTextAreaElement>(null),
+		reason: useRef<HTMLSelectElement>(null),
+		importance: useRef<HTMLSelectElement>(null),
+		// It also gets a ref to clear the output when the dialog is opened
+		description: useRef<HTMLTextAreaElement>(null),
 	};
 	
-	const isTherePreferenceFallInDateRange = React.useMemo(() => (
+	const isTherePreferenceFallInDateRange = useMemo(() => (
 		getPreference({
 			datesSelection,
 		}) !== undefined
@@ -79,7 +85,6 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 	const handleCreateSubmit = () => {
 		const reason = inputRefs.reason.current?.value as PreferenceReason;
 		const importance = inputRefs.importance.current?.value as PreferenceImportance;
-		const description = inputRefs.description.current?.value as string;
 		
 		createPreference({
 			id: Math.round(Math.random() * 500_000).toString(),
@@ -94,9 +99,18 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 		closeDialog();
 	};
 	
+	const handleDescriptionBlur: React.FocusEventHandler<HTMLTextAreaElement> = (event) => {
+		const nextDescription = event.target.value.trim();
+		event.target.value = nextDescription;
+		setDescription(nextDescription);
+	};
+	
 	React.useEffect(() => {
+		// The `!` operator is used here because the refs must be
+		// attached when `useEffect` runs, as these hooks execute after the DOM was mounted
 		inputRefs.reason.current!.value = PreferenceReason.VACATION;
 		inputRefs.importance.current!.value = PreferenceImportance.NORMAL_PRIORITY;
+		setDescription("");
 		inputRefs.description.current!.value = "";
 	}, [ isOpen ]);
 
@@ -206,13 +220,14 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 					htmlFor="preference-description"
 					className="block"
 				>
-					פירוט
+					תיאור*
 				</label>
 				<textarea
 					id="preference-description"
 					maxLength={40}
 					ref={inputRefs.description}
 					className="resize-none rounded-xl border-2 border-black"
+					onBlur={handleDescriptionBlur}
 				/>
 			</div>
 			<div className="flex justify-end">
@@ -224,7 +239,7 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 				</button>
 				<button
 					type="submit"
-					disabled={isTherePreferenceFallInDateRange}
+					disabled={isTherePreferenceFallInDateRange || description.replaceAll(" ", "").length < MIN_PREFERENCE_DETAILS_LENGTH}
 					onClick={handleCreateSubmit}
 					className="btn btn-purple"
 				>
