@@ -40,7 +40,6 @@ export const useDutiesCalendar = ({
 	
 	const [ floatingDialogData, setFloatingDialogData ] = React.useState<FloatingDialogData>({
 		isShown: false,
-		title: "הוספת הסתייגות",
 		widthPx: 300,
 		xOffsetPx: 0,
 		yOffsetPx: 0,

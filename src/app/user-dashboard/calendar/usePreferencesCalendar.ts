@@ -76,7 +76,6 @@ export const usePreferencesCalendar = ({
 	
 	const [ floatingDialogData, setFloatingDialogData ] = React.useState<FloatingDialogData>({
 		isShown: false,
-		title: "הוספת הסתייגות",
 		widthPx: 300,
 		xOffsetPx: 0,
 		yOffsetPx: 0,
@@ -202,7 +201,6 @@ export const usePreferencesCalendar = ({
 		setFloatingDialogData((prev) => {
 			return {
 				...prev,
-				title: "הוספת הסתייגות",
 				isShown: true,
 				...calcFloatingDialogXyOffsetsPx({
 					rect,

@@ -6,12 +6,10 @@ export interface FloatingDialogData {
 	widthPx: number;
 	xOffsetPx: number;
 	yOffsetPx: number;
-	title: string;
 }
 
 interface FloatingDialogProps extends FloatingDialogData {
 	children?: React.ReactNode;
-	setIsShown: (nextIsShown: boolean) => void;
 }
 
 export const FloatingDialog: React.FC<FloatingDialogProps> = ({
@@ -19,22 +17,15 @@ export const FloatingDialog: React.FC<FloatingDialogProps> = ({
 	widthPx,
 	xOffsetPx,
 	yOffsetPx,
-	title,
 	children,
-	
-	setIsShown,
 }) => {
-	const closeDialog = () => {
-		setIsShown(false);
-	};
-
 	const isOnMobile = false;
 
 	return (
 		<div
 			className={
 				clsx(
-					"fixed left-0 top-0 z-10 bg-white shadow-xl shadow-black/40 md:rounded-xl",
+					"fixed left-0 top-0 z-10 bg-white shadow-2xl shadow-black/50 md:rounded-xl",
 					isShown ? "visible opacity-100" : "invisible opacity-0"
 				)
 			}
@@ -45,18 +36,7 @@ export const FloatingDialog: React.FC<FloatingDialogProps> = ({
 				transition: `opacity 350ms, transform 350ms ${isShown ? "" : ", visibility 350ms"}`,
 			}}
 		>
-			<header className="flex h-10 w-full justify-between bg-blue-200 md:rounded-t-xl">
-				<h3 className="text-xl">
-					{title}
-				</h3>
-				<button
-					className="p-2 text-xl"
-					onClick={closeDialog}
-				>X</button>
-			</header>
-			<div>
-				{children}
-			</div>
+			{children}
 		</div>
 	);
 };

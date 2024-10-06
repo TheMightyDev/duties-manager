@@ -77,10 +77,7 @@ export const PreferencesCalendar: React.FC<PreferencesCalendarProps> = ({
 				datesSet={fcEventHandlers.datesSet}
 				height="70vh"
 			/>
-			<FloatingDialog
-				{...floatingDialogData}
-				setIsShown={setIsFloatingDialogShown}
-			>
+			<FloatingDialog {...floatingDialogData}>
 				{
 					(!selectedPreference) &&
 					<AddPreference
