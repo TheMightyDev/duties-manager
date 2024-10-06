@@ -67,14 +67,11 @@ export const PreferencesCalendar: React.FC<PreferencesCalendarProps> = ({
 				editable={true}
 				eventDurationEditable={false}
 				selectable={true}
+				selectOverlap={false}
 				eventOverlap={false}
-
-				select={fcEventHandlers.select}
-				eventClick={fcEventHandlers.eventClick}
-				eventDrop={fcEventHandlers.eventDrop}
-				dateClick={fcEventHandlers.dateClick}
-				eventDidMount={fcEventHandlers.eventDidMount}
-				datesSet={fcEventHandlers.datesSet}
+				
+				{...fcEventHandlers}
+				
 				height="70vh"
 			/>
 			<FloatingDialog {...floatingDialogData}>

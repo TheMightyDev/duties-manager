@@ -3,10 +3,10 @@ import { calcFloatingDialogXyOffsetsPx } from "@/app/_utils/calcFloatingDialogXy
 import { preferenceImportanceEmojis } from "@/app/user-dashboard/calendar/preferenceImportanceEmojis";
 import { preferenceReasonsEmojis } from "@/app/user-dashboard/calendar/preferenceReasonsEmojis";
 import { type DatesSelection, type GetPreferenceParams, type PreferenceOperations } from "@/app/user-dashboard/types";
-import { type DateSelectArg, type DatesSetArg, type EventClickArg, type EventDropArg, type EventInput, type EventMountArg } from "@fullcalendar/core/index.js";
+import { type DateSelectArg, type DateSpanApi, type DatesSetArg, type EventClickArg, type EventDropArg, type EventInput, type EventMountArg } from "@fullcalendar/core/index.js";
 import { type DateClickArg } from "@fullcalendar/interaction";
 import { type Preference, PreferenceReason } from "@prisma/client";
-import { add, addMinutes, subMinutes } from "date-fns";
+import { add, addDays, addMinutes, subMinutes } from "date-fns";
 import React from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -15,7 +15,9 @@ import { useImmer } from "use-immer";
 interface RelevantFcEventHandlers {
 	eventClick: (arg: EventClickArg) => void;
 	dateClick: (arg: DateClickArg) => void;
+	selectAllow: (arg: DateSpanApi) => boolean;
 	select: (arg: DateSelectArg) => void;
+	eventAllow: (arg: DateSpanApi) => boolean;
 	eventDrop: (arg: EventDropArg) => void;
 	datesSet: (arg: DatesSetArg) => void;
 	eventDidMount: (arg: EventMountArg) => void;
@@ -244,6 +246,9 @@ export const usePreferencesCalendar = ({
 	
 	const fcEventHandlers: RelevantFcEventHandlers = {
 		dateClick: (arg: DateClickArg) => {
+			if (arg.date <= addDays(new Date(), 1)) {
+				return;
+			}
 			const nextDatesSelection: DatesSelection = {
 				start: arg.date,
 				// When we select a dates range in full calendar, the end date is midnight of the next selected date
@@ -262,6 +267,9 @@ export const usePreferencesCalendar = ({
 				setIsAddPreferenceDialogOpen(true);
 				setProposedEventDatesSelection(nextDatesSelection);
 			}
+		},
+		selectAllow: (span: DateSpanApi): boolean => {
+			return span.start > addDays(new Date(), 1);
 		},
 		select: (arg: DateSelectArg) => {
 			setFloatingDialogData((prev) => ({
@@ -304,6 +312,9 @@ export const usePreferencesCalendar = ({
 			openFloatingDialog({
 				rect,
 			});
+		},
+		eventAllow: (dropInfo: DateSpanApi): boolean => {
+			return dropInfo.start > addDays(new Date(), 1);
 		},
 		eventDrop: (arg: EventDropArg) => {
 			const affectedPreferenceId = arg.event.id;
