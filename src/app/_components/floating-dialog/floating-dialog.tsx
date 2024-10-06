@@ -43,14 +43,16 @@ export const FloatingDialog: React.FC<FloatingDialogProps> = ({
 				height: isOnMobile ? "100vh" : "fit-content",
 				transform: isOnMobile ? undefined : `translate(${xOffsetPx}px, ${yOffsetPx}px)`,
 				transition: `opacity 350ms, transform 350ms ${isShown ? "" : ", visibility 350ms"}`,
-			}}>
+			}}
+		>
 			<header className="flex h-10 w-full justify-between bg-blue-200 md:rounded-t-xl">
 				<h3 className="text-xl">
 					{title}
 				</h3>
 				<button
 					className="p-2 text-xl"
-					onClick={closeDialog}>X</button>
+					onClick={closeDialog}
+				>X</button>
 			</header>
 			<div className="p-1">
 				{children}

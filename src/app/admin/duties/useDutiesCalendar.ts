@@ -1,3 +1,4 @@
+import { type FloatingDialogData } from "@/app/_components";
 import { type DatesSelection } from "@/app/user-dashboard/types";
 import { type DutyWithAssignments } from "@/server/api/types/DutyWithAssignments";
 import { type DateSelectArg, type DatesSetArg, type EventInput } from "@fullcalendar/core/index.js";
@@ -36,6 +37,14 @@ export const useDutiesCalendar = ({
 	const [ duties, updateDuties ] = useImmer(initialDutiesWithAssignments);
 	
 	const [ proposedEventDatesSelection, setProposedEventDatesSelection ] = React.useState<DatesSelection | null>(null);
+	
+	const [ floatingDialogData, setFloatingDialogData ] = React.useState<FloatingDialogData>({
+		isShown: false,
+		title: "הוספת הסתייגות",
+		widthPx: 300,
+		xOffsetPx: 0,
+		yOffsetPx: 0,
+	});
 	
 	const fcDutiesEvents = useMemo(() => {
 		return duties.map<EventInput>((duty) => ({

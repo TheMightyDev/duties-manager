@@ -1,5 +1,5 @@
+import { type FloatingDialogData } from "@/app/_components/floating-dialog";
 import { calcFloatingDialogXyOffsetsPx } from "@/app/_utils/calcFloatingDialogXyOffsetsPx";
-import { type FloatingDialogData } from "@/app/user-dashboard/calendar/FloatingDialog";
 import { preferenceImportanceEmojis } from "@/app/user-dashboard/calendar/preferenceImportanceEmojis";
 import { preferenceReasonsEmojis } from "@/app/user-dashboard/calendar/preferenceReasonsEmojis";
 import { type DatesSelection, type GetPreferenceParams, type PreferenceOperations } from "@/app/user-dashboard/types";
