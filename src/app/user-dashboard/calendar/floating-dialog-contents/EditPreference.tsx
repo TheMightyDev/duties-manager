@@ -1,5 +1,6 @@
 "use client";
 
+import { FloatingDialogClassicHeader } from "@/app/_components";
 import { type DatesSelection, type GetPreferenceParams, type PreferenceOperations } from "@/app/user-dashboard/types";
 import { PreferenceImportance, PreferenceReason, type Preference } from "@prisma/client";
 import { add, format, parse } from "date-fns";
@@ -126,6 +127,7 @@ export const EditPreference: React.FC<EditPreferenceProps> = ({
 	
 	return (
 		<div>
+			<FloatingDialogClassicHeader handleClose={closeDialog} />
 			<pre>
 				{datesSelection.start.toUTCString()}
 			</pre>

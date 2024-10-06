@@ -1,5 +1,6 @@
 "use client";
 
+import { FloatingDialogClassicHeader } from "@/app/_components";
 import { type DatesSelection, type GetPreferenceParams, type PreferenceOperations } from "@/app/user-dashboard/types";
 import { PreferenceImportance, PreferenceReason, type Preference } from "@prisma/client";
 import { add, format, parse } from "date-fns";
@@ -101,11 +102,7 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 
 	return (
 		<div>
-			<div className="flex justify-end bg-blue-300 p-0">
-				<button onClick={closeDialog}>
-					X
-				</button>
-			</div>
+			<FloatingDialogClassicHeader handleClose={closeDialog} />
 			<div className="flex flex-row">
 				<div>
 					<label
