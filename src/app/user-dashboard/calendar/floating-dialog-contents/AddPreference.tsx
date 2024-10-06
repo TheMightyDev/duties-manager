@@ -101,6 +101,11 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 
 	return (
 		<div>
+			<div className="flex justify-end bg-blue-300 p-0">
+				<button onClick={closeDialog}>
+					X
+				</button>
+			</div>
 			<div className="flex flex-row">
 				<div>
 					<label
@@ -151,7 +156,9 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 					<label
 						htmlFor="preference-reason-select"
 						className="block"
-					>סיבה</label>
+					>
+						סיבה
+					</label>
 					<select
 						name="preference-reason"
 						id="preference-reason-select"

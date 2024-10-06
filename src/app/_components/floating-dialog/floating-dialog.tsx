@@ -28,7 +28,7 @@ export const FloatingDialog: React.FC<FloatingDialogProps> = ({
 		setIsShown(false);
 	};
 
-	const isOnMobile = document.body.clientWidth < 700;
+	const isOnMobile = false;
 
 	return (
 		<div
@@ -54,7 +54,7 @@ export const FloatingDialog: React.FC<FloatingDialogProps> = ({
 					onClick={closeDialog}
 				>X</button>
 			</header>
-			<div className="p-1">
+			<div>
 				{children}
 			</div>
 		</div>

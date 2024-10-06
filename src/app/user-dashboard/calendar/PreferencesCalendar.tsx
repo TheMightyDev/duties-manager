@@ -82,11 +82,14 @@ export const PreferencesCalendar: React.FC<PreferencesCalendarProps> = ({
 				setIsShown={setIsFloatingDialogShown}
 			>
 				{
-					(proposedEventDatesSelection && !selectedPreference) &&
+					(!selectedPreference) &&
 					<AddPreference
 						isOpen={isAddPreferenceDialogOpen}
 						userId={selectedUserId}
-						datesSelection={proposedEventDatesSelection}
+						datesSelection={proposedEventDatesSelection ?? {
+							start: new Date(),
+							end: new Date(),
+						}}
 						setDatesSelection={setProposedEventDatesSelection}
 						getPreference={getPreference}
 						createPreference={preferenceOperationsWrappers.createPreference}
