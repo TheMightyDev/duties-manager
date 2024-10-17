@@ -3,10 +3,11 @@ import Link from "next/link";
 
 export default function SideNav() {
 	return (
-		<div className="flex-col ps-2 pe-5 py-4 hidden md:flex [height:100vh]">
+		<div className="sticky top-0 hidden flex-col py-4 pe-5 ps-2 [height:100vh] md:flex">
 			<Link
 				className="mb-2 flex h-20 items-end justify-start rounded-md bg-blue-600 p-4 md:h-40"
-				href="/">
+				href="/"
+			>
 				<div className="w-32 text-white md:w-40">
 					XXX
 				</div>

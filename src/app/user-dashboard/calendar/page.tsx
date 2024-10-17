@@ -1,3 +1,4 @@
+import { sortUserJusticesByWeightedScore } from "@/app/_utils/sort-user-justices";
 import { PreferencesCalendar } from "@/app/user-dashboard/calendar/preferences-calendar";
 import { api } from "@/trpc/server";
 import { UserRole, type Preference } from "@prisma/client";
@@ -41,10 +42,15 @@ const UserDashboardPage: NextPage = async () => {
 	const fetchJustice = async () => {
 		"use server";
 		
-		return await api.justice.getUsersJustice({
+		const userJustices = await api.justice.getUsersJustice({
 			roles: [ UserRole.SQUAD ],
 			monthIndex: 10,
 			year: 2024,
+		});
+		
+		return sortUserJusticesByWeightedScore({
+			userJustices,
+			ascending: false,
 		});
 	};
 	

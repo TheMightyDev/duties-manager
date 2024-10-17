@@ -18,6 +18,12 @@ export const seedAssignments = [
 	},
 	{
 		id: createId(),
+		dutyId: seedDuties[0].id,
+		userId: seedUsers[3].id,
+		reserveId: seedUsers[2].id,
+	},
+	{
+		id: createId(),
 		dutyId: seedDuties[1].id,
 		userId: seedUsers[6].id,
 		reserveId: seedUsers[7].id,
