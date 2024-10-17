@@ -4,11 +4,13 @@ import { FloatingDialog } from "@/app/_components/floating-dialog/floating-dialo
 import { AcceptCloseDialog } from "@/app/user-dashboard/calendar/accept-close-dialog";
 import { AddPreference } from "@/app/user-dashboard/calendar/floating-dialog-contents/add-preference";
 import { EditPreference } from "@/app/user-dashboard/calendar/floating-dialog-contents/edit-preference";
+import { ViewPreference } from "@/app/user-dashboard/calendar/floating-dialog-contents/view-preference";
 import { type PreferencesCalendarProps, usePreferencesCalendar } from "@/app/user-dashboard/calendar/use-preferences-calendar";
 import heLocale from "@fullcalendar/core/locales/he";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import FullCalendar from "@fullcalendar/react";
+import { PreferenceReason } from "@prisma/client";
 import React from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -93,7 +95,10 @@ export const PreferencesCalendar: React.FC<PreferencesCalendarProps> = ({
 					/>
 				}
 				{
-					selectedPreference &&
+					(selectedPreference &&
+						selectedPreference.reason !== PreferenceReason.EXEMPTION &&
+						selectedPreference.reason !== PreferenceReason.ABSENCE
+					) &&
 					<EditPreference
 						getPreference={getPreference}
 						isOpen={floatingDialogData.isShown}
@@ -106,13 +111,24 @@ export const PreferencesCalendar: React.FC<PreferencesCalendarProps> = ({
 						}}
 					/>
 				}
-				
+				{
+					(selectedPreference && (
+						selectedPreference.reason === PreferenceReason.EXEMPTION ||
+						selectedPreference.reason === PreferenceReason.ABSENCE
+					)) &&
+					<ViewPreference
+						preference={selectedPreference}
+						closeDialog={() => {
+							setIsFloatingDialogShown(false);
+						}}
+					/>
+				}
 			</FloatingDialog>
 			
 			<ToastContainer
 				limit={2}
 				rtl={true}
-				position ="bottom-left"
+				position="bottom-left"
 				toastClassName="bottom-10 md:bottom-0"
 			/>
 			<AcceptCloseDialog
