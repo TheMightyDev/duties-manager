@@ -9,4 +9,5 @@ export const preferenceReasonsEmojis = {
 	[PreferenceReason.RELIGION]: "🕍",
 	[PreferenceReason.APPOINTMENT]: "🩺",
 	[PreferenceReason.OTHER]: "📅",
+	[PreferenceReason.EXEMPTION]: "🚢",
 } as const satisfies Record<PreferenceReason, string>;

@@ -10,19 +10,33 @@ const preferenceSchema = z.object({
 	id: z.string(),
 	userId: z.string(),
 	startDate: z.date(),
-	endDate: z.date(),
+	endDate: z.date().nullable(),
 	reason: z.nativeEnum(PreferenceReason),
 	importance: z.nativeEnum(PreferenceImportance),
 	description: z.string(),
 });
 
 export const preferenceRouter = createTRPCRouter({
+	getUserExemptionsById: publicProcedure
+		.input(z.string())
+		.query((async ({ ctx, input: userId }) => {
+			return ctx.db.preference.findMany({
+				where: {
+					userId,
+					reason: PreferenceReason.EXEMPTION,
+				},
+			});
+		})),
+		
 	getUserPreferencesById: publicProcedure
 		.input(z.string())
 		.query((async ({ ctx, input: userId }) => {
 			return ctx.db.preference.findMany({
 				where: {
 					userId,
+					importance: {
+						not: PreferenceImportance.NO_GUARDING,
+					},
 				},
 			});
 		})),
