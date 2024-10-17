@@ -69,7 +69,6 @@ export const PreferencesCalendar: React.FC<PreferencesCalendarProps> = ({
 				editable={true}
 				eventDurationEditable={false}
 				selectable={true}
-				eventOverlap={false}
 				
 				{...fcEventHandlers}
 				

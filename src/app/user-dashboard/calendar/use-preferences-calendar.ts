@@ -3,7 +3,7 @@ import { calcFloatingDialogLocation } from "@/app/_utils/floating-dialog-utils";
 import { preferenceImportanceEmojis } from "@/app/user-dashboard/calendar/preference-importance-emojis";
 import { preferenceReasonsEmojis } from "@/app/user-dashboard/calendar/preference-reasons-emojis";
 import { type DatesSelection, type GetPreferenceParams, type PreferenceOperations } from "@/app/user-dashboard/types";
-import { type DateSelectArg, type DateSpanApi, type DatesSetArg, type EventClickArg, type EventDropArg, type EventInput, type EventMountArg } from "@fullcalendar/core/index.js";
+import { type DateSelectArg, type DateSpanApi, type DatesSetArg, type EventClickArg, type EventDropArg, type EventInput, type EventMountArg, type OverlapFunc } from "@fullcalendar/core/index.js";
 import { type DateClickArg } from "@fullcalendar/interaction";
 import { type Preference, PreferenceImportance, PreferenceReason } from "@prisma/client";
 import { add, addDays, addMinutes, subMinutes } from "date-fns";
@@ -21,6 +21,7 @@ interface RelevantFcEventHandlers {
 	eventDrop: (arg: EventDropArg) => void;
 	datesSet: (arg: DatesSetArg) => void;
 	eventDidMount: (arg: EventMountArg) => void;
+	eventOverlap: OverlapFunc;
 }
 
 export interface PreferencesCalendarProps extends PreferenceOperations<Promise<boolean>> {
@@ -105,6 +106,7 @@ export const usePreferencesCalendar = ({
 				
 				color: reason === PreferenceReason.EXEMPTION ? "#ea75b7" : "",
 				// color: preference.reason === PreferenceReason.CELEBRATION ? "pink" : "",
+				editable: reason !== PreferenceReason.EXEMPTION,
 			}));
 		},
 		[ preferences ]
@@ -389,6 +391,15 @@ export const usePreferencesCalendar = ({
 			// This event fires when the user changes the view in the calendar (navigates to a different month)
 			setProposedEventDatesSelection(null);
 			setIsFloatingDialogShown(false);
+		},
+		eventOverlap: (stillEvent) => {
+			const stillPreference = preferences.find((preference) => preference.id === stillEvent.id);
+			
+			if (stillPreference) {
+				return stillPreference.reason === PreferenceReason.EXEMPTION;
+			}
+			
+			return false;
 		},
 	};
 	
