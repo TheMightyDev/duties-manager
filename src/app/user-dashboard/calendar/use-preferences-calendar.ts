@@ -109,6 +109,7 @@ export const usePreferencesCalendar = ({
 				),
 				// color: preference.reason === PreferenceReason.CELEBRATION ? "pink" : "",
 				editable: reason !== PreferenceReason.EXEMPTION && reason !== PreferenceReason.ABSENCE,
+				durationEditable: false,
 			}));
 		},
 		[ preferences ]
