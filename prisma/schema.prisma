@@ -127,8 +127,9 @@ enum PreferenceReason {
   RELIGION
   FAMILY_EVENT
   CELEBRATION
-  OTHER
   EXEMPTION
+	ABSENCE
+  OTHER
 }
 
 enum PreferenceImportance {
@@ -138,5 +139,5 @@ enum PreferenceImportance {
   HIGH_PRIORITY_NOT_TO
   EASE_GUARDING
   NO_GUARDING
-  ABSENT
+  NO_DUTIES
 }
