@@ -2,7 +2,8 @@
 
 import { FloatingDialog } from "@/app/_components/floating-dialog/floating-dialog";
 import { AcceptCloseDialog } from "@/app/user-dashboard/calendar/accept-close-dialog";
-import { AddPreference, EditPreference } from "@/app/user-dashboard/calendar/floating-dialog-contents";
+import { AddPreference } from "@/app/user-dashboard/calendar/floating-dialog-contents/add-preference";
+import { EditPreference } from "@/app/user-dashboard/calendar/floating-dialog-contents/edit-preference";
 import { type PreferencesCalendarProps, usePreferencesCalendar } from "@/app/user-dashboard/calendar/use-preferences-calendar";
 import heLocale from "@fullcalendar/core/locales/he";
 import dayGridPlugin from "@fullcalendar/daygrid";

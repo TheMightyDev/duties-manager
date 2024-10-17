@@ -1,6 +1,6 @@
 import { type FloatingDialogData } from "@/app/_components/floating-dialog/floating-dialog";
 import { type DatesSelection } from "@/app/user-dashboard/types";
-import { type DutyWithAssignments } from "@/server/api/types/DutyWithAssignments";
+import { type DutyWithAssignments } from "@/server/api/types/duty-with-assignments";
 import { type DateSelectArg, type DatesSetArg, type EventInput } from "@fullcalendar/core/index.js";
 import type FullCalendar from "@fullcalendar/react";
 import { add, addMinutes, subDays } from "date-fns";

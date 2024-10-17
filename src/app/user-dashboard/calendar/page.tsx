@@ -1,6 +1,6 @@
 import { PreferencesCalendar } from "@/app/user-dashboard/calendar/preferences-calendar";
 import { api } from "@/trpc/server";
-import { type Preference } from "@prisma/client";
+import { UserRole, type Preference } from "@prisma/client";
 import { type NextPage } from "next";
 
 const UserDashboardPage: NextPage = async () => {
@@ -38,6 +38,16 @@ const UserDashboardPage: NextPage = async () => {
 		return await api.preference.update(updatedPreference);
 	};
 	
+	const fetchJustice = async () => {
+		"use server";
+		
+		return await api.justice.getUsersJustice({
+			roles: [ UserRole.SQUAD ],
+			monthIndex: 10,
+			year: 2024,
+		});
+	};
+	
 	return (
 		<>
 			<PreferencesCalendar
@@ -47,6 +57,9 @@ const UserDashboardPage: NextPage = async () => {
 				deletePreference={deletePreference}
 				updatePreference={updatePreference}
 			/>
+			<pre dir="ltr">
+				{ JSON.stringify(await fetchJustice(), null, 2) }
+			</pre>
 		</>
 	);
 };
