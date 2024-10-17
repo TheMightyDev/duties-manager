@@ -25,6 +25,13 @@ export const preferenceRouter = createTRPCRouter({
 					userId,
 					reason: PreferenceReason.EXEMPTION,
 				},
+				select: {
+					id: true,
+					description: true,
+					importance: true,
+					startDate: true,
+					endDate: true,
+				},
 			});
 		})),
 		

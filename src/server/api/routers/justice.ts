@@ -6,7 +6,8 @@ import {
 } from "@/server/api/trpc";
 import { type UserJustice } from "@/server/api/types/user-justice";
 import { userWithAssignmentsInclude } from "@/server/api/types/user-with-assignments";
-import { DutyKind, UserRole } from "@prisma/client";
+import { type UserWithExemptionsAndAbsences, userWithExemptionsAndAbsencesInclude } from "@/server/api/types/user-with-exemptions-and-absences";
+import { DutyKind, type User, UserRole } from "@prisma/client";
 import { differenceInDays } from "date-fns";
 
 enum DutyKindForJustice {
@@ -43,6 +44,39 @@ function countTotalScore({ userJustice }: {
 	return totalScore;
 }
 
+function calcTotalMonthsInRole({
+	userWithExemptionsAndAbsences,
+	definitiveDate,
+}: {
+	userWithExemptionsAndAbsences: User & UserWithExemptionsAndAbsences;
+	definitiveDate?: Date;
+}): number {
+	const actualDefinitiveDate = definitiveDate ?? new Date();
+	const roleStartDate = userWithExemptionsAndAbsences.roleStartDate;
+	
+	const totalDaysSinceRoleStart = differenceInDays(actualDefinitiveDate, roleStartDate);
+	
+	const totalDaysMissing = userWithExemptionsAndAbsences.preferences.reduce((count, preference) => {
+		if (preference.startDate < actualDefinitiveDate) {
+			// There must be an end date because we filter out all permanent exemptions
+			// (those that don't have an end date).
+			// Note that absences cannot be permanent!
+			const diffInDays = differenceInDays(
+				preference.endDate! < actualDefinitiveDate ? preference.endDate! : actualDefinitiveDate,
+				preference.startDate
+			);
+			
+			return count + diffInDays;
+		}
+		
+		return count;
+	}, 0);
+	
+	const totalMonthsInRole = (totalDaysSinceRoleStart - totalDaysMissing) / 30;
+	
+	return totalMonthsInRole;
+}
+
 export const justiceRouter = createTRPCRouter({
 	/** Returns all duties that either start or the end on the input month */
 	getUsersJustice: publicProcedure
@@ -55,14 +89,34 @@ export const justiceRouter = createTRPCRouter({
 			const firstDayInMonth = new Date(year, monthIndex, 1);
 			const lastDayInMonth = new Date(year, monthIndex + 1, 0, 59, 59, 999);
 			
+			const usersWithExemptionsAndAbsences = await ctx.db.user.findMany({
+				include: userWithExemptionsAndAbsencesInclude,
+				where: {
+					role: {
+						in: roles,
+					},
+				},
+			});
+			
 			const usersWithAssignments = await ctx.db.user.findMany({
 				include: userWithAssignmentsInclude,
+				where: {
+					role: {
+						in: roles,
+					},
+				},
 			});
 			
 			const usersJustices = usersWithAssignments.map<UserJustice>((user) => {
+				const monthsInRole = calcTotalMonthsInRole({
+					// There must be a user with the given ID, because the `where` clause is the same in all queries
+					userWithExemptionsAndAbsences: usersWithExemptionsAndAbsences.find((curr) => curr.id === user.id)!,
+					definitiveDate: new Date(),
+				});
+				
 				const userJustice: UserJustice = {
 					userId: user.id,
-					monthsInRole: differenceInDays(Date.now(), user.roleStartDate) / 30,
+					monthsInRole,
 					weekdaysGuardingCount: 0,
 					weekendsGuardingCount: 0,
 					otherDutiesScoreSum: 0,

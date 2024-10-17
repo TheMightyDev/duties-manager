@@ -16,6 +16,6 @@ export const userWithAssignmentsInclude = Prisma.validator<Prisma.UserInclude>()
 	},
 });
 
-export type UserWithAssignments = Prisma.DutyGetPayload<{
+export type UserWithAssignments = Prisma.UserGetPayload<{
 	include: typeof userWithAssignmentsInclude;
 }>;
