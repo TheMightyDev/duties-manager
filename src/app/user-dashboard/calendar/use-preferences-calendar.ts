@@ -104,9 +104,11 @@ export const usePreferencesCalendar = ({
 				start: startDate,
 				end: endDate ? addMinutes(endDate, 1) : undefined,
 				
-				color: reason === PreferenceReason.EXEMPTION ? "#ea75b7" : "",
+				color: reason === PreferenceReason.EXEMPTION ? "#ea75b7" : (
+					reason === PreferenceReason.ABSENCE ? "#a30b0d" : ""
+				),
 				// color: preference.reason === PreferenceReason.CELEBRATION ? "pink" : "",
-				editable: reason !== PreferenceReason.EXEMPTION,
+				editable: reason !== PreferenceReason.EXEMPTION && reason !== PreferenceReason.ABSENCE,
 			}));
 		},
 		[ preferences ]

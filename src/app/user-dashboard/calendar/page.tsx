@@ -3,6 +3,7 @@ import { PreferencesCalendar } from "@/app/user-dashboard/calendar/preferences-c
 import { api } from "@/trpc/server";
 import { UserRole, type Preference } from "@prisma/client";
 import { type NextPage } from "next";
+import { seedUsers } from "prisma/seed-data/seed-users";
 
 const UserDashboardPage: NextPage = async () => {
 	const fetchPreferences = async ({ userId }: {
@@ -54,6 +55,12 @@ const UserDashboardPage: NextPage = async () => {
 		});
 	};
 	
+	async function fetchExemptions() {
+		"use server";
+		
+		return await api.preference.getUserExemptionsById(seedUsers[0].id);
+	}
+	
 	return (
 		<>
 			<PreferencesCalendar
@@ -63,6 +70,9 @@ const UserDashboardPage: NextPage = async () => {
 				deletePreference={deletePreference}
 				updatePreference={updatePreference}
 			/>
+			<pre dir="ltr">
+				{ JSON.stringify(await fetchExemptions(), null, 2) }
+			</pre>
 			<pre dir="ltr">
 				{ JSON.stringify(await fetchJustice(), null, 2) }
 			</pre>
