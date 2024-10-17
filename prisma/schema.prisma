@@ -99,7 +99,7 @@ model Preference {
   reason      PreferenceReason
   importance  PreferenceImportance
   startDate   DateTime
-  endDate     DateTime
+  endDate     DateTime?
   description String
   user        User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -127,12 +127,16 @@ enum PreferenceReason {
   RELIGION
   FAMILY_EVENT
   CELEBRATION
+	EXEMPTION
   OTHER
 }
 
 enum PreferenceImportance {
-  HIGH_PRIORITY
-  NORMAL_PRIORITY
+	PREFERS
   PREFERS_NOT_TO
+  NORMAL_PRIORITY_NOT_TO
+  HIGH_PRIORITY_NOT_TO
+	EASE_GUARDING
+	NO_GUARDING
   ABSENT
 }
