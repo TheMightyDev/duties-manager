@@ -56,6 +56,7 @@ export const PreferencesCalendar: React.FC<PreferencesCalendarProps> = ({
 					onChange={handleUserIdChange}
 				/>
 			</p>
+			<h2 className="text-3xl font-bold">hey</h2>
 			<FullCalendar
 				events={fcEvents}
 				
@@ -68,7 +69,6 @@ export const PreferencesCalendar: React.FC<PreferencesCalendarProps> = ({
 				editable={true}
 				eventDurationEditable={false}
 				selectable={true}
-				selectOverlap={false}
 				eventOverlap={false}
 				
 				{...fcEventHandlers}

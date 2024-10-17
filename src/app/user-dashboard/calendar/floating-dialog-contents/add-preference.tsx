@@ -109,7 +109,7 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 		// The `!` operator is used here because the refs must be
 		// attached when `useEffect` runs, as these hooks execute after the DOM was mounted
 		inputRefs.reason.current!.value = PreferenceReason.VACATION;
-		inputRefs.importance.current!.value = PreferenceImportance.NORMAL_PRIORITY;
+		inputRefs.importance.current!.value = PreferenceImportance.NORMAL_PRIORITY_NOT_TO;
 		setDescription("");
 		inputRefs.description.current!.value = "";
 	}, [ isOpen ]);
@@ -239,7 +239,7 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 				</button>
 				<button
 					type="submit"
-					disabled={isTherePreferenceFallInDateRange || description.replaceAll(" ", "").length < MIN_PREFERENCE_DETAILS_LENGTH}
+					disabled={description.replaceAll(" ", "").length < MIN_PREFERENCE_DETAILS_LENGTH}
 					onClick={handleCreateSubmit}
 					className="btn btn-purple"
 				>

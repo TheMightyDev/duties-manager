@@ -1,11 +1,11 @@
-import { FloatingDialogData } from "@/app/_components/floating-dialog/floating-dialog";
+import { type FloatingDialogData } from "@/app/_components/floating-dialog/floating-dialog";
 import { calcFloatingDialogLocation } from "@/app/_utils/floating-dialog-utils";
 import { preferenceImportanceEmojis } from "@/app/user-dashboard/calendar/preference-importance-emojis";
 import { preferenceReasonsEmojis } from "@/app/user-dashboard/calendar/preference-reasons-emojis";
 import { type DatesSelection, type GetPreferenceParams, type PreferenceOperations } from "@/app/user-dashboard/types";
 import { type DateSelectArg, type DateSpanApi, type DatesSetArg, type EventClickArg, type EventDropArg, type EventInput, type EventMountArg } from "@fullcalendar/core/index.js";
 import { type DateClickArg } from "@fullcalendar/interaction";
-import { type Preference, PreferenceReason } from "@prisma/client";
+import { type Preference, PreferenceImportance, PreferenceReason } from "@prisma/client";
 import { add, addDays, addMinutes, subMinutes } from "date-fns";
 import React from "react";
 import { toast } from "react-toastify";
@@ -101,9 +101,9 @@ export const usePreferencesCalendar = ({
 				allDay: true,
 				title: `${preferenceReasonsEmojis[reason]} ${preferenceImportanceEmojis[importance]} ${description}`,
 				start: startDate,
-				end: addMinutes(endDate, 1),
+				end: endDate ? addMinutes(endDate, 1) : undefined,
 				
-				className: reason === PreferenceReason.CELEBRATION ? "bg-pink-700 border-pink-900" : "",
+				color: reason === PreferenceReason.EXEMPTION ? "#ea75b7" : "",
 				// color: preference.reason === PreferenceReason.CELEBRATION ? "pink" : "",
 			}));
 		},
@@ -134,12 +134,29 @@ export const usePreferencesCalendar = ({
 	const getPreference = ({
 		datesSelection: { start, end },
 		excludedPreferenceId,
+		findEaseGuarding = false,
 	}: GetPreferenceParams): Preference | undefined => (
 		preferences.find((preference) => {
-			return (excludedPreferenceId ? preference.id !== excludedPreferenceId : true) && (
-				(preference.startDate >= start && preference.startDate < end) ||
-				(preference.endDate >= start && preference.endDate < end) ||
-				(start >= preference.startDate && end <= preference.endDate));
+			if (excludedPreferenceId && preference.id === excludedPreferenceId) {
+				return false;
+			}
+			
+			if (
+				(!findEaseGuarding && preference.importance === PreferenceImportance.EASE_GUARDING) ||
+				(findEaseGuarding && preference.importance !== PreferenceImportance.EASE_GUARDING)
+			) {
+				return false;
+			}
+			
+			// Preferences may not have an end date, because they're permanent exemptions.
+			// We want to ignore them, because we only look at actual preferences submitted by user (or absences)
+			if (preference.endDate) {
+				return (
+					(preference.startDate >= start && preference.startDate < end) ||
+					(preference.endDate >= start && preference.endDate < end) ||
+					(start >= preference.startDate && end <= preference.endDate)
+				);
+			}
 		})
 	);
 	
@@ -269,7 +286,19 @@ export const usePreferencesCalendar = ({
 			}
 		},
 		selectAllow: (span: DateSpanApi): boolean => {
-			return span.start > addDays(new Date(), 1);
+			const existingPreference = getPreference({
+				datesSelection: {
+					start: span.start,
+					end: span.end,
+				},
+				findEaseGuarding: false,
+			});
+			
+			if (existingPreference) {
+				return false;
+			} else {
+				return span.start > addDays(new Date(), 1);
+			}
 		},
 		select: (arg: DateSelectArg) => {
 			setFloatingDialogData((prev) => ({
@@ -286,16 +315,16 @@ export const usePreferencesCalendar = ({
 				datesSelection: nextDatesSelection,
 			});
 			
-			if (preferenceInDateRange) {
-				setSelectedPreferenceId(preferenceInDateRange.id);
-				toast.error("כבר הוגשה הסתייגות בטווח התאריכים שנבחר");
-				setProposedEventDatesSelection(null);
-			} else {
-				setIsAddPreferenceDialogOpen(true);
-				setIsFloatingDialogShown(true);
+			// if (preferenceInDateRange) {
+			// 	// setSelectedPreferenceId(preferenceInDateRange.id);
+			// 	// toast.error("כבר הוגשה הסתייגות בטווח התאריכים שנבחר");
+			// 	// setProposedEventDatesSelection(null);
+			// } else {
+			setIsAddPreferenceDialogOpen(true);
+			setIsFloatingDialogShown(true);
 				
-				setProposedEventDatesSelection(nextDatesSelection);
-			}
+			setProposedEventDatesSelection(nextDatesSelection);
+			// }
 		},
 		eventClick: (arg: EventClickArg) => {
 			const preferenceId = arg.event.id;

@@ -10,6 +10,7 @@ export type DatesSelection = RangeSelection<Date>;
 export interface GetPreferenceParams {
 	datesSelection: DatesSelection;
 	excludedPreferenceId?: string;
+	findEaseGuarding?: boolean;
 }
 
 export interface PreferenceOperations<ReturnType> {

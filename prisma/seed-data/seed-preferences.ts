@@ -7,6 +7,15 @@ export const seedPreferences = [
 	{
 		id: createId(),
 		userId: seedUsers[0].id,
+		startDate: new Date(),
+		endDate: addDays(new Date(), 60),
+		reason: PreferenceReason.EXEMPTION,
+		description: "פטור משמירה בתנאי חשכה",
+		importance: PreferenceImportance.EASE_GUARDING,
+	},
+	{
+		id: createId(),
+		userId: seedUsers[0].id,
 		startDate: subDays(new Date(), 20),
 		endDate: null,
 		reason: PreferenceReason.EXEMPTION,
