@@ -1,7 +1,7 @@
-import { type FloatingDialogData } from "@/app/_components/floating-dialog";
-import { calcFloatingDialogXyOffsetsPx } from "@/app/_utils/calcFloatingDialogXyOffsetsPx";
-import { preferenceImportanceEmojis } from "@/app/user-dashboard/calendar/preferenceImportanceEmojis";
-import { preferenceReasonsEmojis } from "@/app/user-dashboard/calendar/preferenceReasonsEmojis";
+import { FloatingDialogData } from "@/app/_components/floating-dialog/floating-dialog";
+import { calcFloatingDialogLocation } from "@/app/_utils/floating-dialog-utils";
+import { preferenceImportanceEmojis } from "@/app/user-dashboard/calendar/preference-importance-emojis";
+import { preferenceReasonsEmojis } from "@/app/user-dashboard/calendar/preference-reasons-emojis";
 import { type DatesSelection, type GetPreferenceParams, type PreferenceOperations } from "@/app/user-dashboard/types";
 import { type DateSelectArg, type DateSpanApi, type DatesSetArg, type EventClickArg, type EventDropArg, type EventInput, type EventMountArg } from "@fullcalendar/core/index.js";
 import { type DateClickArg } from "@fullcalendar/interaction";
@@ -204,7 +204,7 @@ export const usePreferencesCalendar = ({
 			return {
 				...prev,
 				isShown: true,
-				...calcFloatingDialogXyOffsetsPx({
+				...calcFloatingDialogLocation({
 					rect,
 					dialogWidthPx: prev.widthPx,
 				}),

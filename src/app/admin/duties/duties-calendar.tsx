@@ -1,7 +1,6 @@
 "use client";
-"use client";
 
-import { type DutiesCalendarProps, useDutiesCalendar } from "@/app/admin/duties/useDutiesCalendar";
+import { type DutiesCalendarProps, useDutiesCalendar } from "@/app/admin/duties/use-duties-calendar";
 import heLocale from "@fullcalendar/core/locales/he";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";

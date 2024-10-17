@@ -1,4 +1,4 @@
-import { type FloatingDialogData } from "@/app/_components";
+import { type FloatingDialogData } from "@/app/_components/floating-dialog/floating-dialog";
 import { type DatesSelection } from "@/app/user-dashboard/types";
 import { type DutyWithAssignments } from "@/server/api/types/DutyWithAssignments";
 import { type DateSelectArg, type DatesSetArg, type EventInput } from "@fullcalendar/core/index.js";

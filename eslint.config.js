@@ -18,7 +18,7 @@ export default [
 		"plugins": {
 			"@stylistic": stylistic,
 			"@typescript-eslint": ts,
-			ts
+			ts,
 		},
 		"files": [
 			"**/*.ts",

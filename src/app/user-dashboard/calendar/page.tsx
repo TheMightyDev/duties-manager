@@ -1,4 +1,4 @@
-import { PreferencesCalendar } from "@/app/user-dashboard/calendar/PreferencesCalendar";
+import { PreferencesCalendar } from "@/app/user-dashboard/calendar/preferences-calendar";
 import { api } from "@/trpc/server";
 import { type Preference } from "@prisma/client";
 import { type NextPage } from "next";

@@ -1,9 +1,9 @@
 "use client";
 
-import { FloatingDialog } from "@/app/_components";
-import { AcceptCloseDialog } from "@/app/user-dashboard/calendar/AcceptCloseDialog";
+import { FloatingDialog } from "@/app/_components/floating-dialog/floating-dialog";
+import { AcceptCloseDialog } from "@/app/user-dashboard/calendar/accept-close-dialog";
 import { AddPreference, EditPreference } from "@/app/user-dashboard/calendar/floating-dialog-contents";
-import { type PreferencesCalendarProps, usePreferencesCalendar } from "@/app/user-dashboard/calendar/usePreferencesCalendar";
+import { type PreferencesCalendarProps, usePreferencesCalendar } from "@/app/user-dashboard/calendar/use-preferences-calendar";
 import heLocale from "@fullcalendar/core/locales/he";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";

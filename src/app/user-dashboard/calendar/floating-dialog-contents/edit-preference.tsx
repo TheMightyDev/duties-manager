@@ -1,6 +1,6 @@
 "use client";
 
-import { FloatingDialogClassicHeader } from "@/app/_components";
+import { FloatingDialogClassicHeader } from "@/app/_components/floating-dialog/helpers/classic-header";
 import { MIN_PREFERENCE_DETAILS_LENGTH } from "@/app/_utils/constants";
 import { type DatesSelection, type GetPreferenceParams, type PreferenceOperations } from "@/app/user-dashboard/types";
 import { PreferenceImportance, PreferenceReason, type Preference } from "@prisma/client";

@@ -1,4 +1,4 @@
-import { DutiesCalendar } from "@/app/admin/duties/DutiesCalendar";
+import { DutiesCalendar } from "@/app/admin/duties/duties-calendar";
 import { api } from "@/trpc/server";
 import { type NextPage } from "next";
 
