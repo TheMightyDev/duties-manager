@@ -6,6 +6,6 @@ export const preferenceImportanceEmojis = {
 	[PreferenceImportance.NORMAL_PRIORITY_NOT_TO]: "",
 	[PreferenceImportance.HIGH_PRIORITY_NOT_TO]: "⚠",
 	[PreferenceImportance.EASE_GUARDING]: "😌",
-	[PreferenceImportance.NO_GUARDING]: "☺",
-	[PreferenceImportance.ABSENT]: "⛵",
+	[PreferenceImportance.NO_GUARDING]: "",
+	[PreferenceImportance.NO_DUTIES]: "",
 } as const satisfies Record<PreferenceImportance, string>;

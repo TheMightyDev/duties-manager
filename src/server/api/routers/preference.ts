@@ -34,8 +34,8 @@ export const preferenceRouter = createTRPCRouter({
 			return ctx.db.preference.findMany({
 				where: {
 					userId,
-					importance: {
-						not: PreferenceImportance.NO_GUARDING,
+					endDate: {
+						not: null,
 					},
 				},
 			});
