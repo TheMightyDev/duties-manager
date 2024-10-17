@@ -1,9 +1,18 @@
 import { createId } from "@paralleldrive/cuid2";
 import { type Preference, PreferenceImportance, PreferenceReason } from "@prisma/client";
-import { add, addDays } from "date-fns";
+import { add, addDays, subDays } from "date-fns";
 import { seedUsers } from "prisma/seed-data/seed-users";
 
 export const seedPreferences = [
+	{
+		id: createId(),
+		userId: seedUsers[0].id,
+		startDate: subDays(new Date(), 20),
+		endDate: null,
+		reason: PreferenceReason.EXEMPTION,
+		description: "הת\"ש 7 רפואי",
+		importance: PreferenceImportance.NO_GUARDING,
+	},
 	{
 		id: createId(),
 		userId: seedUsers[0].id,
@@ -11,8 +20,9 @@ export const seedPreferences = [
 		endDate: addDays(new Date(), 25),
 		reason: PreferenceReason.VACATION,
 		description: "אני טס ליוון",
-		importance: PreferenceImportance.HIGH_PRIORITY,
+		importance: PreferenceImportance.HIGH_PRIORITY_NOT_TO,
 	},
+	
 	{
 		id: createId(),
 		userId: seedUsers[1].id,
@@ -35,7 +45,7 @@ export const seedPreferences = [
 		endDate: addDays(new Date(), 21),
 		reason: PreferenceReason.EDUCATION,
 		description: "יש לי מבחן באינפי",
-		importance: PreferenceImportance.NORMAL_PRIORITY,
+		importance: PreferenceImportance.NORMAL_PRIORITY_NOT_TO,
 	},
 	{
 		id: createId(),
@@ -62,7 +72,7 @@ export const seedPreferences = [
 		endDate: addDays(new Date(), 4),
 		reason: PreferenceReason.CELEBRATION,
 		description: "יש לי יום הולדת",
-		importance: PreferenceImportance.HIGH_PRIORITY,
+		importance: PreferenceImportance.HIGH_PRIORITY_NOT_TO,
 	},
 	{
 		id: createId(),
@@ -71,7 +81,7 @@ export const seedPreferences = [
 		endDate: addDays(new Date(), 20),
 		reason: PreferenceReason.FAMILY_EVENT,
 		description: "אזכרה של סבא",
-		importance: PreferenceImportance.NORMAL_PRIORITY,
+		importance: PreferenceImportance.NORMAL_PRIORITY_NOT_TO,
 	},
 	{
 		id: createId(),
@@ -80,7 +90,7 @@ export const seedPreferences = [
 		endDate: addDays(new Date(), 22),
 		reason: PreferenceReason.CELEBRATION,
 		description: "פסטיבל התמר",
-		importance: PreferenceImportance.HIGH_PRIORITY,
+		importance: PreferenceImportance.HIGH_PRIORITY_NOT_TO,
 	},
 	{
 		id: createId(),
@@ -89,6 +99,6 @@ export const seedPreferences = [
 		endDate: addDays(new Date(), 50),
 		reason: PreferenceReason.FAMILY_EVENT,
 		description: "מסיבת גיוס לאחותי",
-		importance: PreferenceImportance.NORMAL_PRIORITY,
+		importance: PreferenceImportance.NORMAL_PRIORITY_NOT_TO,
 	},
 ] as const satisfies Preference[];

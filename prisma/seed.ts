@@ -1,6 +1,7 @@
 import { seedAssignments } from "prisma/seed-data/seed-assignments";
 import { seedDuties } from "prisma/seed-data/seed-duties";
 import { seedOrganizations } from "prisma/seed-data/seed-organizations";
+import { seedPreferences } from "prisma/seed-data/seed-preferences";
 import { seedUsers } from "prisma/seed-data/seed-users";
 import { db } from "../src/server/db";
 
@@ -22,6 +23,11 @@ async function main() {
 	
 	await db.assignment.createMany({
 		data: seedAssignments,
+		skipDuplicates: true,
+	});
+	
+	await db.preference.createMany({
+		data: seedPreferences,
 		skipDuplicates: true,
 	});
 	
