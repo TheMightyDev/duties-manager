@@ -1,6 +1,6 @@
 import { type User, UserRole } from "@prisma/client";
 import { addDays, addMonths } from "date-fns";
-import { seedOrganizations } from "prisma/seedData/seedOrganizations";
+import { seedOrganizations } from "prisma/seed-data/seed-organizations";
 
 export const seedUsers = [
 	{
@@ -67,7 +67,7 @@ export const seedUsers = [
 		id: "user6",
 		firstName: "fred",
 		lastName: "funk",
-		email: "user6@example.com",		
+		email: "user6@example.com",
 		emailVerified: addMonths(new Date(), -1),
 		organizationId: seedOrganizations[0].id,
 		isAdmin: false,
@@ -79,7 +79,7 @@ export const seedUsers = [
 		id: "user7",
 		firstName: "gidi",
 		lastName: "garlic",
-		email: "user7@example.com",		
+		email: "user7@example.com",
 		emailVerified: addMonths(new Date(), -1),
 		organizationId: seedOrganizations[0].id,
 		isAdmin: false,
@@ -91,7 +91,7 @@ export const seedUsers = [
 		id: "user8",
 		firstName: "haji",
 		lastName: "hadad",
-		email: "user8@example.com",		
+		email: "user8@example.com",
 		emailVerified: addMonths(new Date(), -1),
 		organizationId: seedOrganizations[0].id,
 		isAdmin: false,

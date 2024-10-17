@@ -1,5 +1,5 @@
 import { type Duty, DutyKind, UserRole } from "@prisma/client";
-import { seedOrganizations } from "prisma/seedData/seedOrganizations";
+import { seedOrganizations } from "prisma/seed-data/seed-organizations";
 
 export const seedDuties = [
 	{

@@ -1,7 +1,7 @@
 import { createId } from "@paralleldrive/cuid2";
 import { type Preference, PreferenceImportance, PreferenceReason } from "@prisma/client";
 import { add, addDays } from "date-fns";
-import { seedUsers } from "prisma/seedData/seedUsers";
+import { seedUsers } from "prisma/seed-data/seed-users";
 
 export const seedPreferences = [
 	{

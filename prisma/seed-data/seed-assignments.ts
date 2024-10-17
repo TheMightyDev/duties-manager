@@ -1,7 +1,7 @@
 import { createId } from "@paralleldrive/cuid2";
 import { type Assignment } from "@prisma/client";
-import { seedDuties } from "prisma/seedData/seedDuties";
-import { seedUsers } from "prisma/seedData/seedUsers";
+import { seedDuties } from "prisma/seed-data/seed-duties";
+import { seedUsers } from "prisma/seed-data/seed-users";
 
 export const seedAssignments = [
 	{

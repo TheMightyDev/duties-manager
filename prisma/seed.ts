@@ -1,8 +1,8 @@
-import { seedDuties } from "prisma/seedData/seedDuties";
-import { seedOrganizations } from "prisma/seedData/seedOrganizations";
-import { seedUsers } from "prisma/seedData/seedUsers";
+import { seedAssignments } from "prisma/seed-data/seed-assignments";
+import { seedDuties } from "prisma/seed-data/seed-duties";
+import { seedOrganizations } from "prisma/seed-data/seed-organizations";
+import { seedUsers } from "prisma/seed-data/seed-users";
 import { db } from "../src/server/db";
-import { seedAssignments } from "prisma/seedData/seedAssignments";
 
 async function main() {
 	await db.organization.createMany({
@@ -10,7 +10,7 @@ async function main() {
 		skipDuplicates: true,
 	});
 	
-  await db.user.createMany({
+	await db.user.createMany({
 		data: seedUsers,
 		skipDuplicates: true,
 	});
@@ -29,11 +29,11 @@ async function main() {
 }
 
 main()
-  .then(async () => {
-    await db.$disconnect();
-  })
-  .catch(async (e) => {
-    console.error(e);
-    await db.$disconnect();
-    process.exit(1);
-  });
+	.then(async () => {
+		await db.$disconnect();
+	})
+	.catch(async (e) => {
+		console.error(e);
+		await db.$disconnect();
+		process.exit(1);
+	});

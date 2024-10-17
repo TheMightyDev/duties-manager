@@ -71,6 +71,11 @@ export const justiceRouter = createTRPCRouter({
 				};
 				
 				user.assignments.forEach((assignment) => {
+					// Users can switch roles, assignments might refer to older role, we ignore such assignments
+					if (assignment.duty.role !== user.role) {
+						return;
+					}
+					
 					const dutyKindForJustice = parseDutyKindForJustice(assignment.duty);
 					
 					if (dutyKindForJustice === DutyKindForJustice.WEEKDAY_GUARDING) {
