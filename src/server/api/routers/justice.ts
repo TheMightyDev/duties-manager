@@ -5,7 +5,6 @@ import {
 	publicProcedure
 } from "@/server/api/trpc";
 import { type UserJustice } from "@/server/api/types/user-justice";
-import { userWithAssignmentsInclude } from "@/server/api/types/user-with-assignments";
 import { type UserWithExemptionsAndAbsences, userWithExemptionsAndAbsencesInclude } from "@/server/api/types/user-with-exemptions-and-absences";
 import { DutyKind, type User, UserRole } from "@prisma/client";
 import { differenceInDays } from "date-fns";
@@ -82,12 +81,10 @@ export const justiceRouter = createTRPCRouter({
 	getUsersJustice: publicProcedure
 		.input(z.object({
 			roles: z.array(z.nativeEnum(UserRole)),
-			year: z.number(),
-			monthIndex: z.number().min(0).max(11),
+			definitiveDate: z.date().optional(),
 		}))
-		.query((async ({ ctx, input: { roles, year, monthIndex } }) => {
-			const firstDayInMonth = new Date(year, monthIndex, 1);
-			const lastDayInMonth = new Date(year, monthIndex + 1, 0, 59, 59, 999);
+		.query((async ({ ctx, input: { roles, definitiveDate: _definitiveDate } }) => {
+			const definitiveDate = _definitiveDate ?? new Date();
 			
 			const usersWithExemptionsAndAbsences = await ctx.db.user.findMany({
 				include: userWithExemptionsAndAbsencesInclude,
@@ -99,7 +96,28 @@ export const justiceRouter = createTRPCRouter({
 			});
 			
 			const usersWithAssignments = await ctx.db.user.findMany({
-				include: userWithAssignmentsInclude,
+				include: {
+					assignments: {
+						where: {
+							duty: {
+								startDate: {
+									lte: definitiveDate,
+								},
+							},
+						},
+						include: {
+							duty: {
+								select: {
+									kind: true,
+									role: true,
+									score: true,
+									startDate: true,
+									endDate: true,
+								},
+							},
+						},
+					},
+				},
 				where: {
 					role: {
 						in: roles,
@@ -111,7 +129,7 @@ export const justiceRouter = createTRPCRouter({
 				const monthsInRole = calcTotalMonthsInRole({
 					// There must be a user with the given ID, because the `where` clause is the same in all queries
 					userWithExemptionsAndAbsences: usersWithExemptionsAndAbsences.find((curr) => curr.id === user.id)!,
-					definitiveDate: new Date(),
+					definitiveDate,
 				});
 				
 				const userJustice: UserJustice = {
