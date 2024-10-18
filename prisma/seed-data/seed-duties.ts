@@ -46,4 +46,15 @@ export const seedDuties = [
 		score: 1,
 		description: null,
 	},
+	{
+		id: "duty5",
+		organizationId: seedOrganizations[0].id,
+		kind: DutyKind.GUARDING,
+		startDate: new Date(Date.UTC(2024, 10, 26, 10, 0)),
+		endDate: new Date(Date.UTC(2024, 10, 29, 10, 0)),
+		role: UserRole.SQUAD,
+		quantity: 2,
+		score: 1,
+		description: null,
+	},
 ] as const satisfies Duty[];

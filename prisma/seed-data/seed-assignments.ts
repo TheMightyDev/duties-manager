@@ -46,4 +46,16 @@ export const seedAssignments = [
 		userId: seedUsers[5].id,
 		reserveId: seedUsers[4].id,
 	},
+	{
+		id: createId(),
+		dutyId: seedDuties[4].id,
+		userId: seedUsers[0].id,
+		reserveId: seedUsers[2].id,
+	},
+	{
+		id: createId(),
+		dutyId: seedDuties[4].id,
+		userId: seedUsers[1].id,
+		reserveId: seedUsers[3].id,
+	},
 ] as const satisfies Assignment[];
