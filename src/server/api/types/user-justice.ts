@@ -1,6 +1,8 @@
 export interface UserJustice {
 	userId: string;
-	/** The number of months the user is in the role (excluding absences).
+	userFullName: string;
+	/** The number of months the user is in the role
+	 * (excluding absences and exemptions that exempt from guarding).
 	 * Can be a floating point number.
 	 */
 	monthsInRole: number;

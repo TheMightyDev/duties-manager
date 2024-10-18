@@ -148,6 +148,7 @@ export const justiceRouter = createTRPCRouter({
 				
 				const userJustice: UserJustice = {
 					userId: user.id,
+					userFullName: user.firstName + " " + user.lastName,
 					monthsInRole,
 					weekdaysGuardingCount: 0,
 					weekendsGuardingCount: 0,
