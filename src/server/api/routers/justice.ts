@@ -5,8 +5,8 @@ import {
 	publicProcedure
 } from "@/server/api/trpc";
 import { type UserJustice } from "@/server/api/types/user-justice";
-import { type UserWithExemptionsAndAbsences, userWithExemptionsAndAbsencesInclude } from "@/server/api/types/user-with-exemptions-and-absences";
-import { DutyKind, type User, UserRole } from "@prisma/client";
+import { type UserWithExemptionsAndAbsences } from "@/server/api/types/user-with-exemptions-and-absences";
+import { DutyKind, PreferenceImportance, PreferenceReason, type User, UserRole } from "@prisma/client";
 import { differenceInDays } from "date-fns";
 
 enum DutyKindForJustice {
@@ -86,17 +86,26 @@ export const justiceRouter = createTRPCRouter({
 		.query((async ({ ctx, input: { roles, definitiveDate: _definitiveDate } }) => {
 			const definitiveDate = _definitiveDate ?? new Date();
 			
-			const usersWithExemptionsAndAbsences = await ctx.db.user.findMany({
-				include: userWithExemptionsAndAbsencesInclude,
-				where: {
-					role: {
-						in: roles,
-					},
-				},
-			});
-			
-			const usersWithAssignments = await ctx.db.user.findMany({
+			const relevantUsers = await ctx.db.user.findMany({
 				include: {
+					preferences: {
+						where: {
+							OR: [
+								{
+									reason: PreferenceReason.EXEMPTION,
+									importance: {
+										in: [ PreferenceImportance.NO_GUARDING, PreferenceImportance.NO_DUTIES ],
+									},
+									endDate: {
+										not: null,
+									},
+								},
+								{
+									reason: PreferenceReason.ABSENCE,
+								},
+							],
+						},
+					},
 					assignments: {
 						where: {
 							duty: {
@@ -122,13 +131,18 @@ export const justiceRouter = createTRPCRouter({
 					role: {
 						in: roles,
 					},
+					roleStartDate: {
+						lte: definitiveDate,
+					},
+					retireDate: {
+						gte: definitiveDate,
+					},
 				},
 			});
 			
-			const usersJustices = usersWithAssignments.map<UserJustice>((user) => {
+			const usersJustices = relevantUsers.map<UserJustice>((user) => {
 				const monthsInRole = calcTotalMonthsInRole({
-					// There must be a user with the given ID, because the `where` clause is the same in all queries
-					userWithExemptionsAndAbsences: usersWithExemptionsAndAbsences.find((curr) => curr.id === user.id)!,
+					userWithExemptionsAndAbsences: user,
 					definitiveDate,
 				});
 				
