@@ -2,14 +2,12 @@ import SideNav from "@/app/_components/side-nav/side-nav";
 
 export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
 	return (
-		<div className="flex flex-col w-full md:flex-row">
-			{/* <div className="w-64 [height:100vh] me-4 md:block hidden"> */}
+		<div className="flex w-full flex-col md:flex-row">
 			<SideNav />
-			{/* </div> */}
-			<main className="flex-auto">
+			<main className="flex-auto pb-16 md:pb-0">
 				{children}
 			</main>
-			<div className="[width:100vw] bg-slate-300 me-4 md:hidden block fixed bottom-0 h-16">
+			<div className="fixed bottom-0 me-4 block h-16 w-screen bg-slate-300 md:hidden">
 				
 			</div>
 		</div>
