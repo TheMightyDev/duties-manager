@@ -1,13 +1,12 @@
-import { z } from "zod";
-
+import { type UserJustice } from "@/app/_types/justice/user-justice";
 import {
 	createTRPCRouter,
 	publicProcedure
 } from "@/server/api/trpc";
-import { type UserJustice } from "@/server/api/types/user-justice";
 import { type UserWithExemptionsAndAbsences } from "@/server/api/types/user-with-exemptions-and-absences";
 import { DutyKind, PreferenceImportance, PreferenceReason, type User, UserRole } from "@prisma/client";
 import { differenceInDays } from "date-fns";
+import { z } from "zod";
 
 enum DutyKindForJustice {
 	WEEKDAY_GUARDING,
@@ -79,11 +78,24 @@ function calcTotalMonthsInRole({
 export const justiceRouter = createTRPCRouter({
 	/** Returns all duties that either start or the end on the input month */
 	getUsersJustice: publicProcedure
-		.input(z.object({
-			roles: z.array(z.nativeEnum(UserRole)),
-			definitiveDate: z.date().optional(),
-		}))
-		.query((async ({ ctx, input: { roles, definitiveDate: _definitiveDate } }) => {
+		.input(z
+			.object({
+				roles: z.array(z.nativeEnum(UserRole)),
+				userIds: z.array(z.string()),
+				definitiveDate: z.date().optional(),
+			})
+			.partial()
+			.refine(
+				(data) => (Boolean(data.roles) || Boolean(data.userIds)) && !(Boolean(data.roles) && Boolean(data.userIds)),
+				"Either roles or userIds should be filled in."
+			))
+		.query((async ({
+			ctx, input: {
+				roles,
+				userIds,
+				definitiveDate: _definitiveDate,
+			},
+		}) => {
 			const definitiveDate = _definitiveDate ?? new Date();
 			
 			const relevantUsers = await ctx.db.user.findMany({
@@ -128,9 +140,18 @@ export const justiceRouter = createTRPCRouter({
 					},
 				},
 				where: {
-					role: {
-						in: roles,
-					},
+					OR: [
+						{
+							role: {
+								in: roles,
+							},
+						},
+						{
+							id: {
+								in: userIds,
+							},
+						},
+					],
 					roleStartDate: {
 						lte: definitiveDate,
 					},

@@ -25,6 +25,19 @@ export const possibleAssignmentsRouter = createTRPCRouter({
 			const relevantUsers = await ctx.db.user.findMany({
 				where: {
 					role: requiredRole,
+					// A user cannot be assigned to a duty if they're assigned to a duty during the desired duty
+					assignments: {
+						none: {
+							duty: {
+								startDate: {
+									lte: dutyEndDate,
+								},
+								endDate: {
+									gte: dutyStartDate,
+								},
+							},
+						},
+					},
 					// All preferences must not overlap with the duty, unless
 					// it's a preference that eases guarding
 					preferences: {
@@ -49,6 +62,66 @@ export const possibleAssignmentsRouter = createTRPCRouter({
 					},
 					retireDate: {
 						gte: dutyEndDate,
+					},
+				},
+			});
+			
+			return relevantUsers;
+		})),
+	
+	getPossibleAssigneesToDutyById: publicProcedure
+		.input(z.string())
+		.query((async ({ ctx, input: dutyId }) => {
+			const duty = await ctx.db.duty.findFirst({
+				where: {
+					id: dutyId,
+				},
+			});
+			
+			if (!duty) {
+				throw new Error(`There's no duty with the given ID (${dutyId})`);
+			}
+			
+			const relevantUsers = await ctx.db.user.findMany({
+				where: {
+					role: duty.role,
+					// A user cannot be assigned to a duty if they're assigned to a duty during the desired duty
+					assignments: {
+						none: {
+							duty: {
+								startDate: {
+									lte: duty.endDate,
+								},
+								endDate: {
+									gte: duty.startDate,
+								},
+							},
+						},
+					},
+					// All preferences must not overlap with the duty, unless
+					// it's a preference that eases guarding
+					preferences: {
+						none: {
+							startDate: {
+								lte: duty.endDate,
+							},
+							endDate: {
+								gte: duty.startDate,
+							},
+							AND: [
+								{
+									importance: {
+										not: PreferenceImportance.EASE_GUARDING,
+									},
+								},
+							],
+						},
+					},
+					roleStartDate: {
+						lte: duty.startDate,
+					},
+					retireDate: {
+						gte: duty.endDate,
 					},
 				},
 			});

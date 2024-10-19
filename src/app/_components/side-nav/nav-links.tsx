@@ -15,8 +15,8 @@ const links = [
 		href: "/user-dashboard/justice",
 	},
 	{
-		name: "בקשות החלפה",
-		href: "/dashboard/customers",
+		name: "הפרופיל שלי",
+		href: "/user-dashboard/my-profile",
 	},
 ];
 

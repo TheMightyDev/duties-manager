@@ -1,8 +1,9 @@
 "use client";
 
+import { UserJusticeSortBy } from "@/app/_utils/justice/sort-users-justice";
 import { JusticeTableDesktop } from "@/app/user-dashboard/justice/justice-table-desktop";
 import { JusticeTableMobile } from "@/app/user-dashboard/justice/justice-table-mobile";
-import { UserJusticeSortBy, type FetchUsersJusticeFunc } from "@/app/user-dashboard/justice/types";
+import { type FetchUsersJusticeFunc } from "@/app/user-dashboard/justice/types";
 import { useJusticeOverview } from "@/app/user-dashboard/justice/use-justice-overview";
 
 interface JusticeOverviewProps {

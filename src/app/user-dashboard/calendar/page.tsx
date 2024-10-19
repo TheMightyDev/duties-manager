@@ -48,11 +48,18 @@ const UserDashboardPage: NextPage = async () => {
 	async function fetchPossibleAssignees() {
 		"use server";
 		
-		return await api.possibleAssignments.getPossibleAssignees({
+		const possibleAssignees = await api.possibleAssignments.getPossibleAssignees({
 			dutyStartDate: new Date(2024, 10, 7),
 			dutyEndDate: new Date(2024, 10, 10),
 			requiredRole: UserRole.SQUAD,
 		});
+		
+		const possibleAssigneesJustice = await api.justice.getUsersJustice({
+			definitiveDate: new Date(),
+			userIds: possibleAssignees.map((possibility) => possibility.id),
+		});
+		
+		return possibleAssigneesJustice;
 	}
 	
 	return (

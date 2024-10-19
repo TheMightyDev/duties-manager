@@ -1,5 +1,6 @@
-import { type FetchUsersJusticeFunc, type FetchUsersJusticeParams, type SortUsersJusticeParams, UserJusticeSortBy, type UsersJusticeCompareFn } from "@/app/user-dashboard/justice/types";
-import { type UserJustice } from "@/server/api/types/user-justice";
+import { type UserJustice } from "@/app/_types/justice/user-justice";
+import { sortUsersJustice, type SortUsersJusticeParams, UserJusticeSortBy } from "@/app/_utils/justice/sort-users-justice";
+import { type FetchUsersJusticeFunc, type FetchUsersJusticeParams } from "@/app/user-dashboard/justice/types";
 import { UserRole } from "@prisma/client";
 import { type ChangeEvent, type Dispatch, type SetStateAction, useEffect, useState } from "react";
 
@@ -13,22 +14,6 @@ interface Return {
 	usersJusticeSorted: UserJustice[];
 	handleSortByChange: (e: ChangeEvent<HTMLSelectElement>) => void;
 	handleShouldSortAscendingChange: (e: ChangeEvent<HTMLInputElement>) => void;
-}
-
-function getUsersJusticeCompareFn({
-	sortBy,
-	ascending,
-}: SortUsersJusticeParams): UsersJusticeCompareFn {
-	switch (sortBy) {
-		case UserJusticeSortBy.WeightedScore:
-			return (a: UserJustice, b: UserJustice) => (b.weightedScore - a.weightedScore) * (ascending ? -1 : 1);
-		case UserJusticeSortBy.FullName:
-			return (a: UserJustice, b: UserJustice) => (b.userFullName > a.userFullName ? 1 : -1) * (ascending ? -1 : 1);
-		case UserJusticeSortBy.TotalMonthsInRole:
-			return (a: UserJustice, b: UserJustice) => (b.monthsInRole - a.monthsInRole) * (ascending ? -1 : 1);
-		default:
-			return (_a: UserJustice, _b: UserJustice) => 1;
-	}
 }
 
 export function useJusticeOverview({ fetchUsersJustice }: Params): Return {
@@ -55,12 +40,13 @@ export function useJusticeOverview({ fetchUsersJustice }: Params): Return {
 	}: SortUsersJusticeParams & {
 		usersJusticeUnsorted: UserJustice[];
 	}) {
-		const compareFn = getUsersJusticeCompareFn({
+		const sortedUsersJustice = sortUsersJustice({
 			sortBy,
 			ascending,
+			usersJustice: usersJusticeUnsorted,
 		});
 		
-		setUsersJusticeSorted(usersJusticeUnsorted.sort(compareFn));
+		setUsersJusticeSorted(sortedUsersJustice);
 	}
 	
 	function fetchAndSortUsersJustice() {
