@@ -61,6 +61,7 @@ export const PreferencesCalendar: React.FC<PreferencesCalendarProps> = ({
 			<h2 className="text-3xl font-bold">hey</h2>
 			<FullCalendar
 				events={fcEvents}
+				timeZone="UTC"
 				
 				showNonCurrentDates={false}
 				nextDayThreshold="11:00:00"
