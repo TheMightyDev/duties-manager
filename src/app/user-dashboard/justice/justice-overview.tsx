@@ -1,5 +1,6 @@
 "use client";
 
+import { JusticeTableMobile } from "@/app/user-dashboard/justice/justice-table-mobile";
 import { UserJusticeSortBy, type FetchUsersJusticeFunc } from "@/app/user-dashboard/justice/types";
 import { useJusticeOverview } from "@/app/user-dashboard/justice/use-justice-overview";
 
@@ -16,10 +17,6 @@ export function JusticeOverview({ fetchUsersJustice }: JusticeOverviewProps) {
 		fetchUsersJustice,
 	});
 	
-	Object.entries(UserJusticeSortBy).forEach(([ t, s ]) => {
-		console.log("t", t, "s", s);
-	});
-		
 	return (
 		<>
 			<p>
@@ -44,6 +41,7 @@ export function JusticeOverview({ fetchUsersJustice }: JusticeOverviewProps) {
 					}
 				</select>
 			</p>
+			<JusticeTableMobile usersJusticeSorted={usersJusticeSorted} />
 			<pre dir="ltr">
 				{ JSON.stringify(usersJusticeSorted, null, 2) }
 			</pre>
