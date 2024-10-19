@@ -1,5 +1,6 @@
 "use client";
 
+import { JusticeTableDesktop } from "@/app/user-dashboard/justice/justice-table-desktop";
 import { JusticeTableMobile } from "@/app/user-dashboard/justice/justice-table-mobile";
 import { UserJusticeSortBy, type FetchUsersJusticeFunc } from "@/app/user-dashboard/justice/types";
 import { useJusticeOverview } from "@/app/user-dashboard/justice/use-justice-overview";
@@ -41,7 +42,12 @@ export function JusticeOverview({ fetchUsersJustice }: JusticeOverviewProps) {
 					}
 				</select>
 			</p>
-			<JusticeTableMobile usersJusticeSorted={usersJusticeSorted} />
+			<div className="hidden md:block">
+				<JusticeTableDesktop usersJusticeSorted={usersJusticeSorted} />
+			</div>
+			<div className="block md:hidden">
+				<JusticeTableMobile usersJusticeSorted={usersJusticeSorted} />
+			</div>
 			<pre dir="ltr">
 				{ JSON.stringify(usersJusticeSorted, null, 2) }
 			</pre>

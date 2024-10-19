@@ -73,7 +73,7 @@ function calcTotalMonthsInRole({
 	
 	const totalMonthsInRole = (totalDaysSinceRoleStart - totalDaysMissing) / 30;
 	
-	return totalMonthsInRole;
+	return Number(totalMonthsInRole.toFixed(2));
 }
 
 export const justiceRouter = createTRPCRouter({
