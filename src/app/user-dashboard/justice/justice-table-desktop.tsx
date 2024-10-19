@@ -1,11 +1,10 @@
-import { type UserJustice } from "@/server/api/types/user-justice";
-import React from "react";
+import { type UserJustice } from "@/app/_types/justice/user-justice";
 
 interface JusticeTableDesktopProps {
 	usersJusticeSorted: UserJustice[];
 }
 
-export const JusticeTableDesktop: React.FC<JusticeTableDesktopProps> = ({ usersJusticeSorted }) => {
+export function JusticeTableDesktop({ usersJusticeSorted }: JusticeTableDesktopProps) {
 	return (
 		<>
 			<table>

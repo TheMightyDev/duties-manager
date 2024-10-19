@@ -1,10 +1,9 @@
 import { PreferencesCalendar } from "@/app/user-dashboard/calendar/preferences-calendar";
 import { api } from "@/trpc/server";
 import { UserRole, type Preference } from "@prisma/client";
-import { type NextPage } from "next";
 import { seedUsers } from "prisma/seed-data/seed-users";
 
-const UserDashboardPage: NextPage = async () => {
+export default async function UserDashboardPage() {
 	const fetchPreferences = async ({ userId }: {
 		userId: string;
 	}) => {
@@ -77,5 +76,3 @@ const UserDashboardPage: NextPage = async () => {
 		</>
 	);
 };
-
-export default UserDashboardPage;

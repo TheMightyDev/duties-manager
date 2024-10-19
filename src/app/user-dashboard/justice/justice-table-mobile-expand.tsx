@@ -1,12 +1,11 @@
+import { type UserJustice } from "@/app/_types/justice/user-justice";
 import { ExpandViewInfoBox } from "@/app/user-dashboard/justice/expand-view-info-box";
-import { type UserJustice } from "@/server/api/types/user-justice";
-import React from "react";
 
 interface JusticeTableMobileExpandProps {
 	userJustice: UserJustice;
 }
 
-export const JusticeTableMobileExpand: React.FC<JusticeTableMobileExpandProps> = ({ userJustice }) => {
+export function JusticeTableMobileExpand({ userJustice }: JusticeTableMobileExpandProps) {
 	const {
 		monthsInRole,
 		weekdaysGuardingCount,

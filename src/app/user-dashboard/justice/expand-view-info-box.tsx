@@ -1,15 +1,14 @@
 import clsx from "clsx";
-import React from "react";
 
 interface ExpandViewInfoBoxProps {
 	value: number | string;
 	title: string;
 }
 
-export const ExpandViewInfoBox: React.FC<ExpandViewInfoBoxProps> = ({
+export function ExpandViewInfoBox({
 	value,
 	title,
-}) => {
+}: ExpandViewInfoBoxProps) {
 	return (
 		<div className={clsx(
 			"flex flex-col items-center text-center",

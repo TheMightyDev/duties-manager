@@ -8,12 +8,12 @@ interface AcceptCloseDialogProps {
 	children?: React.ReactNode;
 }
 
-export const AcceptCloseDialog: React.FC<AcceptCloseDialogProps> = ({
+export function AcceptCloseDialog({
 	isOpen,
 	actionButtonText,
 	cancelButtonText,
 	children,
-}) => {
+}: AcceptCloseDialogProps) {
 	return (
 		<>
 			<div

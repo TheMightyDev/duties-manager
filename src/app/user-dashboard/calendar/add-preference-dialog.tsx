@@ -23,7 +23,7 @@ interface AddPreferenceDialogProps extends PreferenceOperations<void> {
 	closeDialog: () => void;
 }
 
-export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
+export function AddPreferenceDialog({
 	mode,
 	isOpen,
 	userId,
@@ -36,7 +36,7 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 	deletePreference,
 	updatePreference,
 	closeDialog,
-}) => {
+}: AddPreferenceDialogProps) {
 	const inputRefs = {
 		reason: React.useRef<HTMLSelectElement>(null),
 		importance: React.useRef<HTMLSelectElement>(null),
@@ -141,7 +141,7 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 			inputRefs.description.current!.value = selectedPreference.description;
 		} else {
 			inputRefs.reason.current!.value = PreferenceReason.VACATION;
-			inputRefs.importance.current!.value = PreferenceImportance.NORMAL_PRIORITY;
+			inputRefs.importance.current!.value = PreferenceImportance.NORMAL_PRIORITY_NOT_TO;
 			inputRefs.description.current!.value = "";
 		}
 	}, [ isOpen ]);
@@ -154,7 +154,8 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 					<div>
 						<label
 							htmlFor="preference-start-date"
-							className="block">
+							className="block"
+						>
 							החל מ
 						</label>
 						<input
@@ -163,12 +164,14 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 							className="text-black"
 							value={format(datesSelection.start, "yyyy-MM-dd")}
 							onChange={startDateChangeHandler}
-							required/>
+							required
+						/>
 					</div>
 					<div>
 						<label
 							htmlFor="preference-end-date"
-							className="block">
+							className="block"
+						>
 							עד
 						</label>
 						<input
@@ -177,7 +180,8 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 							className="text-black"
 							value={format(datesSelection.end, "yyyy-MM-dd")}
 							onChange={endDateChangeHandler}
-							required/>
+							required
+						/>
 					</div>
 				</div>
 				{
@@ -195,17 +199,20 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 					<div>
 						<label
 							htmlFor="preference-reason-select"
-							className="block">סיבה</label>
+							className="block"
+						>סיבה</label>
 						<select
 							name="preference-reason"
 							id="preference-reason-select"
-							ref={inputRefs.reason}>
+							ref={inputRefs.reason}
+						>
 							{
 								Object.keys(PreferenceReason).map((reason) => (
 									<option
 										value={reason}
 										key={`preference-reason-option-${reason}`}
-										className="bg-red-300">
+										className="bg-red-300"
+									>
 										{reason}
 									</option>
 								))
@@ -215,20 +222,23 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 					<div>
 						<label
 							htmlFor="preference-importance-select"
-							className="block">
+							className="block"
+						>
 							רמת חשיבות
 						</label>
 						<select
 							name="preference-importance"
 							id="preference-importance-select"
-							ref={inputRefs.importance}>
+							ref={inputRefs.importance}
+						>
 							{
 								Object.keys(PreferenceImportance).map((importance) => (
 								// Only the admin can declare that someone is temporarily absent from doing duties
-									importance !== PreferenceImportance.ABSENT &&
+									importance !== PreferenceImportance.NO_DUTIES &&
 									<option
 										value={importance}
-										key={`preference-importance-option-${importance}`}>
+										key={`preference-importance-option-${importance}`}
+									>
 										{importance}
 									</option>
 								))
@@ -244,20 +254,23 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 						id="preference-description"
 						maxLength={40}
 						ref={inputRefs.description}
-						className="resize-none rounded-xl border-2 border-black" />
+						className="resize-none rounded-xl border-2 border-black"
+					/>
 				</div>
 				<div className="absolute bottom-1 end-1">
 					{
 						mode === AddPreferenceDialogMode.EDIT &&
 						<button
 							onClick={handleDelete}
-							className="btn btn-green">
+							className="btn btn-green"
+						>
 							מחיקה
 						</button>
 					}
 					<button
 						onClick={handleCancel}
-						className="btn btn-purple">
+						className="btn btn-purple"
+					>
 						ביטול
 					</button>
 					{
@@ -266,7 +279,8 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 							type="submit"
 							disabled={preference}
 							onClick={handleCreateSubmit}
-							className="btn btn-purple">
+							className="btn btn-purple"
+						>
 							הגשת הסתייגות
 						</button>
 					}
@@ -276,7 +290,8 @@ export const AddPreferenceDialog: React.FC<AddPreferenceDialogProps> = ({
 							type="submit"
 							disabled={preference}
 							onClick={handleUpdateSubmit}
-							className="btn btn-purple">
+							className="btn btn-purple"
+						>
 							החלת השינויים
 						</button>
 					}

@@ -1,13 +1,15 @@
-export const calcFloatingDialogLocation = ({
+interface XyOffsets {
+	xOffsetPx: number;
+	yOffsetPx: number;
+}
+
+export function calcFloatingDialogLocation({
 	rect,
 	dialogWidthPx,
 }: {
 	rect: DOMRect;
 	dialogWidthPx: number;
-}): {
-	xOffsetPx: number;
-	yOffsetPx: number;
-} => {
+}): XyOffsets {
 	// Note that `x` and `y` are the coordinates of the top-left corner
 	// By default the dialog opens to the left of the event
 	// to adapt to the natural flow of RTL

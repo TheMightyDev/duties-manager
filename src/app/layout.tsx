@@ -19,7 +19,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 		<html
 			lang="he"
 			dir="rtl"
-			className={`${GeistSans.variable}`}>
+			className={`${GeistSans.variable}`}
+		>
 			<body>
 				<TRPCReactProvider>{children}</TRPCReactProvider>
 			</body>

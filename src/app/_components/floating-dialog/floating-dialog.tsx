@@ -14,13 +14,13 @@ interface FloatingDialogProps extends FloatingDialogData {
 	children?: React.ReactNode;
 }
 
-export const FloatingDialog: React.FC<FloatingDialogProps> = ({
+export function FloatingDialog({
 	isShown,
 	widthPx,
 	xOffsetPx,
 	yOffsetPx,
 	children,
-}) => {
+}: FloatingDialogProps) {
 	const isOnMobile = document.documentElement.clientWidth < 700;
 
 	return (

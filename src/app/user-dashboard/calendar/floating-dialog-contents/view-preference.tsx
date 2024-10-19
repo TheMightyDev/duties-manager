@@ -2,17 +2,16 @@
 
 import { FloatingDialogClassicHeader } from "@/app/_components/floating-dialog/helpers/classic-header";
 import { type Preference } from "@prisma/client";
-import React from "react";
 
 interface ViewPreferenceProps {
 	preference: Preference;
 	closeDialog: () => void;
 }
 
-export const ViewPreference: React.FC<ViewPreferenceProps> = ({
+export function ViewPreference({
 	preference,
 	closeDialog,
-}) => {
+}: ViewPreferenceProps) {
 	const {
 		description,
 		startDate,

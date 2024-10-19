@@ -7,7 +7,7 @@ import { type DateSelectArg, type DateSpanApi, type DatesSetArg, type EventClick
 import { type DateClickArg } from "@fullcalendar/interaction";
 import { type Preference, PreferenceImportance, PreferenceReason } from "@prisma/client";
 import { add, addDays, addMinutes, subMinutes } from "date-fns";
-import React from "react";
+import React, { type ChangeEvent } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useImmer } from "use-immer";
@@ -57,13 +57,13 @@ interface Return {
 	handleUserIdChange: React.ChangeEventHandler<HTMLInputElement>;
 }
 
-export const usePreferencesCalendar = ({
+export function usePreferencesCalendar({
 	initialPreferences,
 	fetchPreferences,
 	createPreference,
 	updatePreference,
 	deletePreference,
-}: Params): Return => {
+}: Params): Return {
 	/**
 	 * Mirrors the current preferences in the DB. Updated to avoid refetching after every operation.
 	 * We use `useImmer` because it eases updating the array by not creating an entirely new array on each manipulation
@@ -136,12 +136,12 @@ export const usePreferencesCalendar = ({
 		}
 	}, [ preferencesFormattedForEvent, proposedEventDatesSelection ]);
 	
-	const getPreference = ({
+	function getPreference({
 		datesSelection: { start, end },
 		excludedPreferenceId,
 		findEaseGuarding = false,
-	}: GetPreferenceParams): Preference | undefined => (
-		preferences.find((preference) => {
+	}: GetPreferenceParams): Preference | undefined {
+		return preferences.find((preference) => {
 			if (excludedPreferenceId && preference.id === excludedPreferenceId) {
 				return false;
 			}
@@ -162,8 +162,8 @@ export const usePreferencesCalendar = ({
 					(start >= preference.startDate && end <= preference.endDate)
 				);
 			}
-		})
-	);
+		});
+	}
 	
 	const preferenceOperationsWrappers: PreferenceOperations<void> = {
 		createPreference: (newPreference: Preference) => {
@@ -219,9 +219,9 @@ export const usePreferencesCalendar = ({
 		},
 	};
 	
-	const openFloatingDialog = ({ rect }: {
+	function openFloatingDialog({ rect }: {
 		rect: DOMRect;
-	}) => {
+	}) {
 		setFloatingDialogData((prev) => {
 			return {
 				...prev,
@@ -236,7 +236,7 @@ export const usePreferencesCalendar = ({
 	
 	const selectedPreference = preferences.find((preference) => preference.id === selectedPreferenceId);
 	
-	const setIsFloatingDialogShown = (nextIsShown: boolean) => {
+	function setIsFloatingDialogShown(nextIsShown: boolean) {
 		setFloatingDialogData((prev) => ({
 			...prev,
 			isShown: nextIsShown,
@@ -244,13 +244,13 @@ export const usePreferencesCalendar = ({
 		setProposedEventDatesSelection(null);
 	};
 		
-	const closeAddPreference = () => {
+	function closeAddPreference() {
 		setIsAddPreferenceDialogOpen(false);
 		setProposedEventDatesSelection(null);
 		setIsFloatingDialogShown(false);
 	};
 	
-	const handleUserIdChange: React.ChangeEventHandler<HTMLInputElement> = (event) => {
+	function handleUserIdChange(event: ChangeEvent<HTMLInputElement>) {
 		const nextUserId = "user" + event.target.value;
 		setSelectedUserId(nextUserId);
 		

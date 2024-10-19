@@ -5,13 +5,12 @@ import heLocale from "@fullcalendar/core/locales/he";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import FullCalendar from "@fullcalendar/react";
-import React from "react";
 import "react-toastify/dist/ReactToastify.css";
 
-export const DutiesCalendar: React.FC<DutiesCalendarProps> = ({
+export function DutiesCalendar({
 	initialDutiesWithAssignments,
 	fetchDutiesOnMonth,
-}) => {
+}: DutiesCalendarProps) {
 	const {
 		calendarRef,
 		fcEvents,

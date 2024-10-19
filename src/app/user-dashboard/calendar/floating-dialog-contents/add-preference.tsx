@@ -18,7 +18,7 @@ interface AddPreferenceProps extends PreferenceOperations<void> {
 	closeDialog: () => void;
 }
 
-export const AddPreference: React.FC<AddPreferenceProps> = ({
+export function AddPreference({
 	isOpen,
 	userId,
 	datesSelection,
@@ -27,7 +27,7 @@ export const AddPreference: React.FC<AddPreferenceProps> = ({
 	getPreference,
 	createPreference,
 	closeDialog,
-}) => {
+}: AddPreferenceProps) {
 	// Description gets a state because you can't submit a preference without a description.
 	// For performance reasons we update the reason only on blur (when the input loses focus)
 	const [ description, setDescription ] = useState<string>("");

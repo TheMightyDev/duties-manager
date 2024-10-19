@@ -14,14 +14,14 @@ interface EditPreferenceProps extends PreferenceOperations<void> {
 	closeDialog: () => void;
 }
 
-export const EditPreference: React.FC<EditPreferenceProps> = ({
+export function EditPreference({
 	preference,
 	
 	getPreference,
 	updatePreference,
 	deletePreference,
 	closeDialog,
-}) => {
+}: EditPreferenceProps) {
 	const [ datesSelection, setDatesSelection ] = React.useState<DatesSelection>({
 		start: preference.startDate,
 		end: preference.endDate,

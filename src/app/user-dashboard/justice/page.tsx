@@ -1,9 +1,8 @@
 import { JusticeOverview } from "@/app/user-dashboard/justice/justice-overview";
 import { type FetchUsersJusticeParams } from "@/app/user-dashboard/justice/types";
 import { api } from "@/trpc/server";
-import { type NextPage } from "next";
 
-const JusticePage: NextPage = async () => {
+export default async function JusticePage() {
 	async function fetchUsersJustice({
 		roles,
 		definitiveDate,
@@ -22,5 +21,3 @@ const JusticePage: NextPage = async () => {
 		</>
 	);
 };
-
-export default JusticePage;

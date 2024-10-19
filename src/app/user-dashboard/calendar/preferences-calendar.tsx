@@ -11,17 +11,16 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import FullCalendar from "@fullcalendar/react";
 import { PreferenceReason } from "@prisma/client";
-import React from "react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export const PreferencesCalendar: React.FC<PreferencesCalendarProps> = ({
+export function PreferencesCalendar({
 	initialPreferences,
 	fetchPreferences,
 	createPreference,
 	deletePreference,
 	updatePreference,
-}) => {
+}: PreferencesCalendarProps) {
 	const {
 		fcEvents,
 		fcEventHandlers,

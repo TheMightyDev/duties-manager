@@ -1,10 +1,9 @@
-import React from "react";
 
 interface FloatingDialogClassicHeader {
 	handleClose: () => void;
 }
 
-export const FloatingDialogClassicHeader: React.FC<FloatingDialogClassicHeader> = ({ handleClose }) => {
+export function FloatingDialogClassicHeader({ handleClose }: FloatingDialogClassicHeader) {
 	return (
 		<header className="flex justify-end p-0 md:rounded-t-xl ">
 			<button

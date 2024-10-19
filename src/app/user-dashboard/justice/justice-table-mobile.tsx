@@ -1,12 +1,11 @@
+import { type UserJustice } from "@/app/_types/justice/user-justice";
 import { JusticeTableMobileExpand } from "@/app/user-dashboard/justice/justice-table-mobile-expand";
-import { type UserJustice } from "@/server/api/types/user-justice";
-import React from "react";
 
 interface JusticeTableMobileProps {
 	usersJusticeSorted: UserJustice[];
 }
 
-export const JusticeTableMobile: React.FC<JusticeTableMobileProps> = ({ usersJusticeSorted }) => {
+export function JusticeTableMobile({ usersJusticeSorted }: JusticeTableMobileProps) {
 	return (
 		<>
 			<div>
