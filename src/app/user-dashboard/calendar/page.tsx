@@ -1,8 +1,6 @@
-import { sortUserJusticesByWeightedScore } from "@/app/_utils/sort-user-justices";
 import { PreferencesCalendar } from "@/app/user-dashboard/calendar/preferences-calendar";
 import { api } from "@/trpc/server";
 import { UserRole, type Preference } from "@prisma/client";
-import { addDays } from "date-fns";
 import { type NextPage } from "next";
 import { seedUsers } from "prisma/seed-data/seed-users";
 
@@ -41,20 +39,6 @@ const UserDashboardPage: NextPage = async () => {
 		return await api.preference.update(updatedPreference);
 	};
 	
-	const fetchJustice = async () => {
-		"use server";
-		
-		const userJustices = await api.justice.getUsersJustice({
-			roles: [ UserRole.SQUAD, UserRole.COMMANDER ],
-			definitiveDate: addDays(new Date(), -20),
-		});
-		
-		return sortUserJusticesByWeightedScore({
-			userJustices,
-			ascending: false,
-		});
-	};
-	
 	async function fetchExemptions() {
 		"use server";
 		
@@ -82,9 +66,6 @@ const UserDashboardPage: NextPage = async () => {
 			/>
 			<pre dir="ltr">
 				{ JSON.stringify(await fetchPossibleAssignees(), null, 2) }
-			</pre>
-			<pre dir="ltr">
-				{ JSON.stringify(await fetchJustice(), null, 2) }
 			</pre>
 		</>
 	);

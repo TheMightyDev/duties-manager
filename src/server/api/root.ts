@@ -1,5 +1,6 @@
 import { dutyRouter } from "@/server/api/routers/duty";
 import { justiceRouter } from "@/server/api/routers/justice";
+import { possibleAssignmentsRouter } from "@/server/api/routers/possible-assignments";
 import { postRouter } from "@/server/api/routers/post";
 import { preferenceRouter } from "@/server/api/routers/preference";
 import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
@@ -14,6 +15,7 @@ export const appRouter = createTRPCRouter({
 	preference: preferenceRouter,
 	duty: dutyRouter,
 	justice: justiceRouter,
+	possibleAssignments: possibleAssignmentsRouter,
 });
 
 // export type definition of API
