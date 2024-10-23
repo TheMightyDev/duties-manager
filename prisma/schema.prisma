@@ -40,17 +40,16 @@ model User {
   lastName       String
   isAdmin        Boolean      @default(false)
   organizationId String
-  role           UserRole
-  roleStartDate  DateTime
-  retireDate     DateTime
-  email          String?      @unique
-  emailVerified  DateTime?
+  phoneNumber    String       @unique
+  registerDate   DateTime?
   accounts       Account[]
-  reserves       Assignment[] @relation("reserve")
-  assignments    Assignment[] @relation("user")
-  preferences    Preference[]
   sessions       Session[]
   organization   Organization @relation(fields: [organizationId], references: [id])
+  assignments    Assignment[] @relation("user")
+  reserves       Assignment[] @relation("reserve")
+  periods        Period[]
+  exemptions     Exemption[]
+  preferences    Preference[]
 }
 
 model VerificationToken {
@@ -93,10 +92,31 @@ model Assignment {
   user      User   @relation("user", fields: [userId], references: [id], onDelete: Cascade)
 }
 
+model Period {
+  id          String       @id @default(cuid())
+  userId      String
+  role        UserRole
+  status      PeriodStatus
+  startDate   DateTime
+  endDate     DateTime
+  description String?
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Exemption {
+  id          String          @id @default(cuid())
+  userId      String
+  startDate   DateTime
+  endDate     DateTime
+  description String
+  impact      ExemptionImpact
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
 model Preference {
   id          String               @id @default(cuid())
   userId      String
-  reason      PreferenceReason
+  kind        PreferenceKind
   importance  PreferenceImportance
   startDate   DateTime
   endDate     DateTime?
@@ -106,9 +126,15 @@ model Preference {
 
 enum UserRole {
   SQUAD
-  COMMANDER
   OFFICER
+  COMMANDER
   EXEMPT
+}
+
+enum PeriodStatus {
+  FULFILLS_ROLE
+  TEMPORARILY_ABSENT
+  TEMPORARILY_EXEMPT
 }
 
 enum DutyKind {
@@ -119,7 +145,7 @@ enum DutyKind {
   OTHER
 }
 
-enum PreferenceReason {
+enum PreferenceKind {
   VACATION
   MEDICAL
   EDUCATION
@@ -127,16 +153,17 @@ enum PreferenceReason {
   RELIGION
   FAMILY_EVENT
   CELEBRATION
-  EXEMPTION
-	ABSENCE
   OTHER
 }
 
 enum PreferenceImportance {
   PREFERS
   PREFERS_NOT_TO
-  NORMAL_PRIORITY_NOT_TO
-  HIGH_PRIORITY_NOT_TO
+  CANT
+  HIGH_HESITATION
+}
+
+enum ExemptionImpact {
   EASE_GUARDING
   NO_GUARDING
   NO_DUTIES
