@@ -108,7 +108,7 @@ model Exemption {
   id          String          @id @default(cuid())
   userId      String
   startDate   DateTime
-  endDate     DateTime
+  endDate     DateTime?
   description String
   impact      ExemptionImpact
   user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -119,7 +119,7 @@ model Preference {
   userId      String
   importance  PreferenceImportance
   startDate   DateTime
-  endDate     DateTime?
+  endDate     DateTime
   description String
   kind        PreferenceKind
   user        User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
