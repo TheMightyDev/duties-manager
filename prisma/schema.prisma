@@ -42,15 +42,15 @@ model User {
   organizationId String
   phoneNumber    String       @unique
   registerDate   DateTime?
-	rank           UserRank
+  rank           UserRank
   accounts       Account[]
+  reserves       Assignment[] @relation("reserve")
+  assignments    Assignment[] @relation("user")
+  exemptions     Exemption[]
+  periods        Period[]
+  preferences    Preference[]
   sessions       Session[]
   organization   Organization @relation(fields: [organizationId], references: [id])
-  assignments    Assignment[] @relation("user")
-  reserves       Assignment[] @relation("reserve")
-  periods        Period[]
-  exemptions     Exemption[]
-  preferences    Preference[]
 }
 
 model VerificationToken {
@@ -117,11 +117,11 @@ model Exemption {
 model Preference {
   id          String               @id @default(cuid())
   userId      String
-  kind        PreferenceKind
   importance  PreferenceImportance
   startDate   DateTime
   endDate     DateTime?
   description String
+  kind        PreferenceKind
   user        User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
@@ -177,11 +177,9 @@ enum UserRank {
   STAFF_SERGEANT
   SERGEANT_FIRST_CLASS
   MASTER_SERGEANT
-
   PROFESSIONAL_ACADEMIC_OFFICER
   SENIOR_ACADEMIC_OFFICER
   SPECIAL_ACADEMIC_OFFICER
-
   SECOND_LIEUTENANT
   LIEUTENANT
   CAPTAIN
