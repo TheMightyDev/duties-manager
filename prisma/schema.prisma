@@ -42,6 +42,7 @@ model User {
   organizationId String
   phoneNumber    String       @unique
   registerDate   DateTime?
+	rank           UserRank
   accounts       Account[]
   sessions       Session[]
   organization   Organization @relation(fields: [organizationId], references: [id])
@@ -167,4 +168,22 @@ enum ExemptionImpact {
   EASE_GUARDING
   NO_GUARDING
   NO_DUTIES
+}
+
+enum UserRank {
+  PRIVATE
+  CORPORAL
+  SERGEANT
+  STAFF_SERGEANT
+  SERGEANT_FIRST_CLASS
+  MASTER_SERGEANT
+
+  PROFESSIONAL_ACADEMIC_OFFICER
+  SENIOR_ACADEMIC_OFFICER
+  SPECIAL_ACADEMIC_OFFICER
+
+  SECOND_LIEUTENANT
+  LIEUTENANT
+  CAPTAIN
+  MAJOR
 }
