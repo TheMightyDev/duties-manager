@@ -45,7 +45,7 @@ model User {
   rank           UserRank
   accounts       Account[]
   reserves       Assignment[] @relation("reserve")
-  assignments    Assignment[] @relation("user")
+  assignments    Assignment[] @relation("assignee")
   exemptions     Exemption[]
   periods        Period[]
   preferences    Preference[]
@@ -84,13 +84,14 @@ model Duty {
 }
 
 model Assignment {
-  id        String @id @default(cuid())
-  dutyId    String
-  userId    String
-  reserveId String
-  duty      Duty   @relation(fields: [dutyId], references: [id], onDelete: Cascade)
-  reserve   User   @relation("reserve", fields: [reserveId], references: [id])
-  user      User   @relation("user", fields: [userId], references: [id], onDelete: Cascade)
+  id         String @id @default(cuid())
+  dutyId     String
+  assigneeId String
+  reserveId  String?
+	extraScore Int?
+  duty       Duty   @relation(fields: [dutyId], references: [id], onDelete: Cascade)
+  reserve    User?   @relation("reserve", fields: [reserveId], references: [id])
+  assignee   User   @relation("assignee", fields: [assigneeId], references: [id], onDelete: Cascade)
 }
 
 model Period {
