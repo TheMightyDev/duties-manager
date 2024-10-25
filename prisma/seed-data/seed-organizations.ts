@@ -6,9 +6,4 @@ export const seedOrganizations = [
 		name: "prisma",
 		description: "best unit in the world",
 	},
-	{
-		id: "organization2",
-		name: "matzov",
-		description: "yet another good unit",
-	},
 ] as const satisfies Organization[];

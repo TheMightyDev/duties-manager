@@ -1,61 +1,55 @@
 import { createId } from "@paralleldrive/cuid2";
 import { type Assignment } from "@prisma/client";
 import { seedDuties } from "prisma/seed-data/seed-duties";
-import { seedUsers } from "prisma/seed-data/seed-users";
 
 export const seedAssignments = [
 	{
 		id: createId(),
 		dutyId: seedDuties[0].id,
-		userId: seedUsers[0].id,
-		reserveId: seedUsers[1].id,
+		assigneeId: "valerik",
+		reserveId: null,
+		extraScore: null,
 	},
 	{
 		id: createId(),
 		dutyId: seedDuties[0].id,
-		userId: seedUsers[2].id,
-		reserveId: seedUsers[3].id,
-	},
-	{
-		id: createId(),
-		dutyId: seedDuties[0].id,
-		userId: seedUsers[3].id,
-		reserveId: seedUsers[2].id,
+		assigneeId: "roim",
+		reserveId: null,
+		extraScore: null,
 	},
 	{
 		id: createId(),
 		dutyId: seedDuties[1].id,
-		userId: seedUsers[6].id,
-		reserveId: seedUsers[7].id,
+		assigneeId: "ronis",
+		reserveId: null,
+		extraScore: null,
 	},
 	{
 		id: createId(),
 		dutyId: seedDuties[2].id,
-		userId: seedUsers[1].id,
-		reserveId: seedUsers[0].id,
-	},
-	{
-		id: createId(),
-		dutyId: seedDuties[2].id,
-		userId: seedUsers[3].id,
-		reserveId: seedUsers[2].id,
+		assigneeId: "bars",
+		reserveId: null,
+		extraScore: null,
 	},
 	{
 		id: createId(),
 		dutyId: seedDuties[3].id,
-		userId: seedUsers[5].id,
-		reserveId: seedUsers[4].id,
+		assigneeId: "shania",
+		reserveId: null,
+		extraScore: null,
 	},
 	{
 		id: createId(),
-		dutyId: seedDuties[4].id,
-		userId: seedUsers[0].id,
-		reserveId: seedUsers[2].id,
+		dutyId: seedDuties[3].id,
+		assigneeId: "ronis",
+		reserveId: null,
+		extraScore: null,
 	},
 	{
 		id: createId(),
-		dutyId: seedDuties[4].id,
-		userId: seedUsers[1].id,
-		reserveId: seedUsers[3].id,
+		dutyId: seedDuties[3].id,
+		assigneeId: "bars",
+		reserveId: null,
+		extraScore: null,
 	},
 ] as const satisfies Assignment[];
