@@ -8,4 +8,3 @@ export interface FetchUsersJusticeParams {
 }
 
 export type FetchUsersJusticeFunc = (params: FetchUsersJusticeParams) => Promise<UserJustice[]>;
-

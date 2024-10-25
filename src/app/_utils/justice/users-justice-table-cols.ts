@@ -1,0 +1,12 @@
+import { type UserJustice } from "@/app/_types/justice/user-justice";
+
+export const usersJusticeTableColTitles = {
+	userFullName: "שם",
+	weightedScore: "ניקוד משוקלל",
+	monthsInRole: "מס' חודשים בתפקיד",
+	weekdaysGuardingCount: "שמירות בימי חול",
+	weekendsGuardingCount: "שמירות בסופ\"ש",
+	otherDutiesScoreSum: "ניקוד תורנויות נוספות",
+} as const satisfies Partial<Record<keyof UserJustice, string>>;
+
+export type UserJusticeTableColId = keyof typeof usersJusticeTableColTitles;
