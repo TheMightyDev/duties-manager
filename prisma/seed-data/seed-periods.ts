@@ -97,7 +97,7 @@ export const seedPeriods = [
 		userId: "bars",
 		startDate: new Date(Date.UTC(2023, 7, 1, 0, 0, 0)),
 		endDate: new Date(Date.UTC(2025, 9, 14, 0, 0, 0)),
-		role: UserRole.COMMANDER,
+		role: UserRole.SQUAD,
 		status: PeriodStatus.FULFILLS_ROLE,
 		description: null,
 	},

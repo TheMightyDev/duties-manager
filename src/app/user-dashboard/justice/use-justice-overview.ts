@@ -20,6 +20,7 @@ export function useJusticeOverview({ fetchUsersJustice }: Params): Return {
 	const [ fetchParams, setFetchParams ] = useState<FetchUsersJusticeParams>({
 		roles: [ UserRole.SQUAD ],
 		definitiveDate: new Date(),
+		includeExemptAndAbsentUsers: true,
 	});
 	
 	const [ sortParams, setSortParams ] = useState<SortUsersJusticeParams>({
