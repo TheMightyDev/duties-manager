@@ -1,15 +1,15 @@
 import { type UserJustice } from "@/app/_types/justice/user-justice";
-import { type SortUsersJusticeParams } from "@/app/_utils/justice/sort-users-justice";
 import { type UserJusticeTableColId, usersJusticeTableColTitles } from "@/app/_utils/justice/users-justice-table-cols";
+import { type UsersJusticeTableSettings } from "@/app/user-dashboard/justice/types";
 
 interface JusticeTableDesktopProps {
-	sortParams: SortUsersJusticeParams;
+	currSettings: UsersJusticeTableSettings;
 	usersJusticeSorted: UserJustice[];
 	changeSortParams: (colId: UserJusticeTableColId) => void;
 }
 
 export function JusticeTableDesktop({
-	sortParams,
+	currSettings,
 	usersJusticeSorted,
 	changeSortParams,
 }: JusticeTableDesktopProps) {
@@ -30,8 +30,8 @@ export function JusticeTableDesktop({
 									{title}
 									<span className="inline-block w-6 font-normal">
 										{
-											id === sortParams.colIdToSortBy &&
-											(sortParams.ascending ? "↑" : "↓")
+											id === currSettings.sortParams.colIdToSortBy &&
+											(currSettings.sortParams.ascending ? "↑" : "↓")
 										}
 									</span>
 								</th>

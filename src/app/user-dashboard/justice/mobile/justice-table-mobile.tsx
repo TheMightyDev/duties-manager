@@ -1,5 +1,8 @@
+"use client";
+
+import { FloatingActionButton } from "@/app/_components/floating-action-button/floating-action-button";
 import { type UserJustice } from "@/app/_types/justice/user-justice";
-import { JusticeTableMobileExpand } from "@/app/user-dashboard/justice/justice-table-mobile-expand";
+import { JusticeTableMobileExpand } from "@/app/user-dashboard/justice/mobile/justice-table-mobile-expand";
 
 interface JusticeTableMobileProps {
 	usersJusticeSorted: UserJustice[];
@@ -35,7 +38,22 @@ export function JusticeTableMobile({ usersJusticeSorted }: JusticeTableMobilePro
 					))
 				}
 			</div>
-			
+			<FloatingActionButton
+				level={1}
+				handleClick={() => {
+				}}
+			>
+				P
+			</FloatingActionButton>
+			<FloatingActionButton
+				level={2}
+				className="bg-blue-500"
+				handleClick={() => {
+					alert("wakaaaa");
+				}}
+			>
+				S
+			</FloatingActionButton>
 		</>
 	);
 };

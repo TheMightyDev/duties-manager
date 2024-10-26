@@ -1,7 +1,7 @@
 import NavLinks from "@/app/_components/side-nav/nav-links";
 import Link from "next/link";
 
-export default function SideNav() {
+export function SideNav() {
 	return (
 		<div className="sticky top-0 hidden flex-col py-4 pe-5 ps-2 [height:100vh] md:flex">
 			<Link

@@ -1,7 +1,7 @@
 "use client";
 
-import { JusticeTableDesktop } from "@/app/user-dashboard/justice/justice-table-desktop";
-import { JusticeTableMobile } from "@/app/user-dashboard/justice/justice-table-mobile";
+import { JusticeTableDesktop } from "@/app/user-dashboard/justice/desktop/justice-table-desktop";
+import { JusticeTableMobile } from "@/app/user-dashboard/justice/mobile/justice-table-mobile";
 import { type FetchUsersJusticeFunc } from "@/app/user-dashboard/justice/types";
 import { useJusticeOverview } from "@/app/user-dashboard/justice/use-justice-overview";
 
