@@ -1,6 +1,6 @@
-import { type UserJustice } from "@/app/_types/justice/user-justice";
 import { DAYS_IN_MONTH, USE_DEFAULT_SCORE } from "@/app/_utils/constants";
 import { type UserWithPeriodsAndAssignments } from "@/server/api/types/user-with-periods-and-assignments";
+import { type UserJustice } from "@/types/justice/user-justice";
 import { DutyKind } from "@prisma/client";
 import { differenceInDays } from "date-fns";
 

@@ -1,7 +1,7 @@
-import { type UserJustice } from "@/app/_types/justice/user-justice";
 import { sortUsersJustice } from "@/app/_utils/justice/sort-users-justice";
 import { type UserJusticeTableColId } from "@/app/_utils/justice/users-justice-table-cols";
 import { type FetchUsersJusticeFunc, type UsersJusticeTableSettings } from "@/app/user-dashboard/justice/types";
+import { type UserJustice } from "@/types/justice/user-justice";
 import { UserRole } from "@prisma/client";
 import { type Dispatch, type MutableRefObject, type SetStateAction, useEffect, useRef, useState } from "react";
 

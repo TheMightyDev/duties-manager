@@ -1,6 +1,6 @@
-import { type UserJustice } from "@/app/_types/justice/user-justice";
 import { type UserJusticeTableColId, usersJusticeTableColTitles } from "@/app/_utils/justice/users-justice-table-cols";
 import { type UsersJusticeTableSettings } from "@/app/user-dashboard/justice/types";
+import { type UserJustice } from "@/types/justice/user-justice";
 import { type MutableRefObject } from "react";
 
 interface JusticeTableDesktopProps {

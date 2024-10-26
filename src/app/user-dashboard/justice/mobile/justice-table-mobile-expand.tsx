@@ -1,5 +1,5 @@
-import { type UserJustice } from "@/app/_types/justice/user-justice";
 import { ExpandViewInfoBox } from "@/app/user-dashboard/justice/mobile/expand-view-info-box";
+import { type UserJustice } from "@/types/justice/user-justice";
 
 interface JusticeTableMobileExpandProps {
 	userJustice: UserJustice;

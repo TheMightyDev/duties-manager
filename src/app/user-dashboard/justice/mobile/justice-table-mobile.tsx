@@ -1,7 +1,7 @@
 "use client";
 
-import { type UserJustice } from "@/app/_types/justice/user-justice";
 import { JusticeTableMobileExpand } from "@/app/user-dashboard/justice/mobile/justice-table-mobile-expand";
+import { type UserJustice } from "@/types/justice/user-justice";
 
 interface JusticeTableMobileProps {
 	usersJusticeSorted: UserJustice[];

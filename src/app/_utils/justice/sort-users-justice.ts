@@ -1,5 +1,5 @@
-import { type UserJustice } from "@/app/_types/justice/user-justice";
 import { type UserJusticeTableColId } from "@/app/_utils/justice/users-justice-table-cols";
+import { type UserJustice } from "@/types/justice/user-justice";
 
 export interface SortUsersJusticeParams {
 	colIdToSortBy: UserJusticeTableColId;

@@ -1,4 +1,4 @@
-import { type UserJustice } from "@/app/_types/justice/user-justice";
+import { type UserJustice } from "@/types/justice/user-justice";
 
 export const usersJusticeTableColTitles = {
 	userFullName: "שם",

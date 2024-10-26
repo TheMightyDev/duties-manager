@@ -1,5 +1,5 @@
-import { type UserJustice } from "@/app/_types/justice/user-justice";
 import { type SortUsersJusticeParams } from "@/app/_utils/justice/sort-users-justice";
+import { type UserJustice } from "@/types/justice/user-justice";
 import { type UserRole } from "@prisma/client";
 
 export interface UsersJusticeTableSettings {
