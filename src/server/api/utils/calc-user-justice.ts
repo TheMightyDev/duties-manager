@@ -1,7 +1,7 @@
 import { DAYS_IN_MONTH, USE_DEFAULT_SCORE } from "@/app/_utils/constants";
 import { type UserWithPeriodsAndAssignments } from "@/server/api/types/user-with-periods-and-assignments";
 import { type UserJustice } from "@/types/justice/user-justice";
-import { DutyKind } from "@prisma/client";
+import { DutyKind, UserRole } from "@prisma/client";
 import { differenceInDays } from "date-fns";
 
 function calcMonthsInRole({
@@ -41,6 +41,7 @@ export function calcUserJustice({
 	const userJustice: UserJustice = {
 		userId: user.id,
 		userFullName: user.firstName + " " + user.lastName,
+		role: user.periods[0]?.role ?? UserRole.SQUAD,
 		monthsInRole: calcMonthsInRole({
 			periods: user.periods,
 			definitiveDate,

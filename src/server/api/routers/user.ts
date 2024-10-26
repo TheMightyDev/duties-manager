@@ -22,6 +22,8 @@ async function fetchUsersByRole({ role, definitiveDate, ctxDb, includeExemptAndA
 				select: {
 					startDate: true,
 					endDate: true,
+					role: true,
+					status: true,
 				},
 				where: {
 					startDate: {

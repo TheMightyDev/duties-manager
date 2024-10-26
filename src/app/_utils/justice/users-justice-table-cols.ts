@@ -2,6 +2,7 @@ import { type UserJustice } from "@/types/justice/user-justice";
 
 export const usersJusticeTableColTitles = {
 	userFullName: "שם",
+	role: "תפקיד",
 	weightedScore: "ניקוד משוקלל",
 	monthsInRole: "מס' חודשים בתפקיד",
 	weekdaysGuardingCount: "שמירות בימי חול",

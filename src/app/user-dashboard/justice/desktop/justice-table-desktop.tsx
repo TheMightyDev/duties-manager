@@ -46,6 +46,7 @@ export function JusticeTableDesktop({
 						usersJusticeSorted.map(({
 							userId,
 							userFullName,
+							role,
 							weightedScore,
 							monthsInRole,
 							weekdaysGuardingCount,
@@ -57,6 +58,7 @@ export function JusticeTableDesktop({
 								className="h-10 odd:bg-slate-50 even:bg-slate-200 hover:bg-slate-300"
 							>
 								<th className="pe-4 ps-2 text-start">{userFullName}</th>
+								<td>{role}</td>
 								<th>{weightedScore}</th>
 								<td>{monthsInRole}</td>
 								<td>{weekdaysGuardingCount}</td>
