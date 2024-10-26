@@ -1,17 +1,19 @@
 import { type UserJustice } from "@/app/_types/justice/user-justice";
 import { type UserJusticeTableColId, usersJusticeTableColTitles } from "@/app/_utils/justice/users-justice-table-cols";
 import { type UsersJusticeTableSettings } from "@/app/user-dashboard/justice/types";
+import { type MutableRefObject } from "react";
 
 interface JusticeTableDesktopProps {
-	currSettings: UsersJusticeTableSettings;
+	settingsRef: MutableRefObject<UsersJusticeTableSettings>
+	;
 	usersJusticeSorted: UserJustice[];
-	changeSortParams: (colId: UserJusticeTableColId) => void;
+	changeColIdToSortBy: (colId: UserJusticeTableColId) => void;
 }
 
 export function JusticeTableDesktop({
-	currSettings,
+	settingsRef,
 	usersJusticeSorted,
-	changeSortParams,
+	changeColIdToSortBy,
 }: JusticeTableDesktopProps) {
 	return (
 		<>
@@ -23,15 +25,15 @@ export function JusticeTableDesktop({
 								<th
 									key={id}
 									onClick={() => {
-										changeSortParams(id as UserJusticeTableColId);
+										changeColIdToSortBy(id as UserJusticeTableColId);
 									}}
 									className="cursor-pointer p-2"
 								>
 									{title}
 									<span className="inline-block w-6 font-normal">
 										{
-											id === currSettings.sortParams.colIdToSortBy &&
-											(currSettings.sortParams.ascending ? "↑" : "↓")
+											id === settingsRef.current.sortParams.colIdToSortBy &&
+											(settingsRef.current.sortParams.ascending ? "↑" : "↓")
 										}
 									</span>
 								</th>

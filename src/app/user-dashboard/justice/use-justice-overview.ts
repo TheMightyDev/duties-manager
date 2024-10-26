@@ -1,9 +1,9 @@
 import { type UserJustice } from "@/app/_types/justice/user-justice";
-import { sortUsersJustice, type SortUsersJusticeParams } from "@/app/_utils/justice/sort-users-justice";
+import { sortUsersJustice } from "@/app/_utils/justice/sort-users-justice";
 import { type UserJusticeTableColId } from "@/app/_utils/justice/users-justice-table-cols";
-import { type FetchUsersJusticeFunc, type FetchUsersJusticeParams, type UsersJusticeTableSettings } from "@/app/user-dashboard/justice/types";
+import { type FetchUsersJusticeFunc, type UsersJusticeTableSettings } from "@/app/user-dashboard/justice/types";
 import { UserRole } from "@prisma/client";
-import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
+import { type Dispatch, type MutableRefObject, type SetStateAction, useEffect, useRef, useState } from "react";
 
 interface Params {
 	fetchUsersJustice: FetchUsersJusticeFunc;
@@ -11,84 +11,88 @@ interface Params {
 
 interface Return {
 	usersJusticeSorted: UserJustice[];
-	currSettings: UsersJusticeTableSettings;
-	setFetchParams: Dispatch<SetStateAction<FetchUsersJusticeParams>>;
-	changeSortParams: (colId: UserJusticeTableColId) => void;
+	settingsRef: MutableRefObject<UsersJusticeTableSettings>
+	;
+	setSettings: (nextSettings: Partial<UsersJusticeTableSettings>) => void;
+	changeColIdToSortBy: (colId: UserJusticeTableColId) => void;
 	isEditSettingsDialogOpen: boolean;
 	setIsEditSettingsDialogOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export function useJusticeOverview({ fetchUsersJustice }: Params): Return {
-	const [ fetchParams, setFetchParams ] = useState<FetchUsersJusticeParams>({
-		roles: [ UserRole.SQUAD ],
-		definitiveDate: new Date(),
-		includeExemptAndAbsentUsers: true,
-	});
-	
-	const [ sortParams, setSortParams ] = useState<SortUsersJusticeParams>({
-		colIdToSortBy: "weightedScore",
-		ascending: false,
+	const settingsRef = useRef<UsersJusticeTableSettings>({
+		fetchParams: {
+			roles: [ UserRole.SQUAD ],
+			definitiveDate: new Date(),
+			includeExemptAndAbsentUsers: true,
+		},
+		sortParams: {
+			colIdToSortBy: "weightedScore",
+			ascending: false,
+		},
 	});
 	
 	const [ isEditSettingsDialogOpen, setIsEditSettingsDialogOpen ] = useState<boolean>(false);
-	
-	const [ usersJusticeSorted, setUsersJusticeSorted ] = useState<UserJustice[]>([]);
+	const [ usersJusticeSortedAndFiltered, setUsersJusticeSortedAndFiltered ] = useState<UserJustice[]>([]);
 	
 	useEffect(() => {
 		fetchAndSortUsersJustice();
 	}, []);
 	
-	function sortAndSetUsersJustice({
-		colIdToSortBy,
-		ascending,
-		usersJusticeUnsorted,
-	}: SortUsersJusticeParams & {
-		usersJusticeUnsorted: UserJustice[];
-	}) {
+	function sortAndSetUsersJustice(unsortedUserJustice: UserJustice[]) {
 		const sortedUsersJustice = sortUsersJustice({
-			colIdToSortBy,
-			ascending,
-			usersJustice: usersJusticeUnsorted,
+			usersJustice: unsortedUserJustice,
+			...settingsRef.current.sortParams,
 		});
-		
-		setUsersJusticeSorted(sortedUsersJustice);
+				
+		setUsersJusticeSortedAndFiltered([
+			...sortedUsersJustice,
+		]);
 	}
 	
 	function fetchAndSortUsersJustice() {
-		fetchUsersJustice(fetchParams).then(
-			(usersJusticeUnsorted) => {
-				sortAndSetUsersJustice({
-					...sortParams,
-					usersJusticeUnsorted,
-				});
+		fetchUsersJustice(settingsRef.current.fetchParams).then(
+			(unsortedUsersJustice) => {
+				sortAndSetUsersJustice(unsortedUsersJustice);
 			}
 		);
 	}
 	
-	function changeSortParams(colId: UserJusticeTableColId) {
-		setSortParams((prev) => {
-			const nextSortParams: SortUsersJusticeParams = {
-				colIdToSortBy: colId,
-				ascending: prev.colIdToSortBy === colId ? !prev.ascending : true,
+	function changeSettings(nextSettings: Partial<UsersJusticeTableSettings>) {
+		// If the fetch settings changed
+		if (nextSettings.fetchParams && JSON.stringify(nextSettings.fetchParams) !== JSON.stringify(settingsRef.current.fetchParams)) {
+			settingsRef.current = {
+				...settingsRef.current,
+				...nextSettings,
 			};
 			
-			sortAndSetUsersJustice({
-				...nextSortParams,
-				usersJusticeUnsorted: usersJusticeSorted,
-			});
+			fetchAndSortUsersJustice();
 			
-			return nextSortParams;
-		});
+			return;
+		} else if (nextSettings.sortParams && JSON.stringify(nextSettings.sortParams) !== JSON.stringify(settingsRef.current.sortParams)) {
+			settingsRef.current = {
+				...settingsRef.current,
+				...nextSettings,
+			};
+			
+			sortAndSetUsersJustice(usersJusticeSortedAndFiltered);
+		}
+	}
+	
+	function changeColIdToSortBy(colId: UserJusticeTableColId) {
+		settingsRef.current.sortParams = {
+			colIdToSortBy: colId,
+			ascending: settingsRef.current.sortParams.colIdToSortBy === colId ? !settingsRef.current.sortParams.ascending : true,
+		};
+			
+		sortAndSetUsersJustice(usersJusticeSortedAndFiltered);
 	}
 	
 	return {
-		currSettings: {
-			fetchParams,
-			sortParams,
-		},
-		usersJusticeSorted,
-		setFetchParams,
-		changeSortParams,
+		usersJusticeSorted: usersJusticeSortedAndFiltered,
+		settingsRef,
+		setSettings: changeSettings,
+		changeColIdToSortBy,
 		isEditSettingsDialogOpen,
 		setIsEditSettingsDialogOpen,
 	};
