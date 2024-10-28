@@ -1,11 +1,12 @@
 import { Dialog } from "@/app/_components/dialog/dialog";
 import { type UserJusticeTableColId } from "@/app/_utils/justice/users-justice-table-cols";
+import { DefinitiveDateSelector } from "@/app/user-dashboard/justice/edit-settings-dialog/definitive-date-selector";
 import { SortSettingsSection } from "@/app/user-dashboard/justice/edit-settings-dialog/sort-params-section";
 import { UserRolesSelector } from "@/app/user-dashboard/justice/edit-settings-dialog/user-roles-selector";
-import { type UsersJusticeTableSettings } from "@/app/user-dashboard/justice/types";
+import { DefinitiveDateKind, type UsersJusticeTableSettings } from "@/app/user-dashboard/justice/types";
 import { type RefObject } from "@fullcalendar/core/preact.js";
 import { UserRole } from "@prisma/client";
-import { startOfDay } from "date-fns";
+import { endOfDay, endOfMonth, startOfMonth } from "date-fns";
 import { type MutableRefObject, useEffect, useRef } from "react";
 
 interface EditSettingsDialogProps {
@@ -14,6 +15,26 @@ interface EditSettingsDialogProps {
 	;
 	applyChanges: (nextSettings: Partial<UsersJusticeTableSettings>) => void;
 	closeDialog: () => void;
+}
+
+function getActualDefinitiveDate({ kind, customDate }: {
+	kind: DefinitiveDateKind;
+	customDate?: Date;
+}): Date {
+	const currDate = new Date();
+	
+	switch (kind) {
+		case DefinitiveDateKind.TODAY:
+			return endOfDay(currDate);
+		case DefinitiveDateKind.START_OF_CURRENT_MONTH:
+			return startOfMonth(currDate);
+		case DefinitiveDateKind.END_OF_CURRENT_MONTH:
+			return endOfMonth(currDate);
+		case DefinitiveDateKind.CUSTOM:
+			return customDate ?? startOfMonth(currDate);
+		// There's no need for default because one of
+		// the kinds must be selected
+	}
 }
 
 export function EditSettingsDialog({
@@ -30,6 +51,8 @@ export function EditSettingsDialog({
 		[UserRole.COMMANDER]: useRef<HTMLInputElement>(null),
 		[UserRole.EXEMPT]: useRef<HTMLInputElement>(null),
 	};
+	const definitiveDateKindSelectRef = useRef<HTMLSelectElement>(null);
+	const customDefinitiveDateInputRef = useRef<HTMLInputElement>(null);
 	
 	useEffect(() => {
 		if (isOpen) {
@@ -53,6 +76,16 @@ export function EditSettingsDialog({
 			return selected;
 		}, []);
 		
+		const kind = definitiveDateKindSelectRef.current?.value as DefinitiveDateKind;
+		const customDate = customDefinitiveDateInputRef.current?.value ? new Date(customDefinitiveDateInputRef.current.value) : undefined;
+		
+		const m = getActualDefinitiveDate({
+			kind,
+			customDate,
+		});
+		
+		console.log("@kind", kind, customDate, m);
+					
 		applyChanges({
 			sortParams: {
 				colIdToSortBy: sortByColIdSelectRef.current!.value as UserJusticeTableColId,
@@ -60,7 +93,10 @@ export function EditSettingsDialog({
 			},
 			fetchParams: {
 				roles: selectedRoles,
-				definitiveDate: startOfDay(new Date()),
+				definitiveDate: getActualDefinitiveDate({
+					kind: definitiveDateKindSelectRef.current?.value as DefinitiveDateKind,
+					customDate: customDefinitiveDateInputRef.current?.value ? new Date(customDefinitiveDateInputRef.current.value) : undefined,
+				}),
 				includeExemptAndAbsentUsers: true,
 			},
 		});
@@ -75,6 +111,12 @@ export function EditSettingsDialog({
 				sortByColIdSelectRef={sortByColIdSelectRef}
 				isAscendingInputRef={isAscendingInputRef}
 			/>
+			
+			<DefinitiveDateSelector
+				kindSelectRef={definitiveDateKindSelectRef}
+				customDateInputRef={customDefinitiveDateInputRef}
+			/>
+			
 			<button onClick={closeDialog}>
 				ביטול
 			</button>

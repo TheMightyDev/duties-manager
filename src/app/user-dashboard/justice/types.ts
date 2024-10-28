@@ -7,6 +7,13 @@ export interface UsersJusticeTableSettings {
 	fetchParams: FetchUsersJusticeParams;
 }
 
+export enum DefinitiveDateKind {
+	TODAY = "היום",
+	START_OF_CURRENT_MONTH = "תחילת החודש",
+	END_OF_CURRENT_MONTH = "סוף החודש",
+	CUSTOM = "בהתאמה אישית",
+}
+
 export interface FetchUsersJusticeParams {
 	roles: UserRole[];
 	definitiveDate: Date;
