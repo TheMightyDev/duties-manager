@@ -10,32 +10,30 @@ export function SortSettingsSection({
 	sortByColIdSelectRef,
 	isAscendingInputRef,
 }: SortSettingsSectionParams) {
-	const IS_ASCENDING_INPUT_ID = "sort-users-justice-ascending";
-	
 	return (
 		<>
-			<select ref={sortByColIdSelectRef}>
-				{
-					Object.entries(usersJusticeTableColTitles).map(([ id, title ]) => (
-						<option
-							key={id}
-							value={id}
-						>
-							{title}
-						</option>
-					))
-				}
-			</select>
-			<p>
+			<label className="block">
+				מיון לפי
+				<select ref={sortByColIdSelectRef}>
+					{
+						Object.entries(usersJusticeTableColTitles).map(([ id, title ]) => (
+							<option
+								key={id}
+								value={id}
+							>
+								{title}
+							</option>
+						))
+					}
+				</select>
+			</label>
+			<label>
 				<input
 					type="checkbox"
-					id={IS_ASCENDING_INPUT_ID}
 					ref={isAscendingInputRef}
 				/>
-				<label htmlFor={IS_ASCENDING_INPUT_ID}>
-					סדר עולה
-				</label>
-			</p>
+				סדר עולה
+			</label>
 		</>
 	);
 };
