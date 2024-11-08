@@ -1,4 +1,4 @@
-import SideNav from "@/app/_components/side-nav/side-nav";
+import { SideNav } from "@/app/_components/side-nav/side-nav";
 
 export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
 	return (

@@ -1,4 +1,4 @@
-import NavLinks from "@/app/_components/side-nav/nav-links";
+import { NavLinks } from "@/app/_components/side-nav/nav-links";
 import Link from "next/link";
 
 export function SideNav() {
