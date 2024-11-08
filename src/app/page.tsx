@@ -12,6 +12,8 @@ export default async function Home() {
 	if (session?.user) {
 		void api.post.getLatest.prefetch();
 	}
+	
+	console.log("session", session);
 
 	return (
 		<HydrateClient>
@@ -61,8 +63,6 @@ export default async function Home() {
 							</Link>
 						</div>
 					</div>
-
-					{session?.user && <LatestPost />}
 				</div>
 			</main>
 		</HydrateClient>
