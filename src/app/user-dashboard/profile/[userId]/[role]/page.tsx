@@ -59,15 +59,6 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
 				totalRelevantUsersCount={usersJusticeInSameRole.length}
 				userPosition={userPosition}
 			/>
-			<h1>{ userJustice?.userFullName }</h1>
-			
-			<pre dir="ltr">
-				{JSON.stringify(roleRecords, null, 2)}
-			</pre>
-			<p>
-				{userPosition}/{usersJusticeInSameRole.length}
-			</p>
-			<pre dir="ltr">{JSON.stringify(usersJusticeInSameRole, null, 2)}</pre>
 			{
 				isLoggedUser && <p>success</p>
 			}
