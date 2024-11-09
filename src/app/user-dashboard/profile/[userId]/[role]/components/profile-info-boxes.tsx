@@ -1,4 +1,4 @@
-import { PeriodStatusInfoBox } from "@/app/user-dashboard/profile/[userId]/[role]/components/PeriodStatusInfoBox";
+import { PeriodStatusInfoBox } from "@/app/user-dashboard/profile/[userId]/[role]/components/period-status-info-box";
 import { type UserProfileProps } from "@/app/user-dashboard/profile/[userId]/[role]/types";
 
 export function ProfileInfoBoxes(props: UserProfileProps) {

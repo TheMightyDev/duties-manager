@@ -1,5 +1,5 @@
 import { DutyAssignments } from "@/app/user-dashboard/profile/[userId]/[role]/components/duty-assignments";
-import { ProfileInfoBoxes } from "@/app/user-dashboard/profile/[userId]/[role]/components/ProfileInfoBoxes";
+import { ProfileInfoBoxes } from "@/app/user-dashboard/profile/[userId]/[role]/components/profile-info-boxes";
 import { type UserProfileProps } from "@/app/user-dashboard/profile/[userId]/[role]/types";
 
 export function UserProfile(props: UserProfileProps) {
