@@ -1,4 +1,4 @@
-import { ProfileInfoBoxes } from "@/app/user-dashboard/profile/[userId]/[role]/ProfileInfoBoxes";
+import { ProfileInfoBoxes } from "@/app/user-dashboard/profile/[userId]/[role]/components/ProfileInfoBoxes";
 import { type UserProfileProps } from "@/app/user-dashboard/profile/[userId]/[role]/types";
 
 export function UserProfile(props: UserProfileProps) {

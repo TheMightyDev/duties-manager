@@ -1,5 +1,5 @@
 import { calcUserPosition } from "@/app/_utils/justice/calc-user-position";
-import { UserProfile } from "@/app/user-dashboard/profile/[userId]/[role]/UserProfile";
+import { UserProfile } from "@/app/user-dashboard/profile/[userId]/[role]/components/UserProfile";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { UTCDate } from "@date-fns/utc";
