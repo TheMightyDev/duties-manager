@@ -1,9 +1,24 @@
 import { db } from "@/server/db";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import { type UserRank } from "@prisma/client";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
+import { type Adapter } from "next-auth/adapters";
 import { decode, encode } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import DiscordProvider from "next-auth/providers/discord";
+
+declare module "next-auth/jwt" {
+	interface JWT {
+		id: string;
+		firstName: string;
+		lastName: string;
+		fullName: string;
+		isAdmin: boolean;
+		organizationId: string;
+		phoneNumber: string;
+		rank: UserRank;
+	}
+}
 
 /**
  * Module augmentation for `next-auth` types. Allows us to add custom properties to the `session`
@@ -17,13 +32,25 @@ declare module "next-auth" {
 			id: string;
 			// ...other properties
 			// role: UserRole;
+			firstName: string;
+			lastName: string;
+			fullName: string;
+			isAdmin: boolean;
+			organizationId: string;
+			phoneNumber: string;
+			rank: UserRank;
 		} & DefaultSession["user"];
 	}
 
-	// interface User {
-	//	// ...other properties
-	//	// role: UserRole;
-	// }
+	interface User {
+		firstName: string;
+		lastName: string;
+		fullName: string;
+		isAdmin: boolean;
+		organizationId: string;
+		phoneNumber: string;
+		rank: UserRank;
+	}
 }
 
 /**
@@ -63,8 +90,13 @@ export const authConfig = {
 				if (user) {
 					return {
 						id: user.id,
-						name: user.firstName + " " + user.lastName,
-						// role: user.,
+						firstName: user.firstName,
+						lastName: user.lastName,
+						fullName: user.firstName + " " + user.lastName,
+						isAdmin: user.isAdmin,
+						organizationId: user.organizationId,
+						phoneNumber: user.phoneNumber,
+						rank: user.rank,
 					};
 				}
 
@@ -82,12 +114,19 @@ export const authConfig = {
      * @see https://next-auth.js.org/providers/github
      */
 	],
-	adapter: PrismaAdapter(db),
+	adapter: PrismaAdapter(db) as Adapter,
 	callbacks: {
 		async jwt({ token, user }) {
 			// If user object exists (i.e., after successful login), add user info to JWT
 			if (user) {
-				token.id = user.id;
+				// token.id = user.id;
+				token.firstName = user.firstName;
+				token.lastName = user.lastName;
+				token.fullName = user.fullName;
+				token.phoneNumber = user.phoneNumber;
+				token.organizationId = user.organizationId;
+				token.isAdmin = user.isAdmin;
+				token.rank = user.rank;
 				// token.email = user.email;
 				// token.name = user.name;
 			}
@@ -101,6 +140,13 @@ export const authConfig = {
 				// session.user.email = token.email;
 				session.user.id = token.id;
 				session.user.name = token.name;
+				session.user.firstName = token.firstName;
+				session.user.lastName = token.lastName;
+				session.user.fullName = token.fullName;
+				session.user.phoneNumber = token.phoneNumber;
+				session.user.organizationId = token.organizationId;
+				session.user.rank = token.rank;
+				session.user.isAdmin = token.isAdmin;
 			}
 
 			return session; // Return the session with added user data
