@@ -10,6 +10,7 @@ export const userWithAssignmentsInclude = Prisma.validator<Prisma.UserInclude>()
 					score: true,
 					startDate: true,
 					endDate: true,
+					description: true,
 				},
 			},
 		},

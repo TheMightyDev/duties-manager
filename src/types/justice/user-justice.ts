@@ -1,9 +1,10 @@
-import { type UserRole } from "@prisma/client";
+import { type PeriodStatus, type UserRole } from "@prisma/client";
 
 export interface UserJustice {
 	userId: string;
 	userFullName: string;
 	role: UserRole;
+	latestPeriodStatus: PeriodStatus;
 	/** The number of months the user is in the role
 	 * (excluding absences and exemptions that exempt from guarding).
 	 * Can be a floating point number.

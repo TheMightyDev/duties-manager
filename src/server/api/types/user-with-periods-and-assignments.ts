@@ -5,7 +5,14 @@ export const userWithPeriodsAndAssignmentsInclude = Prisma.validator<Prisma.User
 		select: {
 			startDate: true,
 			endDate: true,
+			role: true,
+			status: true,
 		},
+		orderBy: [
+			{
+				startDate: "asc",
+			},
+		],
 	},
 	assignments: {
 		include: {

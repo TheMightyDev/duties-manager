@@ -3,7 +3,7 @@ import { Prisma } from "@prisma/client";
 export const dutyWithAssignmentsInclude = Prisma.validator<Prisma.DutyInclude>()({
 	assignments: {
 		include: {
-			user: {
+			assignee: {
 				select: {
 					id: true,
 					firstName: true,

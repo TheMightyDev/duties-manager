@@ -7,6 +7,7 @@ import {
 	publicProcedure
 } from "@/server/api/trpc";
 import { userWithAllEventsInclude } from "@/server/api/types/user-with-all-events";
+import { userWithAssignmentsInclude } from "@/server/api/types/user-with-assignments";
 import { type UserWithPeriodsAndAssignments } from "@/server/api/types/user-with-periods-and-assignments";
 import { calcUserJustice } from "@/server/api/utils/calc-user-justice";
 import { PeriodStatus, type PrismaClient, UserRole } from "@prisma/client";
@@ -27,12 +28,16 @@ async function fetchUsersByRole({ role, definitiveDate, ctxDb, includeExemptAndA
 					role: true,
 					status: true,
 				},
+				orderBy: [
+					{
+						startDate: "asc",
+					},
+				],
 				where: {
 					startDate: {
 						lte: definitiveDate,
 					},
 					role: role,
-					status: PeriodStatus.FULFILLS_ROLE,
 				},
 			},
 			assignments: {
@@ -150,11 +155,15 @@ export const userRouter = createTRPCRouter({
 								{
 									role: currentRole,
 								},
-								{
-									status: PeriodStatus.FULFILLS_ROLE,
-								},
+								// We don't only find periods with "FULFILLS_ROLE" status (filtering happens when calculating users justice)
+								// because we want to find out the user's current status.
 							],
 						},
+						orderBy: [
+							{
+								startDate: "asc",
+							},
+						],
 					},
 					assignments: {
 						include: {
@@ -303,5 +312,18 @@ export const userRouter = createTRPCRouter({
 			}
 			
 			return fulfilledRolesSoFar;
+		})),
+		
+	getUserAssignmentsById: protectedProcedure
+		.input(z.string())
+		.query((async ({ ctx, input: userId }) => {
+			const userWithAssignments = await ctx.db.user.findUnique({
+				where: {
+					id: userId,
+				},
+				include: userWithAssignmentsInclude,
+			});
+			
+			return userWithAssignments?.assignments;
 		})),
 });

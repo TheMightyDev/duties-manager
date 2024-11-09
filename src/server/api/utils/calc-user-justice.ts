@@ -1,7 +1,7 @@
 import { DAYS_IN_MONTH, USE_DEFAULT_SCORE } from "@/app/_utils/constants";
 import { type UserWithPeriodsAndAssignments } from "@/server/api/types/user-with-periods-and-assignments";
 import { type UserJustice } from "@/types/justice/user-justice";
-import { DutyKind, UserRole } from "@prisma/client";
+import { DutyKind, PeriodStatus } from "@prisma/client";
 import { differenceInDays } from "date-fns";
 
 function calcMonthsInRole({
@@ -11,14 +11,15 @@ function calcMonthsInRole({
 	periods: UserWithPeriodsAndAssignments["periods"];
 	definitiveDate: Date;
 }): number {
-	// There's no need to filter the relevant periods, because the filtering
-	// is done when querying the DB
-	const daysDiffSum = periods.reduce((sum, period) => {
-		const actualEndDate = period.endDate > definitiveDate ? definitiveDate : period.endDate;
-		const periodDaysDiff = differenceInDays(actualEndDate, period.startDate);
+	// There's no need to find periods in which to user fulfills the role
+	const daysDiffSum = periods
+		.filter((period) => period.status === PeriodStatus.FULFILLS_ROLE)
+		.reduce((sum, period) => {
+			const actualEndDate = period.endDate > definitiveDate ? definitiveDate : period.endDate;
+			const periodDaysDiff = differenceInDays(actualEndDate, period.startDate);
 		
-		return sum + periodDaysDiff;
-	}, 0);
+			return sum + periodDaysDiff;
+		}, 0);
 	
 	const monthsInRole = daysDiffSum / DAYS_IN_MONTH;
 	
@@ -38,10 +39,17 @@ export function calcUserJustice({
 	userWithPeriodsAndAssignments: UserWithPeriodsAndAssignments;
 	definitiveDate: Date;
 }): UserJustice {
+	// It can't be null, because there must be at least one period
+	const role = user.periods[0]!.role;
+	// We sort the periods by their occurrence date (ascending), so the last period
+	// is the most recent
+	const latestPeriodStatus = user.periods.at(-1)!.status;
+	
 	const userJustice: UserJustice = {
 		userId: user.id,
 		userFullName: user.firstName + " " + user.lastName,
-		role: user.periods[0]?.role ?? UserRole.SQUAD,
+		role,
+		latestPeriodStatus,
 		monthsInRole: calcMonthsInRole({
 			periods: user.periods,
 			definitiveDate,

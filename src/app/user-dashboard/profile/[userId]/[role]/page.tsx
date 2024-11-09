@@ -1,4 +1,5 @@
 import { calcUserPosition } from "@/app/_utils/justice/calc-user-position";
+import { UserProfile } from "@/app/user-dashboard/profile/[userId]/[role]/UserProfile";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { type UserRole } from "@prisma/client";
@@ -35,13 +36,25 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
 		includeExemptAndAbsentUsers: true,
 	});
 	
+	const assignments = await api.user.getUserAssignmentsById(userId);
+	
 	const userPosition = calcUserPosition({
 		usersJustice: usersJusticeInSameRole,
 		userId,
 	});
 	
+	const userJustice = usersJusticeInSameRole.find((curr) => curr.userId === userId);
+	
 	return (
 		<>
+			<UserProfile
+				userJustice={userJustice!}
+				assignments={assignments!}
+				totalRelevantUsersCount={usersJusticeInSameRole.length}
+				userPosition={userPosition}
+			/>
+			<h1>{ userJustice?.userFullName }</h1>
+			
 			<pre dir="ltr">
 				{JSON.stringify(roleRecords, null, 2)}
 			</pre>
