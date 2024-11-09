@@ -1,7 +1,9 @@
+import { UTCDate } from "@date-fns/utc";
 import { z } from "zod";
 
 import {
 	createTRPCRouter,
+	protectedProcedure,
 	publicProcedure
 } from "@/server/api/trpc";
 import { userWithAllEventsInclude } from "@/server/api/types/user-with-all-events";
@@ -221,5 +223,85 @@ export const userRouter = createTRPCRouter({
 				})));
 				
 			return usersJustice;
+		})),
+	
+	/**
+	 * Finds all roles fulfilled by a specific user (given their ID)
+	 * so far as of *today* (future roles are not taken into account).
+	 * Returns an array of objects that have 2 properties:
+	 *
+	 * - `role`
+	 * - `latestFulfilledDate` - the latest date which the role was fulfilled by the user.
+	 *
+	 * Each role only appears once. The order of the roles is the order in which they were fulfilled
+	 * For example, if the periods have "holes" (e.g. a user was a `SQUAD` -> `EXEMPT` -> `SQUAD` again),
+	 * then the returned result is
+	 * ```ts
+	 * [ {
+	 * 	role: UserRole.EXEMPT,
+	 * 	latestFulfilledRole: LAST_DAY_WAS_EXEMPT,
+   * }, {
+	 * 	role: UserRole.SQUAD,
+	 * 	latestFulfilledRole: TODAY,
+	 * } ]
+	 * ```
+	 */
+	getAllUserRolesById: protectedProcedure
+		.input(z.string())
+		.output(z.array(z.object({
+			role: z.nativeEnum(UserRole),
+			latestFulfilledDate: z.date(),
+		})).nullable())
+		.query((async ({ ctx, input: userId }) => {
+			const todayEnd = endOfDay(new UTCDate());
+			
+			const userWithPeriods = await ctx.db.user.findUnique({
+				where: {
+					id: userId,
+				},
+				include: {
+					periods: {
+						select: {
+							startDate: true,
+							endDate: true,
+							role: true,
+						},
+						where: {
+							startDate: {
+								lte: todayEnd,
+							},
+						},
+					},
+				},
+			});
+			
+			const fulfilledRolesSoFar: {
+				role: UserRole;
+				latestFulfilledDate: Date;
+			}[] = [];
+			
+			userWithPeriods?.periods.forEach(({ role, endDate }) => {
+				const record = fulfilledRolesSoFar.find((curr) => curr.role === role);
+				
+				// We advance the endDate to be as latest as known
+				if (record) {
+					record.latestFulfilledDate = endDate > todayEnd ? todayEnd : endDate;
+				} else {
+					fulfilledRolesSoFar.push({
+						role,
+						latestFulfilledDate: endDate > todayEnd ? todayEnd : endDate,
+					});
+				}
+			});
+			
+			fulfilledRolesSoFar?.sort((recordA, recordB) => (
+				Number(recordA.latestFulfilledDate) - Number(recordB.latestFulfilledDate)
+			));
+			
+			if (!userWithPeriods) {
+				return null;
+			}
+			
+			return fulfilledRolesSoFar;
 		})),
 });
