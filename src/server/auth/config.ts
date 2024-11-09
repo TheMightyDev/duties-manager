@@ -119,7 +119,7 @@ export const authConfig = {
 		async jwt({ token, user }) {
 			// If user object exists (i.e., after successful login), add user info to JWT
 			if (user) {
-				// token.id = user.id;
+				token.id = user.id;
 				token.firstName = user.firstName;
 				token.lastName = user.lastName;
 				token.fullName = user.fullName;

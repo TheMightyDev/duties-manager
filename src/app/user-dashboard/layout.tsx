@@ -1,6 +1,14 @@
 import { SideNav } from "@/app/_components/side-nav/side-nav";
+import { auth } from "@/server/auth";
+import { redirect } from "next/navigation";
 
-export default function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
+	const session = await auth();
+	
+	if (!session) {
+		redirect("/api/auth/signin");
+	}
+	
 	return (
 		<div className="flex w-full flex-col md:flex-row">
 			<SideNav />
