@@ -1,32 +1,80 @@
+import { ArchiveSvgIcon } from "@/app/_components/svg-icons/archive-svg-icon";
 import { CheckmarkSvgIcon } from "@/app/_components/svg-icons/checkmark-svg-icon";
 import { PathLocationSvgIcon } from "@/app/_components/svg-icons/path-location-svg-icon";
 import { cn } from "@/app/_utils/cn";
+import { auth } from "@/server/auth";
 import { PeriodStatus } from "@prisma/client";
-import React from "react";
 
 interface PeriodStatusInfoBoxProps {
-	className: string;
+	baseClassName: string;
 	status: PeriodStatus;
+	isEarlyRole: boolean;
 }
 
-const statusIcons: Record<PeriodStatus, React.ReactNode> = {
-	[PeriodStatus.FULFILLS_ROLE]: <CheckmarkSvgIcon className="m-auto size-10 fill-white" />,
-	[PeriodStatus.TEMPORARILY_ABSENT]: <PathLocationSvgIcon className="m-auto size-10 fill-white" />,
-	[PeriodStatus.TEMPORARILY_EXEMPT]: <CheckmarkSvgIcon />,
-};
+function getIcon({ status, isEarlyRole }: {
+	status: PeriodStatus;
+	isEarlyRole: boolean;
+}) {
+	const className = "size-10 fill-white m-auto";
+	
+	if (isEarlyRole) {
+		return <ArchiveSvgIcon className={className} />;
+	}
+	
+	if (status === PeriodStatus.FULFILLS_ROLE) {
+		return <CheckmarkSvgIcon className={className} />;
+	} else {
+		return <PathLocationSvgIcon className={className} />;
+	}
+}
 
-const statusDescriptions: Record<PeriodStatus, string> = {
-	[PeriodStatus.FULFILLS_ROLE]: "נוכח.ת בתפקיד",
-	[PeriodStatus.TEMPORARILY_ABSENT]: "לא נוכח.ת",
-	[PeriodStatus.TEMPORARILY_EXEMPT]: "לא נוכח.ת",
-};
+function getDescription({ status, isEarlyRole, isAdmin }: {
+	status: PeriodStatus;
+	isEarlyRole: boolean;
+	isAdmin: boolean;
+}) {
+	if (isEarlyRole) {
+		return "תפקיד בעבר";
+	}
+	if (status === PeriodStatus.FULFILLS_ROLE) {
+		return "נוכח.ת בתפקיד";
+	} else {
+		if (!isAdmin) {
+			return "לא נוכח.ת כעת";
+		}
 
-export function PeriodStatusInfoBox({ className, status }: PeriodStatusInfoBoxProps) {
+		return status === PeriodStatus.TEMPORARILY_EXEMPT
+			? "פטור.ה זמנית"
+			: "נעדר.ת זמנית";
+	}
+}
+
+export async function PeriodStatusInfoBox({ baseClassName, status, isEarlyRole }: PeriodStatusInfoBoxProps) {
+	const session = await auth();
+	const isAdmin = session?.user.isAdmin ?? false;
+	
+	const className = isEarlyRole
+		? "bg-slate-500 hover:bg-slate-600"
+		: (
+			status === PeriodStatus.FULFILLS_ROLE
+				? "bg-green-500 hover:bg-green-600"
+				: "bg-red-500 hover:bg-red-600"
+		);
+	
 	return (
-		<div className={cn(className, "bg-green-500 text-white hover:bg-green-600")}>
-			<span className="text-4xl">{statusIcons[status]}</span>
+		<div className={cn(baseClassName, className, "text-white")}>
+			<span className="text-4xl">
+				{ getIcon({
+					status,
+					isEarlyRole,
+				}) }
+			</span>
 			<span className="font-bold">
-				{statusDescriptions[status]}
+				{ getDescription({
+					status,
+					isEarlyRole,
+					isAdmin,
+				}) }
 			</span>
 		</div>
 	);

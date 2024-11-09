@@ -2,7 +2,9 @@ import { calcUserPosition } from "@/app/_utils/justice/calc-user-position";
 import { UserProfile } from "@/app/user-dashboard/profile/[userId]/[role]/UserProfile";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
+import { UTCDate } from "@date-fns/utc";
 import { type UserRole } from "@prisma/client";
+import { endOfDay } from "date-fns";
 
 interface UserProfilePageProps {
 	params: Promise<{
@@ -49,6 +51,7 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
 		<>
 			<UserProfile
 				userJustice={userJustice!}
+				isEarlyRole={selectedRecord.latestFulfilledDate < endOfDay(new UTCDate())}
 				assignments={assignments!}
 				totalRelevantUsersCount={usersJusticeInSameRole.length}
 				userPosition={userPosition}

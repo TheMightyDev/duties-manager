@@ -1,13 +1,7 @@
 import { PeriodStatusInfoBox } from "@/app/user-dashboard/profile/[userId]/[role]/PeriodStatusInfoBox";
-import { type UserJustice } from "@/types/justice/user-justice";
+import { type UserProfileProps } from "@/app/user-dashboard/profile/[userId]/[role]/types";
 
-interface ProfileInfoBoxesProps {
-	userJustice: UserJustice;
-	userPosition: number;
-	totalRelevantUsersCount: number;
-}
-
-export function ProfileInfoBoxes(props: ProfileInfoBoxesProps) {
+export function ProfileInfoBoxes(props: UserProfileProps) {
 	const {
 		weightedScore,
 		monthsInRole,
@@ -37,7 +31,8 @@ export function ProfileInfoBoxes(props: ProfileInfoBoxesProps) {
 					<span>חודשים בתפקיד</span>
 				</div>
 				<PeriodStatusInfoBox
-					className={className}
+					baseClassName={className}
+					isEarlyRole={props.isEarlyRole}
 					status={latestPeriodStatus}
 				/>
 			</div>
