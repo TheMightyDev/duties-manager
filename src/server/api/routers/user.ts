@@ -10,6 +10,7 @@ import { userWithAllEventsInclude } from "@/server/api/types/user-with-all-event
 import { userWithAssignmentsInclude } from "@/server/api/types/user-with-assignments";
 import { type UserWithPeriodsAndAssignments } from "@/server/api/types/user-with-periods-and-assignments";
 import { calcUserJustice } from "@/server/api/utils/calc-user-justice";
+import { type RoleRecord, roleRecordSchema } from "@/types/user/role-record";
 import { PeriodStatus, type PrismaClient, UserRole } from "@prisma/client";
 import { endOfDay } from "date-fns";
 
@@ -257,10 +258,7 @@ export const userRouter = createTRPCRouter({
 	 */
 	getAllUserRolesById: protectedProcedure
 		.input(z.string())
-		.output(z.array(z.object({
-			role: z.nativeEnum(UserRole),
-			latestFulfilledDate: z.date(),
-		})).nullable())
+		.output(z.array(roleRecordSchema).nullable())
 		.query((async ({ ctx, input: userId }) => {
 			const todayEnd = endOfDay(new UTCDate());
 			
@@ -284,10 +282,7 @@ export const userRouter = createTRPCRouter({
 				},
 			});
 			
-			const fulfilledRolesSoFar: {
-				role: UserRole;
-				latestFulfilledDate: Date;
-			}[] = [];
+			const fulfilledRolesSoFar: RoleRecord[] = [];
 			
 			userWithPeriods?.periods.forEach(({ role, endDate }) => {
 				const record = fulfilledRolesSoFar.find((curr) => curr.role === role);
