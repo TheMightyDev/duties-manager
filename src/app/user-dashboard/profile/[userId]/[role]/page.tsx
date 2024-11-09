@@ -38,7 +38,10 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
 		includeExemptAndAbsentUsers: true,
 	});
 	
-	const assignments = await api.user.getUserAssignmentsById(userId);
+	const assignments = await api.user.getUserAssignments({
+		userId,
+		role: selectedRecord.role,
+	});
 	
 	const userPosition = calcUserPosition({
 		usersJustice: usersJusticeInSameRole,

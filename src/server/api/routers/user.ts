@@ -314,12 +314,22 @@ export const userRouter = createTRPCRouter({
 			return fulfilledRolesSoFar;
 		})),
 		
-	getUserAssignmentsById: protectedProcedure
-		.input(z.string())
-		.query((async ({ ctx, input: userId }) => {
+	getUserAssignments: protectedProcedure
+		.input(z.object({
+			userId: z.string(),
+			role: z.nativeEnum(UserRole).optional(),
+		}))
+		.query((async ({ ctx, input: { userId, role } }) => {
 			const userWithAssignments = await ctx.db.user.findUnique({
 				where: {
 					id: userId,
+					assignments: {
+						every: {
+							duty: {
+								role: role,
+							},
+						},
+					},
 				},
 				include: userWithAssignmentsInclude,
 			});
