@@ -34,14 +34,17 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
 	
 	const usersJusticeInSameRole = await api.user.getManyUsersJustice({
 		roles: [ selectedRecord.role ],
-		definitiveDate: selectedRecord.latestFulfilledDate,
+		/** The `latestFulfilledDate` is `null` if the user currently assigned to the role */
+		definitiveDate: selectedRecord.latestFulfilledDate ?? endOfDay(new UTCDate()),
 		includeExemptAndAbsentUsers: true,
 	});
 	
-	const assignments = await api.user.getUserAssignments({
-		userId,
-		role: selectedRecord.role,
-	});
+	console.log("@@@@@@@@@@@@ selectedRecord.role", selectedRecord.role);
+	
+	// const assignments = await api.user.getUserAssignments({
+	// 	userId,
+	// 	role: selectedRecord.role,
+	// });
 	
 	const userPosition = calcUserPosition({
 		usersJustice: usersJusticeInSameRole,
@@ -54,8 +57,8 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
 		<>
 			<UserProfile
 				userJustice={userJustice!}
-				isEarlyRole={selectedRecord.latestFulfilledDate < endOfDay(new UTCDate())}
-				assignments={assignments!}
+				isEarlyRole={selectedRecord.latestFulfilledDate != null}
+				assignments={[]}
 				totalRelevantUsersCount={usersJusticeInSameRole.length}
 				userPosition={userPosition}
 			/>

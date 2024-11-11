@@ -289,24 +289,31 @@ export const userRouter = createTRPCRouter({
 				
 				// We advance the endDate to be as latest as known
 				if (record) {
-					record.latestFulfilledDate = endDate > todayEnd ? todayEnd : endDate;
+					// If it's `null` - meaning that's the user current role and we stick to it.
+					record.latestFulfilledDate = record.latestFulfilledDate === null
+						? null
+						: endDate > todayEnd ? null : endDate;
 				} else {
 					fulfilledRolesSoFar.push({
 						role,
-						latestFulfilledDate: endDate > todayEnd ? todayEnd : endDate,
+						latestFulfilledDate: endDate > todayEnd ? null : endDate,
 					});
 				}
 			});
 			
-			fulfilledRolesSoFar?.sort((recordA, recordB) => (
-				Number(recordA.latestFulfilledDate) - Number(recordB.latestFulfilledDate)
-			));
+			const fulfilled = fulfilledRolesSoFar?.filter((role) => role.latestFulfilledDate).sort((recordA, recordB) => (
+				recordA.latestFulfilledDate === null ? -1 : (Number(recordA.latestFulfilledDate) - Number(recordB.latestFulfilledDate) ? 1 : -1)
+			)).concat(
+				fulfilledRolesSoFar.find((f) => f.latestFulfilledDate == null)!
+			);
+			
+			console.log("@@fulfilledRolesSoFar", fulfilled);
 			
 			if (!userWithPeriods) {
 				return null;
 			}
 			
-			return fulfilledRolesSoFar;
+			return fulfilled;
 		})),
 		
 	getUserAssignments: protectedProcedure
