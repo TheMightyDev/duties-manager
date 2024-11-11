@@ -7,7 +7,6 @@ import {
 	publicProcedure
 } from "@/server/api/trpc";
 import { userWithAllEventsInclude } from "@/server/api/types/user-with-all-events";
-import { userWithAssignmentsInclude } from "@/server/api/types/user-with-assignments";
 import { type UserWithPeriodsAndAssignments } from "@/server/api/types/user-with-periods-and-assignments";
 import { calcUserJustice } from "@/server/api/utils/calc-user-justice";
 import { type RoleRecord, roleRecordSchema } from "@/types/user/role-record";
@@ -325,15 +324,26 @@ export const userRouter = createTRPCRouter({
 			const userWithAssignments = await ctx.db.user.findUnique({
 				where: {
 					id: userId,
+				},
+				include: {
 					assignments: {
-						every: {
+						where: {
 							duty: {
 								role: role,
 							},
 						},
+						include: {
+							duty: true,
+						},
+						orderBy: [
+							{
+								duty: {
+									startDate: "desc",
+								},
+							},
+						],
 					},
 				},
-				include: userWithAssignmentsInclude,
 			});
 			
 			return userWithAssignments?.assignments;

@@ -41,10 +41,10 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
 	
 	console.log("@@@@@@@@@@@@ selectedRecord.role", selectedRecord.role);
 	
-	// const assignments = await api.user.getUserAssignments({
-	// 	userId,
-	// 	role: selectedRecord.role,
-	// });
+	const assignments = await api.user.getUserAssignments({
+		userId,
+		role: selectedRecord.role,
+	});
 	
 	const userPosition = calcUserPosition({
 		usersJustice: usersJusticeInSameRole,
@@ -58,7 +58,7 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
 			<UserProfile
 				userJustice={userJustice!}
 				isEarlyRole={selectedRecord.latestFulfilledDate != null}
-				assignments={[]}
+				assignments={assignments!}
 				totalRelevantUsersCount={usersJusticeInSameRole.length}
 				userPosition={userPosition}
 			/>
