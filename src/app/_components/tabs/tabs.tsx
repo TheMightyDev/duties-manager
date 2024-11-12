@@ -9,6 +9,7 @@ export interface TabData {
 }
 
 interface TabsProps {
+	className: string;
 	tabs: TabData[];
 }
 
@@ -21,7 +22,10 @@ function areAllTabTitles(tabs: TabData[]): boolean {
 /** A general component which manages viewing of one tab at a time.
  * Handles switching between tabs and showing current tab contents on its own.
  */
-export function Tabs({ tabs }: TabsProps) {
+export function Tabs({
+	tabs,
+	className,
+}: TabsProps) {
 	const [ selectedTabIndex, setSelectedTabIndex ] = useState(0);
 	
 	if (tabs.length == 0) {
@@ -52,9 +56,9 @@ export function Tabs({ tabs }: TabsProps) {
 					))
 				}
 			</div>
-			{
-				tabs[selectedTabIndex]?.contents
-			}
+			<div className={className}>
+				{ tabs[selectedTabIndex]?.contents }
+			</div>
 		</>
 	);
 };

@@ -17,7 +17,7 @@ export function ProfileInfoBoxes(props: UserProfileProps) {
 	const isEarlyRole = props.roleRecords.find((record) => record.role === role)?.latestFulfilledDate != null;
 
 	return (
-		<div className="flex w-full flex-col gap-2">
+		<div className="flex h-80 w-full flex-col gap-2">
 			<div className="flex flex-row gap-2">
 				<div className={className}>
 					<span className="text-4xl">{weightedScore}</span>
