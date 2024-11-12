@@ -3,6 +3,7 @@ import { type UserProfileProps } from "@/app/user-dashboard/profile/[userId]/[ro
 
 export function ProfileInfoBoxes(props: UserProfileProps) {
 	const {
+		role,
 		weightedScore,
 		monthsInRole,
 		latestPeriodStatus,
@@ -12,6 +13,8 @@ export function ProfileInfoBoxes(props: UserProfileProps) {
 	} = props.userJustice;
 	
 	const className = "flex flex-col rounded-xl bg-slate-200 p-4 hover:bg-slate-300 flex-1 text-center";
+	
+	const isEarlyRole = props.roleRecords.find((record) => record.role === role)?.latestFulfilledDate != null;
 
 	return (
 		<div className="flex w-full flex-col gap-2">
@@ -32,7 +35,7 @@ export function ProfileInfoBoxes(props: UserProfileProps) {
 				</div>
 				<PeriodStatusInfoBox
 					baseClassName={className}
-					isEarlyRole={props.isEarlyRole}
+					isEarlyRole={isEarlyRole}
 					status={latestPeriodStatus}
 				/>
 			</div>

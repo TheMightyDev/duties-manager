@@ -57,10 +57,10 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
 		<>
 			<UserProfile
 				userJustice={userJustice!}
-				isEarlyRole={selectedRecord.latestFulfilledDate != null}
 				assignments={assignments!}
 				totalRelevantUsersCount={usersJusticeInSameRole.length}
 				userPosition={userPosition}
+				roleRecords={roleRecords}
 			/>
 			{
 				isLoggedUser && <p>success</p>
