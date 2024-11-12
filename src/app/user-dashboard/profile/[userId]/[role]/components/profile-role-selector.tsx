@@ -46,7 +46,9 @@ export function ProfileRoleSelector({ roleRecords, selectedRole }: ProfileRoleSe
 							value={value}
 							key={value}
 						>
-							{record.role}
+							{record.role} - {record.latestFulfilledDate
+								? "עבר"
+								: "נוכחי"}
 						</option>
 					);
 				})
