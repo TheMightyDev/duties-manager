@@ -13,5 +13,5 @@ export interface UserProfileProps {
 
 export interface ProfileRoleSelectorProps {
 	roleRecords: RoleRecord[];
-	selectedRole: UserRole;
+	selectedRole: UserRole | "LATEST";
 }

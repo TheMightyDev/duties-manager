@@ -38,14 +38,18 @@ export function ProfileRoleSelector({ roleRecords, selectedRole }: ProfileRoleSe
 			onChange={handleChange}
 		>
 			{
-				roleRecords.map((record) => (
-					<option
-						value={record.role}
-						key={record.role}
-					>
-						{record.role}
-					</option>
-				))
+				roleRecords.map((record, i) => {
+					const value = i === roleRecords.length - 1 ? "LATEST" : record.role;
+					
+					return (
+						<option
+							value={value}
+							key={value}
+						>
+							{record.role}
+						</option>
+					);
+				})
 			}
 		</select>
 	);

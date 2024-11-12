@@ -14,12 +14,15 @@ export function UserProfile(props: UserProfileProps) {
 				</span>
 				<ProfileRoleSelector
 					roleRecords={props.roleRecords}
-					selectedRole={props.userJustice.role}
+					selectedRole={props.roleRecords.at(-1)!.role === props.userJustice.role ? "LATEST" : props.userJustice.role}
 				/>
 			</h2>
 			
 			<div className="m-auto flex  max-w-96 flex-col gap-2 sm:max-w-none sm:flex-row">
-				<ProfileInfoBoxes {...props} />
+				<div className="flex flex-col gap-2">
+					<ProfileInfoBoxes {...props} />
+					<button className="rounded-full bg-purple-400">עריכת פרטים אישיים</button>
+				</div>
 				<div className="block w-full p-2 sm:hidden">
 					<Accordion
 						title="היי"
@@ -30,7 +33,7 @@ export function UserProfile(props: UserProfileProps) {
 				</div>
 				<div className="hidden max-h-80 w-full sm:block">
 					<Tabs
-						className="h-full max-h-72 overflow-y-scroll bg-slate-300"
+						className="h-full max-h-80 overflow-y-scroll bg-slate-300"
 						tabs={[
 							{
 								title: "תורנויות",
