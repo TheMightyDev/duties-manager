@@ -16,12 +16,14 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
 	
 	return (
 		<>
-			<Suspense fallback={<ProfileInfoBoxesSkeleton />}>
-				<Test {...extractedParams} />
-			</Suspense>
-			<Suspense fallback={<p>no data yet</p>}>
-				<ProfileTabs {...extractedParams} />
-			</Suspense>
+			<div className="m-auto flex max-w-96 flex-col gap-2 sm:max-w-none sm:flex-row">
+				<Suspense fallback={<ProfileInfoBoxesSkeleton />}>
+					<Test {...extractedParams} />
+				</Suspense>
+				<Suspense fallback={<div className="w-full"></div>}>
+					<ProfileTabs {...extractedParams} />
+				</Suspense>
+			</div>
 		</>
 	);
 }
