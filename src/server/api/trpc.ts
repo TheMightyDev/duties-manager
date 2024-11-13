@@ -8,6 +8,7 @@
  */
 
 import { initTRPC, TRPCError } from "@trpc/server";
+import { LRUCache } from "lru-cache";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
@@ -101,6 +102,36 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
 	return result;
 });
 
+// Set up the cache, adjust max and maxAge to suit your needs
+const cache = new LRUCache<string, any>({
+	max: 100, // Maximum number of items to store in the cache
+	// maxAge: 1000 * 60 * 5, // Cache expiry time (5 minutes)
+});
+
+/**
+ * Middleware for timing procedure execution and adding an artificial delay in development.
+ *
+ * You can remove this if you don't like it, but it can help catch unwanted waterfalls by simulating
+ * network latency that would occur in production but not in local development.
+ */
+const cachingMiddleware = t.middleware(async ({ input, path, next }) => {
+	// You can generate a cache key based on the input params
+	const cacheKey = `${path}:${JSON.stringify(input)}`;
+
+	// Check if the result is in cache
+	if (cache.has(cacheKey)) {
+		console.log("@cache get", cache.get(cacheKey));
+		
+		return cache.get(cacheKey);
+	}
+ 
+	// Otherwise, call the resolver and cache the result
+	const result = await next();
+	cache.set(cacheKey, result);
+ 
+	return result;
+});
+
 /**
  * Public (unauthenticated) procedure
  *
@@ -108,7 +139,9 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  * guarantee that a user querying is authorized, but you can still access user session data if they
  * are logged in.
  */
-export const publicProcedure = t.procedure.use(timingMiddleware);
+export const publicProcedure = t.procedure
+	// .use(cachingMiddleware)
+	.use(timingMiddleware);
 
 /**
  * Protected (authenticated) procedure
@@ -119,6 +152,7 @@ export const publicProcedure = t.procedure.use(timingMiddleware);
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure
+	// .use(cachingMiddleware)
 	.use(timingMiddleware)
 	.use(({ ctx, next }) => {
 		if (!ctx.session || !ctx.session.user) {
