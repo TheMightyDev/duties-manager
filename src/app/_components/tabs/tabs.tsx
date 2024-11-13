@@ -6,6 +6,7 @@ import React, { useState } from "react";
 export interface TabData {
 	title: string;
 	contents: React.ReactNode;
+	isVisible?: boolean;
 }
 
 interface TabsProps {
@@ -41,19 +42,20 @@ export function Tabs({
 			<div className="flex h-8 w-full text-center leading-8">
 				{
 					tabs.map((tab, tabIndex) => (
-						<div
-							key={tab.title}
-							className={cn(
-								"rounded-full flex-1",
-								tabIndex === selectedTabIndex ? "bg-blue-500 text-white font-bold" : "cursor-pointer hover:bg-slate-300"
-							)}
-							onClick={() => {
-								setSelectedTabIndex(tabIndex);
-							}}
-						>
-							{tab.title}
-						</div>
-					))
+						(tab.isVisible ?? true) && (
+							<div
+								key={tab.title}
+								className={cn(
+									"rounded-full flex-1",
+									tabIndex === selectedTabIndex ? "bg-blue-500 text-white font-bold" : "cursor-pointer hover:bg-slate-300"
+								)}
+								onClick={() => {
+									setSelectedTabIndex(tabIndex);
+								}}
+							>
+								{tab.title}
+							</div>
+						)))
 				}
 			</div>
 			<div className={className}>

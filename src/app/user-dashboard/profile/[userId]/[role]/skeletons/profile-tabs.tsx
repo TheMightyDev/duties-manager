@@ -57,12 +57,14 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 						},
 						{
 							title: "תפקידים",
+							isVisible: isLoggedUserOrAdmin,
 							contents: <pre dir="ltr">
 								{ JSON.stringify(periods, null, 2)}
 							</pre>,
 						},
 						{
 							title: "פטורים",
+							isVisible: isLoggedUserOrAdmin,
 							contents: <p>yooo33</p>,
 						},
 					]}
