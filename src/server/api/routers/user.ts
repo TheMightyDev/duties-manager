@@ -348,4 +348,22 @@ export const userRouter = createTRPCRouter({
 			
 			return userWithAssignments?.assignments;
 		})),
+	
+	/** Returns all periods of a user ordered chronologically,
+	 * starting from the very first period and the last one.
+	 */
+	getUserPeriodsById: protectedProcedure
+		.input(z.string())
+		.query((async ({ ctx, input: userId }) => {
+			const userWithPeriods = await ctx.db.user.findUnique({
+				where: {
+					id: userId,
+				},
+				include: {
+					periods: true,
+				},
+			});
+			
+			return userWithPeriods?.periods;
+		})),
 });

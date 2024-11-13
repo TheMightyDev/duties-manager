@@ -7,18 +7,14 @@ import { type UserRole } from "@prisma/client";
 import { endOfDay } from "date-fns";
 
 interface TestProps {
-	params: Promise<{
-		userId: string;
-		role: UserRole | "LATEST";
-	}>;
+	userId: string;
+	role: UserRole | "LATEST";
 }
-export async function Test({ params }: TestProps) {
-	const {
-		userId,
-		role,
-	} = await params;
+
+export async function Test({ userId, role }: TestProps) {
 	const session = await auth();
-	const isLoggedUser = session?.user.id === userId;
+	const isLoggedUserOrAdmin = session?.user.id === userId || session?.user.isAdmin;
+	
 	const roleRecords = await api.user.getAllUserRolesById(userId);
 	
 	if (!roleRecords) {
@@ -61,9 +57,6 @@ export async function Test({ params }: TestProps) {
 				userPosition={userPosition}
 				roleRecords={roleRecords}
 			/>
-			{
-				isLoggedUser && <p>success</p>
-			}
 		</>
 	);
 };

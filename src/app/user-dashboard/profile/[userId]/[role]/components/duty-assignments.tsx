@@ -1,7 +1,11 @@
 import { DutyAssignmentCard } from "@/app/user-dashboard/profile/[userId]/[role]/components/duty-assignment-card";
-import { type UserProfileProps } from "@/app/user-dashboard/profile/[userId]/[role]/types";
+import { type UserWithAssignments } from "@/server/api/types/user-with-assignments";
 
-export function DutyAssignments({ assignments }: UserProfileProps) {
+interface DutyAssignmentsProps {
+	assignments: UserWithAssignments["assignments"];
+}
+
+export function DutyAssignments({ assignments }: DutyAssignmentsProps) {
 	return (
 		<div className="flex w-full flex-col gap-2 p-2">
 			{
