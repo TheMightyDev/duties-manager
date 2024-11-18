@@ -9,6 +9,12 @@ export default {
 			fontFamily: {
 				sans: [ "var(--font-geist-sans)", ...fontFamily.sans ],
 			},
+			colors: {
+				"role-squad": "#8843F2",
+				"role-officer": "#59D5E0",
+				"role-commander": "#FAA300",
+				"role-exempt": "#F4538A",
+			},
 		},
 		keyframes: {
 			shimmer: {
