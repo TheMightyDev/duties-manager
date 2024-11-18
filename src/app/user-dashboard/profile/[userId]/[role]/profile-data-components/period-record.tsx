@@ -1,10 +1,11 @@
+import { PathLocationSvgIcon } from "@/app/_components/svg-icons/path-location-svg-icon";
 import { CommanderSvgIcon } from "@/app/_components/svg-icons/user-roles/commander-svg-icon";
 import { ExemptSvgIcon } from "@/app/_components/svg-icons/user-roles/exempt-svg-icon";
 import { OfficerSvgIcon } from "@/app/_components/svg-icons/user-roles/officer-svg-repo";
 import { SquadSvgIcon } from "@/app/_components/svg-icons/user-roles/squad-svg-icon";
 import { cn } from "@/app/_utils/cn";
 import { formatDate } from "@/app/_utils/date-format-utils";
-import { UserRole, type Period } from "@prisma/client";
+import { PeriodStatus, UserRole, type Period } from "@prisma/client";
 import clsx from "clsx";
 
 interface PeriodRecordProps {
@@ -38,7 +39,8 @@ export function PeriodRecord({
 	isCurrentPeriod,
 }: PeriodRecordProps) {
 	const obj = {
-		elem: roleIcons[period.role],
+		elem: period.status === PeriodStatus.FULFILLS_ROLE ? roleIcons[period.role] :
+			PathLocationSvgIcon,
 	};
 	
 	const currentDate = new Date();
@@ -54,7 +56,12 @@ export function PeriodRecord({
 				>
 					<obj.elem className={clsx("fill-current ", isCurrentPeriod ? "size-7" : "size-6")} />
 				</span>
-				<h3 className="mb-1 text-lg font-semibold text-gray-900 dark:text-white">{period.role}</h3>
+				<h3 className="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
+					{period.status === PeriodStatus.FULFILLS_ROLE ? period.role : period.description}{" "}
+					{ isCurrentPeriod && <span>
+						(נוכחי)
+					</span>}
+				</h3>
 				<time className="mb-2 block text-sm font-normal leading-none text-slate-600 dark:text-slate-500">
 					{formatDate(period.startDate)}
 				</time>
