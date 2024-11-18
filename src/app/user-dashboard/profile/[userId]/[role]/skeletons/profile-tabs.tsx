@@ -1,5 +1,5 @@
-import { Accordion } from "@/app/_components/accordion/accordion";
-import { Tabs } from "@/app/_components/tabs/tabs";
+import { Accordion } from "@/app/_components/tabs-and-accordions/accordion";
+import { Tabs } from "@/app/_components/tabs-and-accordions/tabs";
 import { DutyAssignments } from "@/app/user-dashboard/profile/[userId]/[role]/components/duty-assignments";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
@@ -44,6 +44,7 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 					<DutyAssignments assignments={assignments!} />
 					<DutyAssignments assignments={assignments!} />
 				</Accordion>
+				
 			</div>
 			<div className="mt-12 hidden max-h-80 w-full sm:block">
 				<Tabs
@@ -73,4 +74,4 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 		</>
 	);
 };
-2;
+
