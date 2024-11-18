@@ -10,5 +10,12 @@ export default {
 				sans: [ "var(--font-geist-sans)", ...fontFamily.sans ],
 			},
 		},
+		keyframes: {
+			shimmer: {
+				"100%": {
+					transform: "translateX(100%)",
+				},
+			},
+		},
 	},
 } satisfies Config;
