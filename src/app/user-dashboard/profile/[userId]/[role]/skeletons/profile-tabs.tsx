@@ -1,6 +1,7 @@
 import { Accordion } from "@/app/_components/tabs-and-accordions/accordion";
 import { Tabs } from "@/app/_components/tabs-and-accordions/tabs";
 import { DutyAssignments } from "@/app/user-dashboard/profile/[userId]/[role]/components/duty-assignments";
+import { PeriodsContainer } from "@/app/user-dashboard/profile/[userId]/[role]/profile-data-components/periods-container";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { type UserRole } from "@prisma/client";
@@ -46,9 +47,9 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 				</Accordion>
 				
 			</div>
-			<div className="mt-12 hidden max-h-80 w-full sm:block">
+			<div className="mt-12 hidden max-h-[70vh] w-full sm:block">
 				<Tabs
-					className="h-full max-h-80 overflow-y-scroll bg-slate-300"
+					className="h-full  overflow-y-scroll bg-slate-300"
 					tabs={[
 						{
 							title: "תורנויות",
@@ -59,9 +60,7 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 						{
 							title: "תפקידים",
 							isVisible: isLoggedUserOrAdmin,
-							contents: <pre dir="ltr">
-								{ JSON.stringify(periods, null, 2)}
-							</pre>,
+							contents: <PeriodsContainer periods={periods!} />,
 						},
 						{
 							title: "פטורים",
