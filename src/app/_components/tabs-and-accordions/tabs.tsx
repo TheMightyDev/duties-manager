@@ -1,20 +1,15 @@
 "use client";
 
+import { type SectionData } from "@/app/_components/tabs-and-accordions/section-data";
 import { cn } from "@/app/_utils/cn";
-import React, { useState } from "react";
-
-export interface TabData {
-	title: string;
-	contents: React.ReactNode;
-	isVisible?: boolean;
-}
+import { useState } from "react";
 
 interface TabsProps {
 	className: string;
-	tabs: TabData[];
+	tabs: SectionData[];
 }
 
-function areAllTabTitles(tabs: TabData[]): boolean {
+function areAllTabTitles(tabs: SectionData[]): boolean {
 	const titles = tabs.map((tab) => tab.title);
 	
 	return ((new Set(titles)).size === titles.length);
