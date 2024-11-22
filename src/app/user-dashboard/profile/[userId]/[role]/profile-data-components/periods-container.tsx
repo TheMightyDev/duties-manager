@@ -16,6 +16,7 @@ export function PeriodsContainer({ periods }: PeriodsContainerProps) {
 				{
 					periods.map((period) => (
 						<PeriodRecord
+							key={period.id}
 							period={period}
 							isCurrentPeriod={currentPeriod === period}
 						/>

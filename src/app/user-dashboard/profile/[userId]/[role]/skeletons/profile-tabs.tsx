@@ -37,13 +37,19 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 		<>
 			<div className="block w-full p-2 sm:hidden">
 				<Accordion
-					title="היי"
+					title="תורנויות"
 					isOpenByDefault={false}
 				>
 					<DutyAssignments assignments={assignments!} />
 					<DutyAssignments assignments={assignments!} />
 					<DutyAssignments assignments={assignments!} />
 					<DutyAssignments assignments={assignments!} />
+				</Accordion>
+				<Accordion
+					title="תפקידים"
+					isOpenByDefault={false}
+				>
+					<PeriodsContainer periods={periods!} />
 				</Accordion>
 				
 			</div>

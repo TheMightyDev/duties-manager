@@ -26,15 +26,15 @@ export function Accordion({
 	}
 	
 	return (
-		<div>
+		<div className="overflow-hidden bg-slate-300">
 			<div
 				onClick={toggleIsOpen}
 				className={
-					cn("rounded-full cursor-pointer border-2 border-slate-400", titleClassName)
+					cn("rounded-xl cursor-pointer border-2 border-slate-400 shadow-sm", titleClassName)
 				}
 			>{title}</div>
 			<div className={clsx(
-				"bg-red-300",
+				"overflow-hidden bg-slate-300",
 				isOpen ? "block" : "hidden"
 			)}
 			>
