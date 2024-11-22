@@ -9,7 +9,7 @@ interface Params {
 	fetchUsersJustice: FetchUsersJusticeFunc;
 }
 
-interface Return {
+export interface UseJusticeOverviewReturn {
 	usersJusticeSorted: UserJustice[];
 	settingsRef: MutableRefObject<UsersJusticeTableSettings>
 	;
@@ -19,7 +19,7 @@ interface Return {
 	setIsEditSettingsDialogOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export function useJusticeOverview({ fetchUsersJustice }: Params): Return {
+export function useJusticeOverview({ fetchUsersJustice }: Params): UseJusticeOverviewReturn {
 	const settingsRef = useRef<UsersJusticeTableSettings>({
 		fetchParams: {
 			roles: [ UserRole.SQUAD ],

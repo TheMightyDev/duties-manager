@@ -8,6 +8,7 @@ import { type ReactNode, type RefObject } from "react";
 
 interface UserRolesSelectorProps {
 	rolesCheckboxRefs: Record<UserRole, RefObject<HTMLInputElement>>;
+	handleRolesSelectionChange?: (nextSelectedRoles: UserRole[]) => void;
 }
 
 const accentClassNames: Record<UserRole, string> = {
@@ -31,12 +32,25 @@ const roleIcons: Record<UserRole, ReactNode> = {
 	[UserRole.EXEMPT]: <ExemptSvgIcon className="size-5 md:size-6" />,
 };
 
-export function UserRolesSelector({ rolesCheckboxRefs }: UserRolesSelectorProps) {
+export function UserRolesSelector({
+	rolesCheckboxRefs,
+	handleRolesSelectionChange,
+}: UserRolesSelectorProps) {
+	function onContainerChange() {
+		const selectedRoles = Object.entries(rolesCheckboxRefs)
+			.filter(([ _, ref ]) => ref.current?.checked)
+			.map(([ role ]) => role as UserRole);
+		
+		handleRolesSelectionChange?.(selectedRoles);
+	}
+	
 	return (
 		<>
 			<h4>תפקידים</h4>
-			<div className="md:flex md:gap-1">
-			
+			<div
+				className="md:flex md:gap-1"
+				onChange={onContainerChange}
+			>
 				{
 					Object.entries(rolesCheckboxRefs).map(([ role, ref ]) => {
 						return (
