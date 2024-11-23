@@ -36,21 +36,27 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 	return (
 		<>
 			<div className="block w-full p-2 sm:hidden">
-				<Accordion
-					title="תורנויות"
-					isOpenByDefault={false}
-				>
-					<DutyAssignments assignments={assignments!} />
-					<DutyAssignments assignments={assignments!} />
-					<DutyAssignments assignments={assignments!} />
-					<DutyAssignments assignments={assignments!} />
-				</Accordion>
-				<Accordion
-					title="תפקידים"
-					isOpenByDefault={false}
-				>
-					<PeriodsContainer periods={periods!} />
-				</Accordion>
+				{
+					assignments &&
+					<Accordion
+						title="תורנויות"
+						isOpenByDefault={false}
+					>
+						<DutyAssignments assignments={assignments} />
+						<DutyAssignments assignments={assignments} />
+						<DutyAssignments assignments={assignments} />
+					</Accordion>
+				}
+
+				{
+					periods &&
+					<Accordion
+						title="תפקידים"
+						isOpenByDefault={false}
+					>
+						<PeriodsContainer periods={periods} />
+					</Accordion>
+				}
 				
 			</div>
 			<div className="mt-12 hidden max-h-[70vh] w-full sm:block">
@@ -66,7 +72,7 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 						{
 							title: "תפקידים",
 							isVisible: isLoggedUserOrAdmin,
-							contents: <PeriodsContainer periods={periods!} />,
+							contents: periods && <PeriodsContainer periods={periods} />,
 						},
 						{
 							title: "פטורים",
