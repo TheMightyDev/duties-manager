@@ -50,7 +50,7 @@ export function UserRolesSelector(props: UserRolesSelectorProps) {
 						return (
 							<label
 								className={cn(
-									"relative block py-1 has-[:checked]:text-white has-[:checked]:ring-indigo-500 md:size-9 md:cursor-pointer md:rounded-xl md:text-center bg-white hover:brightness-90", onCheckClassNames[role as UserRole]
+									"group relative block py-1 has-[:checked]:text-white has-[:checked]:ring-indigo-500 md:size-9 md:cursor-pointer md:rounded-xl md:text-center bg-white hover:brightness-90", onCheckClassNames[role as UserRole]
 								)}
 								key={`justice-user-role-${role}`}
 							>
@@ -67,6 +67,13 @@ export function UserRolesSelector(props: UserRolesSelectorProps) {
 								<span className="inline-block md:hidden">
 									{role}
 								</span>
+								<div
+									role="tooltip"
+									className="absolute left-1/2 top-full z-10 mt-2 hidden w-max -translate-x-1/2 rounded bg-slate-500 px-2 py-1 text-xs text-white md:group-hover:block"
+								>
+									{role}
+									<div className="absolute bottom-full left-1/2 size-0 -translate-x-1/2 border-x-4 border-b-4 border-x-transparent border-b-slate-500"></div>
+								</div>
 							</label>
 						);
 					})
