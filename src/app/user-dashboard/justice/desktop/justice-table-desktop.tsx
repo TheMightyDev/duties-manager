@@ -1,6 +1,7 @@
 import { type UserJusticeTableColId, usersJusticeTableColTitles } from "@/app/_utils/justice/users-justice-table-cols";
 import { type UsersJusticeTableSettings } from "@/app/user-dashboard/justice/types";
 import { type UserJustice } from "@/types/justice/user-justice";
+import { redirect } from "next/navigation";
 import { type MutableRefObject } from "react";
 
 interface JusticeTableDesktopProps {
@@ -55,12 +56,15 @@ export function JusticeTableDesktop({
 						}) => (
 							<tr
 								key={userId}
-								className="h-10 odd:bg-slate-50 even:bg-slate-200 hover:bg-slate-300"
+								className="h-10 cursor-pointer odd:bg-slate-50 even:bg-slate-200 hover:bg-slate-300"
+								onClick={() => {
+									redirect(`/user-dashboard/profile/${userId}/${role}`);
+								}}
 							>
 								<th className="pe-4 ps-2 text-start">{userFullName}</th>
 								<td>{role}</td>
-								<th>{weightedScore}</th>
-								<td>{monthsInRole}</td>
+								<th className="font-mono">{weightedScore.toFixed(2)}</th>
+								<td>{monthsInRole.toFixed(2)}</td>
 								<td>{weekdaysGuardingCount}</td>
 								<td>{weekendsGuardingCount}</td>
 								<td>{otherDutiesScoreSum}</td>
