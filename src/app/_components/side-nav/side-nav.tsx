@@ -19,12 +19,15 @@ export async function SideNav() {
 				<NavLinks />
 				<div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
 				<form>
-					<button className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3">
+					<Link
+						href="/api/auth/signout"
+						className="flex h-[48px] w-full grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3"
+					>
 						<div>I</div>
 						<div className="hidden md:block">
 							התנתקות ({session?.user.id})
 						</div>
-					</button>
+					</Link>
 				</form>
 			</div>
 		</div>
