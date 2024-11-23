@@ -17,13 +17,22 @@ export function JusticeTableHeader({
 	};
 	
 	return (
-		<>
+		<div className="flex flex-row">
 			<button onClick={() => {
 				setIsEditSettingsDialogOpen(true);
 			}}
 			>
 				הגדרות
 			</button>
+			<div className="group relative">
+				<button className="rounded bg-blue-600 px-4 py-2 text-white">Hover me</button>
+  
+				<div className="absolute left-1/2 top-full mt-2 hidden w-max -translate-x-1/2 rounded bg-black px-2 py-1 text-xs text-white group-hover:block">
+					Tooltip text here even more text
+    
+					<div className="absolute bottom-full left-1/2 size-0 -translate-x-1/2 border-x-4 border-b-4 border-x-transparent border-b-black"></div>
+				</div>
+			</div>
 			<UserRolesSelector
 				rolesCheckboxRefs={rolesCheckboxRefs}
 				defaultCheckedRole={loggedUserLatestRole}
@@ -37,6 +46,6 @@ export function JusticeTableHeader({
 					});
 				}}
 			/>
-		</>
+		</div>
 	);
 };

@@ -1,3 +1,4 @@
+import { UserRoleMark } from "@/app/_components/svg-icons/user-roles/user-role-mark";
 import { type UserJusticeTableColId, usersJusticeTableColTitles } from "@/app/_utils/justice/users-justice-table-cols";
 import { type UsersJusticeTableSettings } from "@/app/user-dashboard/justice/types";
 import { type UserJustice } from "@/types/justice/user-justice";
@@ -62,7 +63,7 @@ export function JusticeTableDesktop({
 								}}
 							>
 								<th className="pe-4 ps-2 text-start">{userFullName}</th>
-								<td>{role}</td>
+								<td><UserRoleMark role={role}/></td>
 								<th className="font-mono">{weightedScore.toFixed(2)}</th>
 								<td>{monthsInRole.toFixed(2)}</td>
 								<td>{weekdaysGuardingCount}</td>

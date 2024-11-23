@@ -1,8 +1,4 @@
-import { type SvgIconProps } from "@/app/_components/svg-icons/common-svg-icon-props";
-import { CommanderSvgIcon } from "@/app/_components/svg-icons/user-roles/commander-svg-icon";
-import { ExemptSvgIcon } from "@/app/_components/svg-icons/user-roles/exempt-svg-icon";
-import { OfficerSvgIcon } from "@/app/_components/svg-icons/user-roles/officer-svg-repo";
-import { SquadSvgIcon } from "@/app/_components/svg-icons/user-roles/squad-svg-icon";
+import { userRoleIcons } from "@/app/_components/svg-icons/user-roles/user-role-icons";
 import { cn } from "@/app/_utils/cn";
 import { UserRole } from "@prisma/client";
 import clsx from "clsx";
@@ -28,13 +24,6 @@ const onCheckClassNames: Record<UserRole, string> = {
 	[UserRole.EXEMPT]: "has-[:checked]:bg-role-exempt",
 };
 
-const roleIcons: Record<UserRole, (params: SvgIconProps) => React.ReactNode> = {
-	[UserRole.SQUAD]: SquadSvgIcon,
-	[UserRole.OFFICER]: OfficerSvgIcon,
-	[UserRole.COMMANDER]: CommanderSvgIcon,
-	[UserRole.EXEMPT]: ExemptSvgIcon,
-};
-
 // size-5 md:size-6
 export function UserRolesSelector(props: UserRolesSelectorProps) {
 	function onContainerChange() {
@@ -55,7 +44,7 @@ export function UserRolesSelector(props: UserRolesSelectorProps) {
 				{
 					Object.entries(props.rolesCheckboxRefs).map(([ role, ref ]) => {
 						const iconObj = {
-							icon: roleIcons[role as UserRole],
+							icon: userRoleIcons[role as UserRole],
 						};
 
 						return (
