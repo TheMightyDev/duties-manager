@@ -74,11 +74,6 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 							isVisible: isLoggedUserOrAdmin,
 							contents: periods && <PeriodsContainer periods={periods} />,
 						},
-						{
-							title: "פטורים",
-							isVisible: isLoggedUserOrAdmin,
-							contents: <p>yooo33</p>,
-						},
 					]}
 				/>
 			</div>
