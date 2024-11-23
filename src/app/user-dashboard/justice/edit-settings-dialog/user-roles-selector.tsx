@@ -1,3 +1,4 @@
+import { type SvgIconProps } from "@/app/_components/svg-icons/common-svg-icon-props";
 import { CommanderSvgIcon } from "@/app/_components/svg-icons/user-roles/commander-svg-icon";
 import { ExemptSvgIcon } from "@/app/_components/svg-icons/user-roles/exempt-svg-icon";
 import { OfficerSvgIcon } from "@/app/_components/svg-icons/user-roles/officer-svg-repo";
@@ -5,7 +6,7 @@ import { SquadSvgIcon } from "@/app/_components/svg-icons/user-roles/squad-svg-i
 import { cn } from "@/app/_utils/cn";
 import { UserRole } from "@prisma/client";
 import clsx from "clsx";
-import { type ReactNode, type RefObject } from "react";
+import { type RefObject } from "react";
 
 interface UserRolesSelectorProps {
 	rolesCheckboxRefs: Record<UserRole, RefObject<HTMLInputElement>>;
@@ -14,26 +15,27 @@ interface UserRolesSelectorProps {
 }
 
 const accentClassNames: Record<UserRole, string> = {
-	[UserRole.SQUAD]: "accent-[#8843F2]",
-	[UserRole.OFFICER]: "accent-[#59D5E0]",
-	[UserRole.COMMANDER]: "accent-[#FAA300]",
-	[UserRole.EXEMPT]: "accent-[#F4538A]",
+	[UserRole.SQUAD]: "accent-role-squad",
+	[UserRole.OFFICER]: "accent-role-officer",
+	[UserRole.COMMANDER]: "accent-role-commander",
+	[UserRole.EXEMPT]: "accent-role-exempt",
 };
 
 const onCheckClassNames: Record<UserRole, string> = {
-	[UserRole.SQUAD]: "has-[:checked]:bg-[#8843F2]",
-	[UserRole.OFFICER]: "has-[:checked]:bg-[#59D5E0]",
-	[UserRole.COMMANDER]: "has-[:checked]:bg-[#FAA300]",
-	[UserRole.EXEMPT]: "has-[:checked]:bg-[#F4538A]",
+	[UserRole.SQUAD]: "has-[:checked]:bg-role-squad",
+	[UserRole.OFFICER]: "has-[:checked]:bg-role-officer",
+	[UserRole.COMMANDER]: "has-[:checked]:bg-role-commander",
+	[UserRole.EXEMPT]: "has-[:checked]:bg-role-exempt",
 };
 
-const roleIcons: Record<UserRole, ReactNode> = {
-	[UserRole.SQUAD]: <SquadSvgIcon className="size-5 md:size-6" />,
-	[UserRole.OFFICER]: <OfficerSvgIcon className="size-5 md:size-6" />,
-	[UserRole.COMMANDER]: <CommanderSvgIcon className="size-5 md:size-6" />,
-	[UserRole.EXEMPT]: <ExemptSvgIcon className="size-5 md:size-6" />,
+const roleIcons: Record<UserRole, (params: SvgIconProps) => React.ReactNode> = {
+	[UserRole.SQUAD]: SquadSvgIcon,
+	[UserRole.OFFICER]: OfficerSvgIcon,
+	[UserRole.COMMANDER]: CommanderSvgIcon,
+	[UserRole.EXEMPT]: ExemptSvgIcon,
 };
 
+// size-5 md:size-6
 export function UserRolesSelector(props: UserRolesSelectorProps) {
 	function onContainerChange() {
 		const selectedRoles = Object.entries(props.rolesCheckboxRefs)
@@ -52,6 +54,10 @@ export function UserRolesSelector(props: UserRolesSelectorProps) {
 			>
 				{
 					Object.entries(props.rolesCheckboxRefs).map(([ role, ref ]) => {
+						const iconObj = {
+							icon: roleIcons[role as UserRole],
+						};
+
 						return (
 							<label
 								className={cn(
@@ -68,7 +74,7 @@ export function UserRolesSelector(props: UserRolesSelectorProps) {
 										accentClassNames[role as UserRole]
 									)}
 								/>
-								{roleIcons[role as UserRole]}
+								<iconObj.icon className="size-5 md:size-6" />
 								<span className="inline-block md:hidden">
 									{role}
 								</span>
