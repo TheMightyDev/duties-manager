@@ -7,6 +7,7 @@ import { type Dispatch, type MutableRefObject, type SetStateAction, useEffect, u
 
 interface Params {
 	fetchUsersJustice: FetchUsersJusticeFunc;
+	loggedUserLatestRole?: UserRole;
 }
 
 export interface UseJusticeOverviewReturn {
@@ -17,12 +18,16 @@ export interface UseJusticeOverviewReturn {
 	changeColIdToSortBy: (colId: UserJusticeTableColId) => void;
 	isEditSettingsDialogOpen: boolean;
 	setIsEditSettingsDialogOpen: Dispatch<SetStateAction<boolean>>;
+	loggedUserLatestRole?: UserRole;
 }
 
-export function useJusticeOverview({ fetchUsersJustice }: Params): UseJusticeOverviewReturn {
+export function useJusticeOverview({
+	fetchUsersJustice,
+	loggedUserLatestRole,
+}: Params): UseJusticeOverviewReturn {
 	const settingsRef = useRef<UsersJusticeTableSettings>({
 		fetchParams: {
-			roles: [ UserRole.SQUAD ],
+			roles: [ loggedUserLatestRole ?? UserRole.SQUAD ],
 			definitiveDate: new Date(),
 			includeExemptAndAbsentUsers: true,
 		},
@@ -95,5 +100,6 @@ export function useJusticeOverview({ fetchUsersJustice }: Params): UseJusticeOve
 		changeColIdToSortBy,
 		isEditSettingsDialogOpen,
 		setIsEditSettingsDialogOpen,
+		loggedUserLatestRole,
 	};
 }

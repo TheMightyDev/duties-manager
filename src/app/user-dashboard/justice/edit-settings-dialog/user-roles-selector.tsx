@@ -9,6 +9,7 @@ import { type ReactNode, type RefObject } from "react";
 interface UserRolesSelectorProps {
 	rolesCheckboxRefs: Record<UserRole, RefObject<HTMLInputElement>>;
 	handleRolesSelectionChange?: (nextSelectedRoles: UserRole[]) => void;
+	defaultCheckedRole?: UserRole;
 }
 
 const accentClassNames: Record<UserRole, string> = {
@@ -32,16 +33,13 @@ const roleIcons: Record<UserRole, ReactNode> = {
 	[UserRole.EXEMPT]: <ExemptSvgIcon className="size-5 md:size-6" />,
 };
 
-export function UserRolesSelector({
-	rolesCheckboxRefs,
-	handleRolesSelectionChange,
-}: UserRolesSelectorProps) {
+export function UserRolesSelector(props: UserRolesSelectorProps) {
 	function onContainerChange() {
-		const selectedRoles = Object.entries(rolesCheckboxRefs)
+		const selectedRoles = Object.entries(props.rolesCheckboxRefs)
 			.filter(([ _, ref ]) => ref.current?.checked)
 			.map(([ role ]) => role as UserRole);
 		
-		handleRolesSelectionChange?.(selectedRoles);
+		props.handleRolesSelectionChange?.(selectedRoles);
 	}
 	
 	return (
@@ -52,7 +50,7 @@ export function UserRolesSelector({
 				onChange={onContainerChange}
 			>
 				{
-					Object.entries(rolesCheckboxRefs).map(([ role, ref ]) => {
+					Object.entries(props.rolesCheckboxRefs).map(([ role, ref ]) => {
 						return (
 							<label
 								className={clsx(
@@ -63,6 +61,7 @@ export function UserRolesSelector({
 								<input
 									type="checkbox"
 									ref={ref}
+									defaultChecked={props.defaultCheckedRole === role}
 									className={clsx(
 										"-bottom-1 -end-1 inline-block accent-green-600  md:absolute",
 										accentClassNames[role as UserRole]

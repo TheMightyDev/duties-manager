@@ -7,6 +7,7 @@ import { useRef } from "react";
 export function JusticeTableHeader({
 	setIsEditSettingsDialogOpen,
 	setSettings,
+	loggedUserLatestRole,
 }: UseJusticeOverviewReturn) {
 	const rolesCheckboxRefs: Record<UserRole, React.RefObject<HTMLInputElement>> = {
 		[UserRole.SQUAD]: useRef<HTMLInputElement>(null),
@@ -25,6 +26,7 @@ export function JusticeTableHeader({
 			</button>
 			<UserRolesSelector
 				rolesCheckboxRefs={rolesCheckboxRefs}
+				defaultCheckedRole={loggedUserLatestRole}
 				handleRolesSelectionChange={(roles) => {
 					setSettings({
 						fetchParams: {

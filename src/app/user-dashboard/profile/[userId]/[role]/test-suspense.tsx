@@ -36,11 +36,6 @@ export async function Test({ userId, role }: TestProps) {
 	
 	console.log("@@@@@@@@@@@@ selectedRecord.role", selectedRecord.role);
 	
-	const assignments = await api.user.getUserAssignments({
-		userId,
-		role: selectedRecord.role,
-	});
-	
 	const userPosition = calcUserPosition({
 		usersJustice: usersJusticeInSameRole,
 		userId,
@@ -52,7 +47,6 @@ export async function Test({ userId, role }: TestProps) {
 		<>
 			<UserProfile
 				userJustice={userJustice!}
-				assignments={assignments!}
 				totalRelevantUsersCount={usersJusticeInSameRole.length}
 				userPosition={userPosition}
 				roleRecords={roleRecords}

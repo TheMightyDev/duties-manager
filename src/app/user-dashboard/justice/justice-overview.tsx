@@ -7,15 +7,21 @@ import { JusticeTableMobile } from "@/app/user-dashboard/justice/mobile/justice-
 import { JusticeTableMobileFabs } from "@/app/user-dashboard/justice/mobile/justice-table-mobile-fabs";
 import { type FetchUsersJusticeFunc } from "@/app/user-dashboard/justice/types";
 import { useJusticeOverview } from "@/app/user-dashboard/justice/use-justice-overview";
+import { type UserRole } from "@prisma/client";
 import { useRef } from "react";
 
 interface JusticeOverviewProps {
 	fetchUsersJustice: FetchUsersJusticeFunc;
+	loggedUserLatestRole?: UserRole;
 }
 
-export function JusticeOverview({ fetchUsersJustice }: JusticeOverviewProps) {
+export function JusticeOverview({
+	fetchUsersJustice,
+	loggedUserLatestRole,
+}: JusticeOverviewProps) {
 	const params = useJusticeOverview({
 		fetchUsersJustice,
+		loggedUserLatestRole,
 	});
 	
 	const someRef = useRef<string>("watch me");
