@@ -49,7 +49,6 @@ export function JusticeOverview({
 				}}
 				applyChanges={params.setSettings}
 			/>
-			<button onClick={clickMe}>click me</button>
 		</>
 	);
 };

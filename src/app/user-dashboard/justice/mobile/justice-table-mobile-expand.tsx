@@ -14,7 +14,7 @@ export function JusticeTableMobileExpand({ userJustice }: JusticeTableMobileExpa
 	} = userJustice;
 	
 	return (
-		<div className="flex flex-row gap-2 pt-1">
+		<div className="flex flex-row justify-center gap-2 pt-1">
 			<ExpandViewInfoBox
 				value={monthsInRole.toFixed(2)}
 				title="חודשים בתפקיד"

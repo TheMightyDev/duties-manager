@@ -15,7 +15,7 @@ export default async function Layout({ children }: Readonly<{ children: React.Re
 			<main className="flex-auto  pb-20 md:pb-0 ">
 				{children}
 			</main>
-			<div className="fixed bottom-16 block h-8 w-screen bg-gradient-to-t from-white md:hidden"></div>
+			<div className="pointer-events-none fixed bottom-16 block h-8 w-screen bg-gradient-to-t from-white md:hidden"></div>
 			<div className="fixed bottom-0 me-4 block h-16 w-screen bg-slate-300 md:hidden">
 				
 			</div>

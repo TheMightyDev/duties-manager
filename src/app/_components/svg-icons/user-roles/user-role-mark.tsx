@@ -19,8 +19,8 @@ export function UserRoleMark({ role }: UserRoleMarkProps) {
 	
 	return (
 		<div className="group relative">
-			<div className={`m-auto size-7 rounded-xl leading-7 text-white ${userRoleBgs[role]}`}>
-				<iconObj.icon className=" size-5"/>
+			<div className={`m-auto size-7 rounded-xl leading-7 text-white ${userRoleBgs[role]} text-center`}>
+				<iconObj.icon className="m-auto size-5"/>
 			</div>
 			<div
 				role="tooltip"
