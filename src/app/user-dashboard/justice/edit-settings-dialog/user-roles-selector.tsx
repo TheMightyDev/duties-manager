@@ -2,6 +2,7 @@ import { CommanderSvgIcon } from "@/app/_components/svg-icons/user-roles/command
 import { ExemptSvgIcon } from "@/app/_components/svg-icons/user-roles/exempt-svg-icon";
 import { OfficerSvgIcon } from "@/app/_components/svg-icons/user-roles/officer-svg-repo";
 import { SquadSvgIcon } from "@/app/_components/svg-icons/user-roles/squad-svg-icon";
+import { cn } from "@/app/_utils/cn";
 import { UserRole } from "@prisma/client";
 import clsx from "clsx";
 import { type ReactNode, type RefObject } from "react";
@@ -53,8 +54,8 @@ export function UserRolesSelector(props: UserRolesSelectorProps) {
 					Object.entries(props.rolesCheckboxRefs).map(([ role, ref ]) => {
 						return (
 							<label
-								className={clsx(
-									"relative block py-1 has-[:checked]:text-white has-[:checked]:ring-indigo-500 md:size-9 md:cursor-pointer md:rounded-xl md:text-center", onCheckClassNames[role as UserRole]
+								className={cn(
+									"relative block py-1 has-[:checked]:text-white has-[:checked]:ring-indigo-500 md:size-9 md:cursor-pointer md:rounded-xl md:text-center bg-white hover:brightness-90", onCheckClassNames[role as UserRole]
 								)}
 								key={`justice-user-role-${role}`}
 							>

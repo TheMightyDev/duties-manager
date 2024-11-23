@@ -30,12 +30,12 @@ export function JusticeTableDesktop({
 									className="cursor-pointer p-2"
 								>
 									{title}
-									<span className="inline-block w-6 font-normal">
-										{
-											id === settingsRef.current.sortParams.colIdToSortBy &&
-											(settingsRef.current.sortParams.ascending ? "↑" : "↓")
-										}
-									</span>
+									{
+										id === settingsRef.current.sortParams.colIdToSortBy &&
+										<span className="inline-block w-6 font-normal">
+											{settingsRef.current.sortParams.ascending ? "↑" : "↓"}
+										</span>
+									}
 								</th>
 							))
 						}
