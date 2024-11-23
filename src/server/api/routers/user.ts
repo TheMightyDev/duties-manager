@@ -13,11 +13,12 @@ import { type RoleRecord, roleRecordSchema } from "@/types/user/role-record";
 import { PeriodStatus, type PrismaClient, UserRole } from "@prisma/client";
 import { endOfDay } from "date-fns";
 
-async function fetchUsersByRole({ role, definitiveDate, ctxDb, includeExemptAndAbsentUsers }: {
+async function fetchUsersByRole({ role, definitiveDate, ctxDb, includeExemptAndAbsentUsers, fetchPrivateDuties }: {
 	ctxDb: PrismaClient;
 	role: UserRole;
 	definitiveDate: Date;
 	includeExemptAndAbsentUsers: boolean;
+	fetchPrivateDuties: boolean;
 }) {
 	const users: UserWithPeriodsAndAssignments[] = await ctxDb.user.findMany({
 		include: {
@@ -57,6 +58,14 @@ async function fetchUsersByRole({ role, definitiveDate, ctxDb, includeExemptAndA
 							lte: definitiveDate,
 						},
 						role: role,
+						...(
+							fetchPrivateDuties
+								? {}
+								// If we only fetch public duties, a requirement for the duty is to not be private
+								: {
+									isPrivate: false,
+								}
+						),
 					},
 				},
 			},
@@ -108,6 +117,8 @@ export const userRouter = createTRPCRouter({
 			definitiveDate: z.date(),
 		}))
 		.query((async ({ ctx, input: { userId, definitiveDate } }) => {
+			const isLoggedUserAdmin = Boolean(ctx.session?.user.isAdmin);
+			
 			const userWithCurrentPeriod = await ctx.db.user.findFirst({
 				include: {
 					periods: {
@@ -182,6 +193,14 @@ export const userRouter = createTRPCRouter({
 									lte: definitiveDate,
 								},
 								role: currentRole,
+								...(
+									isLoggedUserAdmin
+										? {}
+										// If we only fetch public duties, a requirement for the duty is to not be private
+										: {
+											isPrivate: false,
+										}
+								),
 							},
 						},
 					},
@@ -213,6 +232,7 @@ export const userRouter = createTRPCRouter({
 				includeExemptAndAbsentUsers,
 			},
 		}) => {
+			const isLoggedUserAdmin = Boolean(ctx.session?.user.isAdmin);
 			const definitiveDate = _definitiveDate ?? endOfDay(new Date());
 			
 			/** An array of arrays of users - all users in each nested array are of the same role */
@@ -222,6 +242,7 @@ export const userRouter = createTRPCRouter({
 					role,
 					definitiveDate,
 					includeExemptAndAbsentUsers,
+					fetchPrivateDuties: isLoggedUserAdmin,
 				}))
 			);
 			
@@ -321,6 +342,8 @@ export const userRouter = createTRPCRouter({
 			role: z.nativeEnum(UserRole).optional(),
 		}))
 		.query((async ({ ctx, input: { userId, role } }) => {
+			const isLoggedUserAdmin = Boolean(ctx.session?.user.isAdmin);
+			
 			const userWithAssignments = await ctx.db.user.findUnique({
 				where: {
 					id: userId,
@@ -330,6 +353,14 @@ export const userRouter = createTRPCRouter({
 						where: {
 							duty: {
 								role: role,
+								...(
+									isLoggedUserAdmin
+										? {}
+										// If we only fetch public duties, a requirement for the duty is to not be private
+										: {
+											isPrivate: false,
+										}
+								),
 							},
 						},
 						include: {
@@ -341,6 +372,7 @@ export const userRouter = createTRPCRouter({
 									startDate: "desc",
 								},
 							},
+							
 						],
 					},
 				},
