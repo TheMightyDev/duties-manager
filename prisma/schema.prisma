@@ -79,6 +79,7 @@ model Duty {
   role           UserRole
   quantity       Int
   score          Int
+	isPrivate			 Boolean
   description    String?
   assignments    Assignment[]
   organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
