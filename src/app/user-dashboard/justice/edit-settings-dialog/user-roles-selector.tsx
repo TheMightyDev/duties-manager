@@ -35,7 +35,7 @@ export function UserRolesSelector(props: UserRolesSelectorProps) {
 	}
 	
 	return (
-		<>
+		<div>
 			<h4>תפקידים</h4>
 			<div
 				className="md:flex md:gap-1"
@@ -79,6 +79,6 @@ export function UserRolesSelector(props: UserRolesSelectorProps) {
 					})
 				}
 			</div>
-		</>
+		</div>
 	);
 };
