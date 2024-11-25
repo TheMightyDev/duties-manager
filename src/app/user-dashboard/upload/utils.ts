@@ -1,5 +1,4 @@
 import { type ParsedUserAndPeriods } from "@/app/user-dashboard/upload/types";
-import { UTCDate } from "@date-fns/utc";
 import { PeriodStatus, UserRank, UserRole } from "@prisma/client";
 import { addDays } from "date-fns";
 
@@ -52,10 +51,21 @@ export function parseUserInfoStr(userInfoStr: string): ParsedUserAndPeriods {
 	
 	const role = hebrewRoles[roleInHebrew];
 	
+	const digitsInPhoneNumber = phoneNumber.length - (
+		phoneNumber.includes("-") ? 1 : 0
+	);
+	
+	if (digitsInPhoneNumber !== 10) {
+		throw new Error(`${fullNameQuoted} - Invalid phone number (${phoneNumber}) - must be of format 05X-1234567 OR without dash 05X1234567`);
+	}
+	const permanentEntryDate = permanentEntryDateStr === "אין"
+		? null
+		: new Date(permanentEntryDateStr);
+	
 	/** Denotes if the user has a permanent service, but it hasn't started yet, and currently has the role squad */
 	const isInRegularService = (
-		permanentEntryDateStr !== "אין"
-		&& new Date() < new Date(permanentEntryDateStr)
+		permanentEntryDate !== null
+		&& new Date() < permanentEntryDate
 		&& role === UserRole.SQUAD
 	);
 	
@@ -66,7 +76,7 @@ export function parseUserInfoStr(userInfoStr: string): ParsedUserAndPeriods {
 			lastName,
 			gender,
 			phoneNumber,
-			permanentEntryDate: new UTCDate(permanentEntryDateStr),
+			permanentEntryDate,
 		},
 		periods: isInRegularService ? [
 			{

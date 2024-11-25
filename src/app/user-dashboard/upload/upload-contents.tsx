@@ -1,10 +1,11 @@
 "use client";
 
-import { type ParsedUserAndPeriods, type ParseUsersInfoStrReturn } from "@/app/user-dashboard/upload/types";
+import { type ParseUsersInfoStrReturn } from "@/app/user-dashboard/upload/types";
 import { useRef, useState } from "react";
 
 interface UploadContentsProps {
 	validateUsersInfo: (usersInfoUnformatted: string) => Promise<ParseUsersInfoStrReturn>;
+	uploadCachedValidParsedInfo: () => Promise<string>;
 }
 
 enum UploadProgress {
@@ -17,7 +18,7 @@ enum UploadProgress {
 export function UploadContents(props: UploadContentsProps) {
 	const usersInfoTextAreaRef = useRef<HTMLTextAreaElement>(null);
 	const [ errorMessages, setErrorMessages ] = useState<string[]>([]);
-	const parsedInfoRef = useRef<(ParsedUserAndPeriods | undefined)[]>([]);
+	const [ parsedInfoJson, setParsedInfoJson ] = useState<string>("");
 	const [ uploadProgress, setUploadProgress ] = useState<UploadProgress>(UploadProgress.NOTHING_SUBMITTED);
 	
 	function validateInfo() {
@@ -26,7 +27,7 @@ export function UploadContents(props: UploadContentsProps) {
 		
 		props.validateUsersInfo(usersInfoStr).then((data) => {
 			setErrorMessages(data.errorMessages);
-			parsedInfoRef.current = data.parsedInfo;
+			setParsedInfoJson(data.parsedInfoJson);
 			
 			setUploadProgress(
 				data.errorMessages.length > 0
@@ -34,6 +35,12 @@ export function UploadContents(props: UploadContentsProps) {
 					: UploadProgress.CAN_BE_UPLOADED
 			);
 		});
+	}
+	
+	function uploadData() {
+		// The data, only if it passes the validations, is cached on the server
+		// Only a JSON is sent from the server
+		props.uploadCachedValidParsedInfo();
 	}
 	
 	return (
@@ -53,7 +60,7 @@ export function UploadContents(props: UploadContentsProps) {
 				(uploadProgress === UploadProgress.CAN_BE_UPLOADED) &&
 				<>
 					<p>There data is good - let's upload!</p>
-					<button>Upload</button>
+					<button onClick={uploadData}>Upload</button>
 				</>
 			}
 			
@@ -71,7 +78,7 @@ export function UploadContents(props: UploadContentsProps) {
 				
 			}
 			<pre dir="ltr">
-				{ JSON.stringify(parsedInfoRef.current, null, 2) }
+				{ parsedInfoJson }
 			</pre>
 		</>
 	);

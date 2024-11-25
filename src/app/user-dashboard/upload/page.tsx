@@ -1,13 +1,17 @@
-import { type ParseUsersInfoStrReturn } from "@/app/user-dashboard/upload/types";
+import { type ParsedUserAndPeriods, type ParseUsersInfoStrReturn } from "@/app/user-dashboard/upload/types";
 import { UploadContents } from "@/app/user-dashboard/upload/upload-contents";
 import { parseUserInfoStr } from "@/app/user-dashboard/upload/utils";
+
+let cachedValidParsedInfo: ParsedUserAndPeriods[] = [];
 
 export default async function UploadPage() {
 	async function validateUsersInfo(usersInfoStr: string): Promise<ParseUsersInfoStrReturn> {
 		"use server";
 		
+		const isOnlyWhitespaceStr = (str: string) => !/\S/.test(str);
 		const usersInfoStrs = usersInfoStr
-			.split(/\r?\n/g);
+			.split(/\r?\n/g)
+			.filter((line) => !isOnlyWhitespaceStr(line));
 		
 		const errorMessages: string[] = [];
 			
@@ -21,15 +25,30 @@ export default async function UploadPage() {
 			}
 		});
 		
+		if (errorMessages.length === 0) {
+			cachedValidParsedInfo = parsedInfo.filter((info) => info !== undefined);
+		}
+		
 		return {
 			errorMessages,
-			parsedInfo,
+			parsedInfoJson: JSON.stringify(parsedInfo, null, 2),
 		};
+	}
+	
+	async function uploadCachedValidParsedInfo(): Promise<string> {
+		"use server";
+		
+		console.log(cachedValidParsedInfo);
+		
+		return "Upload not initiated";
 	}
 	
 	return (
 		<>
-			<UploadContents validateUsersInfo={validateUsersInfo}/>
+			<UploadContents
+				validateUsersInfo={validateUsersInfo}
+				uploadCachedValidParsedInfo={uploadCachedValidParsedInfo}
+			/>
 		</>
 	);
 };

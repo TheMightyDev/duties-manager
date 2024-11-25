@@ -26,8 +26,8 @@ export default async function Layout({ children }: Readonly<{ children: React.Re
 			id: "calendar",
 			name: "לוח שנה",
 			href: "/user-dashboard/calendar",
-			icon: <CalendarSvgIcon className="size-10 stroke-slate-700"/>,
-			selectedIcon: <CalendarFilledSvgIcon className="size-10 stroke-slate-700"/>,
+			icon: <CalendarSvgIcon className="size-10 stroke-black"/>,
+			selectedIcon: <CalendarFilledSvgIcon className="size-10 stroke-black"/>,
 		},
 		{
 			id: "justice",
