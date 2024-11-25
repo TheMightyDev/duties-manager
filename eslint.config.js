@@ -7,6 +7,9 @@ export default [
 	...tailwind.configs["flat/recommended"],
 	// stylistic.configs["all-flat"],
 	{
+		"ignores": [
+			"prisma/generated/**/*"
+		],
 		"languageOptions": {
 			"parser": tsParser,
 			"parserOptions": {
