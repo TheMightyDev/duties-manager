@@ -57,6 +57,7 @@ export function parseUserInfoStr(userInfoStr: string): ParsedUserAndPeriods {
 	if (digitsInPhoneNumber !== 10) {
 		throw new Error(`${fullNameQuoted} - Invalid phone number (${phoneNumber}) - must be of format 05X-1234567 OR without dash 05X1234567`);
 	}
+	const roleStartDate = new Date(roleStartDateStr);
 	const permanentEntryDate = permanentEntryDateStr === "אין"
 		? null
 		: new Date(permanentEntryDateStr);
@@ -64,7 +65,7 @@ export function parseUserInfoStr(userInfoStr: string): ParsedUserAndPeriods {
 	/** Denotes if the user has a permanent service, but it hasn't started yet, and currently has the role squad */
 	const isInRegularService = (
 		permanentEntryDate !== null
-		&& new Date() < permanentEntryDate
+		&& roleStartDate < permanentEntryDate
 		&& role === UserRole.SQUAD
 	);
 	
@@ -79,7 +80,7 @@ export function parseUserInfoStr(userInfoStr: string): ParsedUserAndPeriods {
 		},
 		periods: isInRegularService ? [
 			{
-				startDate: new Date(roleStartDateStr),
+				startDate: roleStartDate,
 				endDate: new Date(permanentEntryDateStr),
 				role: UserRole.SQUAD,
 				status: PeriodStatus.FULFILLS_ROLE,
@@ -94,7 +95,7 @@ export function parseUserInfoStr(userInfoStr: string): ParsedUserAndPeriods {
 			},
 		] : [
 			{
-				startDate: new Date(roleStartDateStr),
+				startDate: roleStartDate,
 				endDate: new Date(retireDateStr),
 				role,
 				status: PeriodStatus.FULFILLS_ROLE,
