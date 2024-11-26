@@ -321,11 +321,9 @@ export const userRouter = createTRPCRouter({
 				}
 			});
 			
-			const fulfilled = fulfilledRolesSoFar?.filter((role) => role.latestFulfilledDate).sort((recordA, recordB) => (
-				recordA.latestFulfilledDate === null ? -1 : (Number(recordA.latestFulfilledDate) - Number(recordB.latestFulfilledDate) ? 1 : -1)
-			)).concat(
-				fulfilledRolesSoFar.find((f) => f.latestFulfilledDate == null)!
-			);
+			const fulfilled = fulfilledRolesSoFar.sort((recordA, recordB) => (
+				recordA.latestFulfilledDate === null ? 1 : (Number(recordA.latestFulfilledDate) - Number(recordB.latestFulfilledDate) ? 1 : -1)
+			));
 			
 			console.log("@@fulfilledRolesSoFar", fulfilled);
 			

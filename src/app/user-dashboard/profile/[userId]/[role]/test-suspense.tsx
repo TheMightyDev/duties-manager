@@ -1,6 +1,5 @@
 import { calcUserPosition } from "@/app/_utils/justice/calc-user-position";
 import { UserProfile } from "@/app/user-dashboard/profile/[userId]/[role]/components/user-profile";
-import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { UTCDate } from "@date-fns/utc";
 import { type UserRole } from "@prisma/client";
@@ -12,9 +11,6 @@ interface TestProps {
 }
 
 export async function Test({ userId, role }: TestProps) {
-	const session = await auth();
-	const isLoggedUserOrAdmin = session?.user.id === userId || session?.user.isAdmin;
-	
 	const roleRecords = await api.user.getAllUserRolesById(userId);
 	
 	if (!roleRecords) {
