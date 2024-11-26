@@ -1,16 +1,24 @@
 import {
-	createTRPCRouter,
-	protectedProcedure
+	adminProcedure,
+	createTRPCRouter
 } from "@/server/api/trpc";
-import { UserSchema } from "prisma/generated/zod";
+import { PeriodSchema, UserSchema } from "prisma/generated/zod";
 import { z } from "zod";
 
 export const uploadRouter = createTRPCRouter({
-	uploadUsers: protectedProcedure
+	uploadUsers: adminProcedure
 		.input(z.array(UserSchema))
 		.query((async ({ ctx, input: users }) => {
-			await ctx.db.user.createMany({
+			return await ctx.db.user.createMany({
 				data: users,
+			});
+		})),
+	
+	uploadPeriods: adminProcedure
+		.input(z.array(PeriodSchema))
+		.query((async ({ ctx, input: periods }) => {
+			return await ctx.db.period.createMany({
+				data: periods,
 			});
 		})),
 });
