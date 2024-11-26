@@ -1,7 +1,8 @@
-import { type ParsedUserAndPeriods, type ParseUsersInfoStrReturn } from "@/app/user-dashboard/upload/types";
+import { type ParsedUserAndPeriods, type ParseUsersInfoStrReturn, type UploadCounts } from "@/app/user-dashboard/upload/types";
 import { UploadContents } from "@/app/user-dashboard/upload/upload-contents";
 import { parseUserInfoStr } from "@/app/user-dashboard/upload/utils";
 import { auth } from "@/server/auth";
+import { api } from "@/trpc/server";
 import { createId } from "@paralleldrive/cuid2";
 import { type Period, type User } from "@prisma/client";
 
@@ -38,7 +39,7 @@ export default async function UploadPage() {
 		};
 	}
 	
-	async function uploadCachedValidParsedInfo(): Promise<string> {
+	async function uploadCachedValidParsedInfo(): Promise<UploadCounts> {
 		"use server";
 		
 		// The APIs for periods and user were designed to expect
@@ -80,7 +81,14 @@ export default async function UploadPage() {
 		
 		console.log(insertedPeriods);
 		
-		return "Upload not initiated";
+		const uploadUsersResult = await api.upload.uploadUsers(insertedUsers);
+		
+		const uploadPeriodsResult = await api.upload.uploadPeriods(insertedPeriods);
+		
+		return {
+			users: uploadUsersResult.count,
+			periods: uploadPeriodsResult.count,
+		};
 	}
 	
 	return (

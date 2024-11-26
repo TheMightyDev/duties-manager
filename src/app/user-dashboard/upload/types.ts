@@ -10,3 +10,8 @@ export interface ParseUsersInfoStrReturn {
 	/** Array of the parsed data of each line, if the parsing failed, the value is `undefined` */
 	parsedInfoJson: string;
 }
+
+export interface UploadCounts {
+	users: number;
+	periods: number;
+}
