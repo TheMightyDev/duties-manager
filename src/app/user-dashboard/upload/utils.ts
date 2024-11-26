@@ -1,6 +1,5 @@
 import { type ParsedUserAndPeriods } from "@/app/user-dashboard/upload/types";
 import { PeriodStatus, UserRank, UserRole } from "@prisma/client";
-import { addDays } from "date-fns";
 
 export function parseUserInfoStr(userInfoStr: string): ParsedUserAndPeriods {
 	const splitData = userInfoStr.split("\t");
@@ -87,7 +86,7 @@ export function parseUserInfoStr(userInfoStr: string): ParsedUserAndPeriods {
 				description: null,
 			},
 			{
-				startDate: addDays(new Date(permanentEntryDateStr), 1),
+				startDate: new Date(permanentEntryDateStr),
 				endDate: new Date(retireDateStr),
 				role: UserRole.OFFICER,
 				status: PeriodStatus.FULFILLS_ROLE,
