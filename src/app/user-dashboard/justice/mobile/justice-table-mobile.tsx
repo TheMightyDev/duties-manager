@@ -16,7 +16,7 @@ export function JusticeTableMobile({ usersJusticeSorted }: JusticeTableMobilePro
 				{
 					usersJusticeSorted.map((userJustice) => (
 						<details
-							className="group select-none odd:bg-slate-200 even:bg-slate-300"
+							className="group/user-record select-none odd:bg-slate-200 even:bg-slate-300"
 							key={userJustice.userId}
 						>
 							<summary className="flex h-10 items-center bg-black/10 px-2 text-lg">
@@ -29,7 +29,7 @@ export function JusticeTableMobile({ usersJusticeSorted }: JusticeTableMobilePro
 								<div className="flex-1 text-start font-mono">
 									{userJustice.weightedScore.toFixed(2)}
 								</div>
-								<LightArrowDownSvgIcon className="size-4 transition-transform duration-200 group-open:-rotate-180"/>
+								<LightArrowDownSvgIcon className="size-4 transition-transform duration-200 group-open/user-record:-rotate-180"/>
 							</summary>
 							<JusticeTableMobileExpand userJustice={userJustice} />
 						</details>
