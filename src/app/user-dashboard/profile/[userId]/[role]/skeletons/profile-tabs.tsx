@@ -1,5 +1,5 @@
-import { Accordion } from "@/app/_components/tabs-and-accordions/accordion";
 import { Tabs } from "@/app/_components/tabs-and-accordions/tabs";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/app/_components/ui/accordion";
 import { DutyAssignments } from "@/app/user-dashboard/profile/[userId]/[role]/components/duty-assignments";
 import { PeriodsContainer } from "@/app/user-dashboard/profile/[userId]/[role]/profile-data-components/periods-container";
 import { auth } from "@/server/auth";
@@ -36,28 +36,31 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 	return (
 		<>
 			<div className="block w-full p-2 sm:hidden">
-				{
-					assignments &&
-					<Accordion
-						title="תורנויות"
-						isOpenByDefault={false}
-					>
-						<DutyAssignments assignments={assignments} />
-						<DutyAssignments assignments={assignments} />
-						<DutyAssignments assignments={assignments} />
-					</Accordion>
-				}
-
-				{
-					periods &&
-					<Accordion
-						title="תפקידים"
-						isOpenByDefault={false}
-					>
-						<PeriodsContainer periods={periods} />
-					</Accordion>
-				}
-				
+				<Accordion
+					type="single"
+					collapsible
+					className="w-full"
+				>
+					{
+						assignments &&
+						<AccordionItem value="duty-assignments">
+							<AccordionTrigger>תורנויות</AccordionTrigger>
+							<AccordionContent>
+								<DutyAssignments assignments={assignments} />
+							</AccordionContent>
+						</AccordionItem>
+					}
+					
+					{
+						periods &&
+						<AccordionItem value="periods">
+							<AccordionTrigger>תפקידים</AccordionTrigger>
+							<AccordionContent>
+								<PeriodsContainer periods={periods} />
+							</AccordionContent>
+						</AccordionItem>
+					}
+				</Accordion>
 			</div>
 			<div className="mt-12 hidden max-h-[70vh] w-full sm:block">
 				<Tabs

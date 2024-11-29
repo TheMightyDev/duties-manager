@@ -58,9 +58,9 @@ export function PeriodRecord({
 			)}
 			>
 				<span className={cn(
-					" absolute -start-4 mt-2 flex size-8 items-center justify-center rounded-full  ring-slate-300 dark:bg-blue-900 dark:ring-gray-900 ring-8",
+					" absolute -start-4 mt-2 flex size-8 items-center justify-center rounded-full  ring-white dark:bg-blue-900 dark:ring-gray-900 ring-8",
 					isCurrentPeriod ? "size-10 -start-5 " : "size-8 -start-4",
-					currentDate > period.startDate ? roleBg[period.role] + " text-white" : roleBorder[period.role] + " p-0.5  border-2 bg-slate-300"
+					currentDate > period.startDate ? roleBg[period.role] + " text-white" : roleBorder[period.role] + " p-0.5  border-2 bg-white"
 				)}
 				>
 					<obj.elem className={clsx("fill-current ", isCurrentPeriod ? "size-7" : "size-6")} />
