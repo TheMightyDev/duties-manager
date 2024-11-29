@@ -1,3 +1,4 @@
+import { JUSTICE_TABLE_SETTINGS_LOCAL_STORAGE_KEY } from "@/app/_utils/constants";
 import { sortUsersJustice } from "@/app/_utils/justice/sort-users-justice";
 import { type UserJusticeTableColId } from "@/app/_utils/justice/users-justice-table-cols";
 import { type FetchUsersJusticeFunc, type UsersJusticeTableSettings } from "@/app/user-dashboard/justice/types";
@@ -21,21 +22,33 @@ export interface UseJusticeOverviewReturn {
 	loggedUserLatestRole?: UserRole;
 }
 
+function getInitialJusticeOverview(loggedUserLatestRole?: UserRole): UsersJusticeTableSettings {
+	const localStorageCache = localStorage.getItem(JUSTICE_TABLE_SETTINGS_LOCAL_STORAGE_KEY);
+		
+	if (localStorageCache) {
+		const parsed = JSON.parse(localStorageCache) as UsersJusticeTableSettings ;
+		parsed.fetchParams.definitiveDate = new Date(parsed.fetchParams.definitiveDate as unknown as string);
+		
+		return parsed as UsersJusticeTableSettings;
+	} else {
+		return {
+			fetchParams: {
+				roles: [ loggedUserLatestRole ?? UserRole.SQUAD ],
+				definitiveDate: new Date(),
+				includeExemptAndAbsentUsers: true,
+			},
+			sortParams: {
+				colIdToSortBy: "weightedScore",
+				ascending: false,
+			},
+		};
+	}
+}
 export function useJusticeOverview({
 	fetchUsersJustice,
 	loggedUserLatestRole,
 }: Params): UseJusticeOverviewReturn {
-	const settingsRef = useRef<UsersJusticeTableSettings>({
-		fetchParams: {
-			roles: [ loggedUserLatestRole ?? UserRole.SQUAD ],
-			definitiveDate: new Date(),
-			includeExemptAndAbsentUsers: true,
-		},
-		sortParams: {
-			colIdToSortBy: "weightedScore",
-			ascending: false,
-		},
-	});
+	const settingsRef = useRef<UsersJusticeTableSettings>(getInitialJusticeOverview(loggedUserLatestRole));
 	
 	const [ isEditSettingsDialogOpen, setIsEditSettingsDialogOpen ] = useState<boolean>(false);
 	const [ usersJusticeSortedAndFiltered, setUsersJusticeSortedAndFiltered ] = useState<UserJustice[]>([]);
@@ -63,6 +76,13 @@ export function useJusticeOverview({
 		);
 	}
 	
+	function updateLocalStorage() {
+		localStorage.setItem(
+			JUSTICE_TABLE_SETTINGS_LOCAL_STORAGE_KEY,
+			JSON.stringify(settingsRef.current)
+		);
+	}
+	
 	function changeSettings(nextSettings: Partial<UsersJusticeTableSettings>) {
 		// If the fetch settings changed
 		if (nextSettings.fetchParams && JSON.stringify(nextSettings.fetchParams) !== JSON.stringify(settingsRef.current.fetchParams)) {
@@ -72,6 +92,7 @@ export function useJusticeOverview({
 			};
 			
 			fetchAndSortUsersJustice();
+			updateLocalStorage();
 			
 			return;
 		} else if (nextSettings.sortParams && JSON.stringify(nextSettings.sortParams) !== JSON.stringify(settingsRef.current.sortParams)) {
@@ -81,6 +102,7 @@ export function useJusticeOverview({
 			};
 			
 			sortAndSetUsersJustice(usersJusticeSortedAndFiltered);
+			updateLocalStorage();
 		}
 	}
 	

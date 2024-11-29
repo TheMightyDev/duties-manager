@@ -8,3 +8,5 @@ export const DAYS_IN_MONTH = 30;
  * kind of duty.
  */
 export const USE_DEFAULT_SCORE = -1;
+
+export const JUSTICE_TABLE_SETTINGS_LOCAL_STORAGE_KEY = "justice-settings";

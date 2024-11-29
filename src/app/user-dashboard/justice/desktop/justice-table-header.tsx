@@ -57,7 +57,7 @@ export function JusticeTableHeader({
 			/>
 			<UserRolesSelector
 				rolesCheckboxRefs={rolesCheckboxRefs}
-				defaultCheckedRole={loggedUserLatestRole}
+				defaultCheckedRoles={settingsRef.current.fetchParams.roles}
 				handleRolesSelectionChange={handleRolesSelectionChange}
 			/>
 		</div>

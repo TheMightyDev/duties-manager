@@ -7,7 +7,7 @@ import { type RefObject } from "react";
 interface UserRolesSelectorProps {
 	rolesCheckboxRefs: Record<UserRole, RefObject<HTMLInputElement>>;
 	handleRolesSelectionChange?: (nextSelectedRoles: UserRole[]) => void;
-	defaultCheckedRole?: UserRole;
+	defaultCheckedRoles?: UserRole[];
 }
 
 const accentClassNames: Record<UserRole, string> = {
@@ -57,7 +57,7 @@ export function UserRolesSelector(props: UserRolesSelectorProps) {
 								<input
 									type="checkbox"
 									ref={ref}
-									defaultChecked={props.defaultCheckedRole === role}
+									defaultChecked={props.defaultCheckedRoles?.includes(role as UserRole)}
 									className={clsx(
 										"-bottom-1 -end-1 inline-block accent-green-600  md:absolute",
 										accentClassNames[role as UserRole]
