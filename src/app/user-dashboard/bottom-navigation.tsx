@@ -23,7 +23,7 @@ export function BottomNavigation(props: BottomNavigationProps) {
 	}
 	
 	return (
-		<div className="fixed bottom-0 me-4 flex h-16 w-screen flex-row justify-around bg-white  text-slate-800 md:hidden dark:bg-slate-800 dark:text-white">
+		<div className="me-4 flex h-[10vh] min-h-16 w-screen flex-row justify-around bg-white  text-slate-800 dark:bg-slate-800 dark:text-white md:hidden">
 			{
 				props.routeInfos.map((routeInfo) => {
 					const isOnRoute = checkIfOnRoute(routeInfo.id);

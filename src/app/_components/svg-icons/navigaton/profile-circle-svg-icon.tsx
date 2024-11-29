@@ -11,7 +11,6 @@ export function ProfileCircleSvgIcon(props: SvgIconProps) {
 			<g id="SVGRepo_iconCarrier">
 				<path
 					d="M12.12 12.78C12.05 12.77 11.96 12.77 11.88 12.78C10.12 12.72 8.71997 11.28 8.71997 9.50998C8.71997 7.69998 10.18 6.22998 12 6.22998C13.81 6.22998 15.28 7.69998 15.28 9.50998C15.27 11.28 13.88 12.72 12.12 12.78Z"
-					stroke="#292D32"
 					strokeWidth="1.5"
 					strokeLinecap="round"
 					strokeLinejoin="round"

@@ -26,29 +26,29 @@ export default async function Layout({ children }: Readonly<{ children: React.Re
 			id: "calendar",
 			name: "לוח שנה",
 			href: "/user-dashboard/calendar",
-			icon: <CalendarSvgIcon className="size-10 stroke-black"/>,
-			selectedIcon: <CalendarFilledSvgIcon className="size-10 stroke-black"/>,
+			icon: <CalendarSvgIcon className="m-auto size-9 stroke-black"/>,
+			selectedIcon: <CalendarFilledSvgIcon className="m-auto size-9 stroke-black"/>,
 		},
 		{
 			id: "justice",
 			name: "טבלת הצדק",
 			href: "/user-dashboard/justice",
-			icon: <JusticeSvgIcon className="m-auto size-10 fill-black p-0.5" />,
-			selectedIcon: <JusticeFilledSvgIcon className="m-auto size-10 fill-white/80 p-0.5" />,
+			icon: <JusticeSvgIcon className="m-auto size-9 fill-black p-0.5" />,
+			selectedIcon: <JusticeFilledSvgIcon className="m-auto size-9 fill-white/80 p-0.5" />,
 		},
 		{
 			id: "my-profile",
 			name: "הפרופיל שלי",
 			href: `/user-dashboard/profile/${loggedUserId}/LATEST`,
-			icon: <ProfileCircleSvgIcon className="m-auto size-10 stroke-black"/>,
-			selectedIcon: <ProfileCircleFilledSvgIcon className="m-auto size-10 fill-white/80"/>,
+			icon: <ProfileCircleSvgIcon className="m-auto size-9 stroke-black"/>,
+			selectedIcon: <ProfileCircleFilledSvgIcon className="m-auto size-9 fill-white/80"/>,
 		},
 		{
 			id: "actions",
 			name: "פעולות",
 			href: "/user-dashboard/upload",
-			icon: <MagicWandSvgIcon className="m-auto size-10 stroke-black"/>,
-			selectedIcon: <MagicWandSvgIcon className="m-auto size-10 stroke-white/80"/>,
+			icon: <MagicWandSvgIcon className="m-auto size-9 stroke-black"/>,
+			selectedIcon: <MagicWandSvgIcon className="m-auto size-9 stroke-white/80"/>,
 		},
 	] as const;
 	
@@ -56,15 +56,17 @@ export default async function Layout({ children }: Readonly<{ children: React.Re
 		<div
 			className="flex w-full flex-col md:flex-row"
 		>
-			<SideNav />
-			<main className="flex-auto pb-20 md:pb-0">
+			<SideNav routeInfos={routeInfos} />
+			<main className="max-h-[90vh] flex-auto overflow-y-auto pb-20 md:pb-0">
 				{children}
 			</main>
-			<div className="pointer-events-none fixed bottom-16 block h-8 w-screen bg-gradient-to-t from-white md:hidden"></div>
-			<BottomNavigation
-				routeInfos={routeInfos}
-				loggedUserId={loggedUserId}
-			/>
+			<div className="fixed bottom-0">
+				<div className="pointer-events-none  block h-8 w-screen bg-gradient-to-t from-white md:hidden"></div>
+				<BottomNavigation
+					routeInfos={routeInfos}
+					loggedUserId={loggedUserId}
+				/>
+			</div>
 		</div>
 	);
 }

@@ -1,8 +1,13 @@
 import { NavLinks } from "@/app/_components/side-nav/nav-links";
+import { type RouteInfo } from "@/app/_types/route-info";
 import { auth } from "@/server/auth";
 import Link from "next/link";
 
-export async function SideNav() {
+interface SideNavProps {
+	routeInfos: RouteInfo[];
+}
+
+export async function SideNav({ routeInfos }: SideNavProps) {
 	const session = await auth();
 	
 	return (
@@ -16,7 +21,10 @@ export async function SideNav() {
 				</div>
 			</Link>
 			<div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">
-				<NavLinks loggedUserId={session?.user.id ?? ""}/>
+				<NavLinks
+					routeInfos={routeInfos}
+					loggedUserId={session?.user.id ?? ""}
+				/>
 				<div className="hidden h-auto w-full grow rounded-md bg-gray-50 md:block"></div>
 				<form>
 					<Link
