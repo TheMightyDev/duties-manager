@@ -1,7 +1,10 @@
 "use client";
 
+import { UserRoleMark } from "@/app/_components/svg-icons/user-roles/user-role-mark";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/_components/ui/select";
 import { type ProfileRoleSelectorProps } from "@/app/user-dashboard/profile/[userId]/[role]/types";
 import { type UserRole } from "@prisma/client";
+import { DirectionProvider } from "@radix-ui/react-direction";
 import { usePathname, useRouter } from "next/navigation";
 
 export function ProfileRoleSelector({ roleRecords, selectedRole }: ProfileRoleSelectorProps) {
@@ -26,33 +29,44 @@ export function ProfileRoleSelector({ roleRecords, selectedRole }: ProfileRoleSe
 	// 	router.prefetch(switchRoleInPathname("LATEST"));
 	// }, []);
 	
-	function handleChange(event: React.ChangeEvent<HTMLSelectElement>) {
-		const nextRole = event.target.value as UserRole;
-		
-		router.push(switchRoleInPathname(nextRole));
+	function handleValueChange(nextRole: string) {
+		router.push(switchRoleInPathname(nextRole as UserRole));
 	}
 	
 	return (
-		<select
-			value={selectedRole}
-			onChange={handleChange}
-		>
-			{
-				roleRecords.map((record, i) => {
-					const value = i === roleRecords.length - 1 ? "LATEST" : record.role;
-					
-					return (
-						<option
-							value={value}
-							key={value}
-						>
-							{record.role} - {record.latestFulfilledDate
-								? "עבר"
-								: "נוכחי"}
-						</option>
-					);
-				})
-			}
-		</select>
+		<>
+			<DirectionProvider dir="rtl">
+				<Select
+					value={selectedRole}
+					onValueChange={handleValueChange}
+				>
+					<SelectTrigger className="w-[180px]">
+						<SelectValue placeholder="Theme" />
+					</SelectTrigger>
+					<SelectContent>
+						{
+							roleRecords.map((record, i) => {
+								const value = i === roleRecords.length - 1 ? "LATEST" : record.role;
+							
+								return (
+									<SelectItem
+										value={value}
+										key={value}
+									>
+										<UserRoleMark
+											role={record.role}
+											hasTooltip={false}
+										/>
+										{record.role} - {record.latestFulfilledDate
+											? "עבר"
+											: "נוכחי"}
+									</SelectItem>
+								);
+							})
+						}
+					</SelectContent>
+				</Select>
+			</DirectionProvider>
+		</>
 	);
 };

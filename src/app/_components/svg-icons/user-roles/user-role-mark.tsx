@@ -10,25 +10,29 @@ const userRoleBgs: Record<UserRole, string> = {
 
 interface UserRoleMarkProps {
 	role: UserRole;
+	hasTooltip?: boolean;
 }
 
-export function UserRoleMark({ role }: UserRoleMarkProps) {
+export function UserRoleMark({ role, hasTooltip = true }: UserRoleMarkProps) {
 	const iconObj = {
 		icon: userRoleIcons[role],
 	};
 	
 	return (
-		<div className="group/role-mark relative">
+		<div className="group/role-mark relative inline-block">
 			<div className={`m-auto size-7 rounded-xl leading-7 text-white ${userRoleBgs[role]} text-center`}>
 				<iconObj.icon className="m-auto size-5"/>
 			</div>
-			<div
-				role="tooltip"
-				className="absolute left-1/2 top-full z-10 mt-2 hidden w-max -translate-x-1/2 rounded bg-slate-500 px-2 py-1 text-xs text-white group-hover/role-mark:block"
-			>
-				{role}
-				<div className="absolute bottom-full left-1/2 size-0 -translate-x-1/2 border-x-4 border-b-4 border-x-transparent border-b-slate-500"></div>
-			</div>
+			{
+				hasTooltip &&
+				<div
+					role="tooltip"
+					className="absolute left-1/2 top-full z-10 mt-2 hidden w-max -translate-x-1/2 rounded bg-slate-500 px-2 py-1 text-xs text-white group-hover/role-mark:block"
+				>
+					{role}
+					<div className="absolute bottom-full left-1/2 size-0 -translate-x-1/2 border-x-4 border-b-4 border-x-transparent border-b-slate-500"></div>
+				</div>
+			}
 		</div>
 	);
 };

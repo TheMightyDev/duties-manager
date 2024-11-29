@@ -5,7 +5,10 @@ import { type UserProfileProps } from "@/app/user-dashboard/profile/[userId]/[ro
 export function UserProfile(props: UserProfileProps) {
 	return (
 		<div className="flex flex-col">
-			<h2 className="sticky top-0 h-12 bg-white/50 p-1 text-xl backdrop-blur-md">
+			<h2
+				className="sticky top-0 flex h-12 flex-row gap-2 bg-white/50 p-1 text-xl backdrop-blur-md"
+				dir="rtl"
+			>
 				<span className="text-3xl font-bold">
 					{props.userJustice.userFullName}
 				</span>

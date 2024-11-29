@@ -53,7 +53,9 @@ export default async function Layout({ children }: Readonly<{ children: React.Re
 	] as const;
 	
 	return (
-		<div className="flex w-full flex-col md:flex-row">
+		<div
+			className="flex w-full flex-col md:flex-row"
+		>
 			<SideNav />
 			<main className="flex-auto pb-20 md:pb-0">
 				{children}

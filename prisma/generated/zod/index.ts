@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import type { Prisma } from '@prisma/client';
 
 /////////////////////////////////////////
 // HELPER FUNCTIONS
@@ -74,7 +75,7 @@ export type UserRankType = `${z.infer<typeof UserRankSchema>}`
 /////////////////////////////////////////
 
 export const AccountSchema = z.object({
-  id: z.string().cuid2(),
+  id: z.string().cuid(),
   userId: z.string(),
   type: z.string(),
   provider: z.string(),
@@ -96,7 +97,7 @@ export type Account = z.infer<typeof AccountSchema>
 /////////////////////////////////////////
 
 export const SessionSchema = z.object({
-  id: z.string().cuid2(),
+  id: z.string().cuid(),
   sessionToken: z.string(),
   userId: z.string(),
   expires: z.coerce.date(),
@@ -110,7 +111,7 @@ export type Session = z.infer<typeof SessionSchema>
 
 export const UserSchema = z.object({
   rank: UserRankSchema,
-  id: z.string().cuid2(),
+  id: z.string().cuid(),
   firstName: z.string(),
   lastName: z.string(),
   isAdmin: z.boolean(),
@@ -140,7 +141,7 @@ export type VerificationToken = z.infer<typeof VerificationTokenSchema>
 /////////////////////////////////////////
 
 export const OrganizationSchema = z.object({
-  id: z.string().cuid2(),
+  id: z.string().cuid(),
   name: z.string(),
   description: z.string().nullable(),
 })
@@ -154,7 +155,7 @@ export type Organization = z.infer<typeof OrganizationSchema>
 export const DutySchema = z.object({
   kind: DutyKindSchema,
   role: UserRoleSchema,
-  id: z.string().cuid2(),
+  id: z.string().cuid(),
   organizationId: z.string(),
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
@@ -171,7 +172,7 @@ export type Duty = z.infer<typeof DutySchema>
 /////////////////////////////////////////
 
 export const AssignmentSchema = z.object({
-  id: z.string().cuid2(),
+  id: z.string().cuid(),
   dutyId: z.string(),
   assigneeId: z.string(),
   reserveId: z.string().nullable(),
@@ -187,7 +188,7 @@ export type Assignment = z.infer<typeof AssignmentSchema>
 export const PeriodSchema = z.object({
   role: UserRoleSchema,
   status: PeriodStatusSchema,
-  id: z.string().cuid2(),
+  id: z.string().cuid(),
   userId: z.string(),
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
@@ -202,7 +203,7 @@ export type Period = z.infer<typeof PeriodSchema>
 
 export const ExemptionSchema = z.object({
   impact: ExemptionImpactSchema,
-  id: z.string().cuid2(),
+  id: z.string().cuid(),
   userId: z.string(),
   startDate: z.coerce.date(),
   endDate: z.coerce.date().nullable(),
@@ -218,7 +219,7 @@ export type Exemption = z.infer<typeof ExemptionSchema>
 export const PreferenceSchema = z.object({
   importance: PreferenceImportanceSchema,
   kind: PreferenceKindSchema,
-  id: z.string().cuid2(),
+  id: z.string().cuid(),
   userId: z.string(),
   startDate: z.coerce.date(),
   endDate: z.coerce.date(),
