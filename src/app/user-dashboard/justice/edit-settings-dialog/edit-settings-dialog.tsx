@@ -1,4 +1,5 @@
 import { Dialog } from "@/app/_components/dialog/dialog";
+import { Button } from "@/app/_components/ui/button";
 import { type UserJusticeTableColId } from "@/app/_utils/justice/users-justice-table-cols";
 import { DefinitiveDateSelector } from "@/app/user-dashboard/justice/edit-settings-dialog/definitive-date-selector";
 import { SortSettingsSection } from "@/app/user-dashboard/justice/edit-settings-dialog/sort-params-section";
@@ -117,12 +118,18 @@ export function EditSettingsDialog({
 				customDateInputRef={customDefinitiveDateInputRef}
 			/>
 			
-			<button onClick={closeDialog}>
+			<Button
+				onClick={closeDialog}
+				variant="ghost"
+			>
 				ביטול
-			</button>
-			<button onClick={closeAndApplyChanges}>
+			</Button>
+			<Button
+				onClick={closeAndApplyChanges}
+				className="bg-blue-500 hover:bg-blue-600"
+			>
 				החלה
-			</button>
+			</Button>
 		</Dialog>
 	);
 };

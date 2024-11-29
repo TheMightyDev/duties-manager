@@ -23,7 +23,7 @@ export function FloatingActionButton({
 			onClick={handleClick}
 			className={cn(
 				"fixed end-4 z-10 rounded-2xl bg-purple-400 ",
-				level === 1 ? "bottom-20 size-16 shadow-xl" : "bottom-[9.5rem] size-14 shadow-md",
+				level === 1 ? "bottom-[11vh] size-16 shadow-xl" : "bottom-[calc(11vh+4.5rem)] size-14 shadow-md",
 				className
 			)}
 		>

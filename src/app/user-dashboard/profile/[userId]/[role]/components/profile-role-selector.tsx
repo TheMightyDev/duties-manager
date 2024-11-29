@@ -40,7 +40,7 @@ export function ProfileRoleSelector({ roleRecords, selectedRole }: ProfileRoleSe
 					value={selectedRole}
 					onValueChange={handleValueChange}
 				>
-					<SelectTrigger className="w-[180px]">
+					<SelectTrigger className="w-[200px]">
 						<SelectValue placeholder="Theme" />
 					</SelectTrigger>
 					<SelectContent>
@@ -53,13 +53,16 @@ export function ProfileRoleSelector({ roleRecords, selectedRole }: ProfileRoleSe
 										value={value}
 										key={value}
 									>
-										<UserRoleMark
-											role={record.role}
-											hasTooltip={false}
-										/>
-										{record.role} - {record.latestFulfilledDate
-											? "עבר"
-											: "נוכחי"}
+										<div className="flex flex-row items-center gap-2">
+											<UserRoleMark
+												role={record.role}
+												hasTooltip={false}
+											/>
+											<span>
+												{record.role} - {record.latestFulfilledDate
+													? "עבר"
+													: "נוכחי"}</span>
+										</div>
 									</SelectItem>
 								);
 							})
