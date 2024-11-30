@@ -12,7 +12,7 @@ export function BottomNavigation({ routeInfos, loggedUserId }: BottomNavigationP
 	const pathname = usePathname();
 	
 	return (
-		<div className="me-4 flex h-[10vh] min-h-16 w-screen flex-row items-center justify-around  bg-white text-slate-800 dark:bg-slate-800 dark:text-white md:hidden">
+		<div className="me-4 flex h-[10vh] min-h-16 w-screen flex-row items-center justify-around  border-t-2 bg-white text-slate-700 dark:bg-slate-800 dark:text-white md:hidden">
 			{
 				routeInfos.map((routeInfo) => {
 					const isOnRoute = checkIfOnRoute({
@@ -31,7 +31,7 @@ export function BottomNavigation({ routeInfos, loggedUserId }: BottomNavigationP
 							<div className={clsx(
 								"flex items-center",
 								isOnRoute
-									? "h-10 w-20 rounded-full bg-blue-800 transition-all"
+									? "h-10 w-20 rounded-full bg-blue-200 transition-all"
 									: "size-10"
 							)}
 							>

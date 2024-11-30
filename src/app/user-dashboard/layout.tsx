@@ -29,28 +29,28 @@ export default async function Layout({ children }: Readonly<{ children: React.Re
 			name: "לוח שנה",
 			href: "/user-dashboard/calendar",
 			icon: <CalendarSvgIcon className="m-auto size-9 stroke-black"/>,
-			selectedIcon: <CalendarFilledSvgIcon className="m-auto size-9 stroke-black md:stroke-blue-600"/>,
+			selectedIcon: <CalendarFilledSvgIcon className="m-auto size-9 stroke-blue-600"/>,
 		},
 		{
 			id: "justice",
 			name: "טבלת הצדק",
 			href: "/user-dashboard/justice",
 			icon: <JusticeSvgIcon className="m-auto size-9 fill-black p-0.5" />,
-			selectedIcon: <JusticeFilledSvgIcon className="m-auto size-9 fill-white/80 p-0.5 md:fill-blue-600" />,
+			selectedIcon: <JusticeFilledSvgIcon className="m-auto size-9 fill-blue-600 p-0.5" />,
 		},
 		{
 			id: "my-profile",
 			name: "הפרופיל שלי",
 			href: `/user-dashboard/profile/${loggedUserId}/LATEST`,
 			icon: <ProfileCircleSvgIcon className="m-auto size-9 stroke-black"/>,
-			selectedIcon: <ProfileCircleFilledSvgIcon className="m-auto size-9 fill-white/80 md:fill-blue-600"/>,
+			selectedIcon: <ProfileCircleFilledSvgIcon className="m-auto size-9 fill-blue-600 "/>,
 		},
 		{
 			id: "actions",
 			name: "פעולות",
 			href: "/user-dashboard/actions",
 			icon: <MagicWandSvgIcon className="m-auto size-9 stroke-black"/>,
-			selectedIcon: <MagicWandSvgIcon className="m-auto size-9 stroke-white/80 md:stroke-blue-600"/>,
+			selectedIcon: <MagicWandSvgIcon className="m-auto size-9 stroke-blue-600"/>,
 		},
 	] as const;
 	
@@ -64,11 +64,10 @@ export default async function Layout({ children }: Readonly<{ children: React.Re
 			className="flex w-full flex-col md:flex-row"
 		>
 			<SideNav {...linkGroupProps} />
-			<main className="max-h-[90vh] flex-auto overflow-y-auto pb-20 md:max-h-screen md:pb-0">
+			<main className="max-h-[90vh] flex-auto overflow-y-auto md:max-h-screen md:pb-0">
 				{children}
 			</main>
 			<div className="fixed bottom-0">
-				<div className="pointer-events-none  block h-8 w-screen bg-gradient-to-t from-white md:hidden"></div>
 				<BottomNavigation {...linkGroupProps}	/>
 			</div>
 		</div>
