@@ -2,6 +2,7 @@ import { UTCDate } from "@date-fns/utc";
 import { z } from "zod";
 
 import {
+	adminProcedure,
 	createTRPCRouter,
 	protectedProcedure,
 	publicProcedure
@@ -10,7 +11,7 @@ import { userWithAllEventsInclude } from "@/server/api/types/user-with-all-event
 import { type UserWithPeriodsAndAssignments } from "@/server/api/types/user-with-periods-and-assignments";
 import { calcUserJustice } from "@/server/api/utils/calc-user-justice";
 import { type RoleRecord, roleRecordSchema } from "@/types/user/role-record";
-import { PeriodStatus, type PrismaClient, UserRole } from "@prisma/client";
+import { PeriodStatus, type PrismaClient, type User, UserRole } from "@prisma/client";
 import { endOfDay } from "date-fns";
 
 async function fetchUsersByRole({ role, definitiveDate, ctxDb, includeExemptAndAbsentUsers, fetchPrivateDuties }: {
@@ -395,5 +396,36 @@ export const userRouter = createTRPCRouter({
 			});
 			
 			return userWithPeriods?.periods;
+		})),
+		
+	/** Returns an object whose keys are full names of each
+	 * user in the organization, and values are the IDs.
+	 * E.g. a pair in this object can be:
+	 * ```
+	 * John Black - 8jhwsjsdr34
+	 * ```
+	 */
+	getAllUsersFullNameAndId: adminProcedure
+		.query((async ({ ctx }) => {
+			const allUsers = await ctx.db.user.findMany({
+				select: {
+					id: true,
+					firstName: true,
+					lastName: true,
+				},
+				where: {
+					organizationId: ctx.session.user.organizationId,
+				},
+			});
+			
+			/** An object where each key is a full name of a user in the organization and the value is its ID */
+			const allUsersIds: Record<string, User["id"]> = {};
+			
+			allUsers.forEach((user) => {
+				const fullName = user.firstName + " " + user.lastName;
+				allUsersIds[fullName] = user.id;
+			});
+			
+			return allUsersIds;
 		})),
 });
