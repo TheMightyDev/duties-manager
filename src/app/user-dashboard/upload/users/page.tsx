@@ -1,5 +1,5 @@
 import { type ParsedUserAndPeriods, type ParseUsersInfoStrReturn, type UploadCounts } from "@/app/user-dashboard/upload/types";
-import { UploadContents } from "@/app/user-dashboard/upload/upload-contents";
+import { UploadContents } from "@/app/user-dashboard/upload/users/upload-contents";
 import { parseUserInfoStr } from "@/app/user-dashboard/upload/utils";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
@@ -8,7 +8,7 @@ import { type Period, type User } from "@prisma/client";
 
 let cachedValidParsedInfo: ParsedUserAndPeriods[] = [];
 
-export default async function UploadPage() {
+export default async function UploadUsersPage() {
 	async function validateUsersInfo(usersInfoStr: string): Promise<ParseUsersInfoStrReturn> {
 		"use server";
 		
