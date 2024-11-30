@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/app/_utils";
-import { checkIfOnRoute } from "@/app/user-dashboard/(layout)/checkIfOnRoute";
+import { checkIfOnRoute } from "@/app/user-dashboard/(layout)/check-if-on-route";
 import { type LinkGroupProps } from "@/app/user-dashboard/(layout)/types";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
