@@ -28,7 +28,7 @@ export async function SideNav(props: SideNavProps) {
 					>
 						<div>I</div>
 						<div className="hidden md:block">
-							התנתקות ({session?.user.id})
+							התנתקות ({session?.user.fullName})
 						</div>
 					</Link>
 				</form>

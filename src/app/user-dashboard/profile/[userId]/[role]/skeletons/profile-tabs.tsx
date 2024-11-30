@@ -1,5 +1,4 @@
-import { Tabs } from "@/app/_components/tabs-and-accordions/tabs";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/app/_components/ui/accordion";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/_components/ui/tabs";
 import { DutyAssignments } from "@/app/user-dashboard/profile/[userId]/[role]/components/duty-assignments";
 import { PeriodsContainer } from "@/app/user-dashboard/profile/[userId]/[role]/profile-data-components/periods-container";
 import { auth } from "@/server/auth";
@@ -37,59 +36,45 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 	
 	return (
 		<>
-			<div className="block w-full p-2 md:hidden">
-				<Accordion
-					type="single"
-					collapsible
-					className="w-full"
+			<Tabs
+				defaultValue="account"
+				className="max-w-[400px] lg:mt-12"
+			>
+				<TabsList
+					className="grid w-full grid-cols-2"
+					dir="rtl"
 				>
 					{
 						assignments &&
-						<AccordionItem value="duty-assignments">
-							<AccordionTrigger>תורנויות</AccordionTrigger>
-							<AccordionContent>
-								<DutyAssignments assignments={assignments} />
-							</AccordionContent>
-						</AccordionItem>
+						<TabsTrigger value="assignments">שיבוצים</TabsTrigger>
 					}
-					
 					{
 						periods &&
-						<AccordionItem value="periods">
-							<AccordionTrigger>תפקידים</AccordionTrigger>
-							<AccordionContent>
-								<PeriodsContainer
-									periods={periods}
-									isLoggedUserNotAdmin={isLoggedUserNotAdmin}
-								/>
-							</AccordionContent>
-						</AccordionItem>
+						<TabsTrigger value="periods">תפקידים</TabsTrigger>
 					}
-				</Accordion>
-			</div>
-			<div className="mt-12 hidden max-h-[70vh] w-full md:block">
-				<Tabs
-					className="h-full overflow-y-scroll"
-					tabs={[
-						{
-							title: "תורנויות",
-							contents: <>
-								<DutyAssignments assignments={assignments!} />
-							</>,
-						},
-						{
-							title: "תפקידים",
-							isVisible: isLoggedUserOrAdmin,
-							contents: periods && (
-								<PeriodsContainer
-									periods={periods}
-									isLoggedUserNotAdmin={isLoggedUserNotAdmin}
-								/>
-							),
-						},
-					]}
-				/>
-			</div>
+				</TabsList>
+				{
+					assignments &&
+					<TabsContent
+						value="assignments"
+						dir="rtl"
+					>
+						<DutyAssignments assignments={assignments} />
+					</TabsContent>
+				}
+				{
+					periods &&
+					<TabsContent
+						value="periods"
+						dir="rtl"
+					>
+						<PeriodsContainer
+							periods={periods}
+							isLoggedUserNotAdmin={isLoggedUserNotAdmin}
+						/>
+					</TabsContent>
+				}
+			</Tabs>
 		</>
 	);
 };

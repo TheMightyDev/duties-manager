@@ -16,7 +16,7 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
 	
 	return (
 		<>
-			<div className="m-auto flex max-w-96 flex-col gap-2 md:max-w-none md:flex-row">
+			<div className="m-auto flex max-w-96 flex-col gap-2 lg:max-w-none lg:flex-row">
 				<Suspense fallback={<ProfileInfoBoxesSkeleton />}>
 					<Test {...extractedParams} />
 				</Suspense>

@@ -33,7 +33,7 @@ export function PeriodsContainer({
 	};
 	
 	return (
-		<div className="flex flex-col gap-2 py-3 ps-6">
+		<>
 			{
 				isLoggedUserNotAdmin &&
 				<Alert variant="default">
@@ -46,24 +46,26 @@ export function PeriodsContainer({
 					</AlertDescription>
 				</Alert>
 			}
-			<ol className="relative border-s border-slate-600 dark:border-gray-700">
-				{
-					periods.map((period) => (
-						<PeriodRecord
-							period={period}
-							isCurrentPeriod={currentPeriod === period}
-							key={period.id}
-						/>
-					))
-				}
-				<PeriodRecord
-					period={retirePeriod}
-					isCurrentPeriod={new Date() > retirePeriod.startDate}
-					isLastPeriod={true}
-					key={retirePeriod.id}
-				/>
-			</ol>
-			{/* {
+			<div className="flex flex-col gap-2 py-3 ps-6">
+			
+				<ol className="relative border-s border-slate-600 dark:border-gray-700">
+					{
+						periods.map((period) => (
+							<PeriodRecord
+								period={period}
+								isCurrentPeriod={currentPeriod === period}
+								key={period.id}
+							/>
+						))
+					}
+					<PeriodRecord
+						period={retirePeriod}
+						isCurrentPeriod={new Date() > retirePeriod.startDate}
+						isLastPeriod={true}
+						key={retirePeriod.id}
+					/>
+				</ol>
+				{/* {
 				periods.map((period) => (
 					<PeriodRecord
 						period={period}
@@ -71,6 +73,7 @@ export function PeriodsContainer({
 					/>
 				))
 			} */}
-		</div>
+			</div>
+		</>
 	);
 };
