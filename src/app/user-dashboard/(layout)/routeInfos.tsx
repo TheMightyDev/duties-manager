@@ -25,6 +25,7 @@ export const routeInfos: RouteInfo[] = [
 	{
 		id: "my-profile",
 		name: "הפרופיל שלי",
+		// This page is simply a redirect to the user's own profile
 		href: "/user-dashboard/profile",
 		icon: <ProfileCircleSvgIcon className="m-auto size-9 stroke-black"/>,
 		selectedIcon: <ProfileCircleFilledSvgIcon className="m-auto size-9 fill-white/80"/>,

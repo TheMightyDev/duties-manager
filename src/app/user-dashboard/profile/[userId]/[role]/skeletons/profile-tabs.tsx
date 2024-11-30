@@ -64,7 +64,7 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 			</div>
 			<div className="mt-12 hidden max-h-[70vh] w-full sm:block">
 				<Tabs
-					className="h-full  overflow-y-scroll bg-slate-300"
+					className="h-full overflow-y-scroll"
 					tabs={[
 						{
 							title: "תורנויות",
