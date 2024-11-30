@@ -1,32 +1,25 @@
 "use client";
 
-import { type RouteInfo } from "@/app/_types/route-info";
 import { cn } from "@/app/_utils";
+import { checkIfOnRoute } from "@/app/user-dashboard/(layout)/checkIfOnRoute";
+import { routeInfos } from "@/app/user-dashboard/(layout)/routeInfos";
+import { type LinkGroupProps } from "@/app/user-dashboard/(layout)/types";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-interface NavLinksProps {
-	loggedUserId: string;
-	routeInfos: RouteInfo[];
-}
+type NavLinksProps = LinkGroupProps;
 
-export function NavLinks({ routeInfos, loggedUserId }: NavLinksProps) {
+export function NavLinks({ loggedUserId }: NavLinksProps) {
 	const pathname = usePathname();
-	
-	function checkIfOnRoute(pageId: string) {
-		if (pageId === "my-profile") {
-			return pathname.startsWith(`/user-dashboard/profile/${loggedUserId}`);
-		} else {
-			const linkHref = routeInfos.find((link) => link.id === pageId);
-
-			return linkHref?.href === pathname;
-		}
-	}
 	
 	return (
 		<>
 			{routeInfos.map((routeInfo) => {
-				const isOnRoute = checkIfOnRoute(routeInfo.id);
+				const isOnRoute = checkIfOnRoute({
+					pathname,
+					routeId: routeInfo.id,
+					loggedUserId,
+				});
 				
 				return (
 					<Link

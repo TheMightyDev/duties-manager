@@ -1,32 +1,25 @@
 "use client";
 
-import { type RouteInfo } from "@/app/_types/route-info";
+import { checkIfOnRoute } from "@/app/user-dashboard/(layout)/checkIfOnRoute";
+import { routeInfos } from "@/app/user-dashboard/(layout)/routeInfos";
+import { type LinkGroupProps } from "@/app/user-dashboard/(layout)/types";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-interface BottomNavigationProps {
-	routeInfos: RouteInfo[];
-	loggedUserId: string;
-}
+type BottomNavigationProps = LinkGroupProps;
 
-export function BottomNavigation(props: BottomNavigationProps) {
+export function BottomNavigation({ loggedUserId }: BottomNavigationProps) {
 	const pathname = usePathname();
-
-	function checkIfOnRoute(routeId: string) {
-		if (routeId === "my-profile") {
-			return pathname.startsWith(`/user-dashboard/profile/${props.loggedUserId}`);
-		} else {
-			const linkHref = props.routeInfos.find((info) => info.id === routeId);
-
-			return linkHref?.href === pathname;
-		}
-	}
 	
 	return (
 		<div className="me-4 flex h-[10vh] min-h-16 w-screen flex-row justify-around bg-white  text-slate-800 dark:bg-slate-800 dark:text-white md:hidden">
 			{
-				props.routeInfos.map((routeInfo) => {
-					const isOnRoute = checkIfOnRoute(routeInfo.id);
+				routeInfos.map((routeInfo) => {
+					const isOnRoute = checkIfOnRoute({
+						pathname,
+						routeId: routeInfo.id,
+						loggedUserId,
+					});
 					
 					return (
 						<Link
