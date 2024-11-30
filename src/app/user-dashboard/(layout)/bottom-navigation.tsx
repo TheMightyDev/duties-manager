@@ -1,14 +1,13 @@
 "use client";
 
 import { checkIfOnRoute } from "@/app/user-dashboard/(layout)/checkIfOnRoute";
-import { routeInfos } from "@/app/user-dashboard/(layout)/routeInfos";
 import { type LinkGroupProps } from "@/app/user-dashboard/(layout)/types";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 type BottomNavigationProps = LinkGroupProps;
 
-export function BottomNavigation({ loggedUserId }: BottomNavigationProps) {
+export function BottomNavigation({ routeInfos, loggedUserId }: BottomNavigationProps) {
 	const pathname = usePathname();
 	
 	return (
@@ -16,6 +15,7 @@ export function BottomNavigation({ loggedUserId }: BottomNavigationProps) {
 			{
 				routeInfos.map((routeInfo) => {
 					const isOnRoute = checkIfOnRoute({
+						routeInfos,
 						pathname,
 						routeId: routeInfo.id,
 						loggedUserId,

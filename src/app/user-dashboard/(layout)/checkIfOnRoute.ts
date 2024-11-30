@@ -1,7 +1,7 @@
-import { routeInfos } from "@/app/user-dashboard/(layout)/routeInfos";
 import { type CheckIfOnRouteParams } from "@/app/user-dashboard/(layout)/types";
 
 export function checkIfOnRoute({
+	routeInfos,
 	pathname,
 	routeId,
 	loggedUserId,

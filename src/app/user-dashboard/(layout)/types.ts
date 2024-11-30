@@ -10,6 +10,7 @@ export interface RouteInfo {
 }
 
 export interface CheckIfOnRouteParams {
+	routeInfos: RouteInfo[];
 	pathname: string;
 	routeId: string;
 	loggedUserId: User["id"];
@@ -17,4 +18,5 @@ export interface CheckIfOnRouteParams {
 
 export interface LinkGroupProps {
 	loggedUserId: User["id"];
+	routeInfos: RouteInfo[];
 }
