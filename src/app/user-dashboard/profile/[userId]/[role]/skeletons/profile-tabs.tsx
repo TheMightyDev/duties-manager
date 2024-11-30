@@ -35,7 +35,7 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 	
 	return (
 		<>
-			<div className="block w-full p-2 sm:hidden">
+			<div className="block w-full p-2 md:hidden">
 				<Accordion
 					type="single"
 					collapsible
@@ -62,7 +62,7 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 					}
 				</Accordion>
 			</div>
-			<div className="mt-12 hidden max-h-[70vh] w-full sm:block">
+			<div className="mt-12 hidden max-h-[70vh] w-full md:block">
 				<Tabs
 					className="h-full overflow-y-scroll"
 					tabs={[

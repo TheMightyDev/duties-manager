@@ -7,14 +7,14 @@ export function ProfileInfoBoxesSkeleton() {
 	const className = "flex flex-col rounded-xl bg-slate-200 p-4 hover:bg-slate-300 flex-1 text-center ";
 	
 	return (
-		<>
+		<div className="flex flex-col">
 		
 			<div>
 				<h2 className="sticky top-0 h-12 animate-pulse bg-white/50 p-1 text-xl backdrop-blur-md">
-					<div className={"w-28 overflow-hidden rounded-xl bg-slate-200 p-2 shadow-sm"}>
+					<div className={"w-28 animate-bounce overflow-hidden rounded-xl bg-slate-500 p-2 shadow-sm"}>
 					</div>
 				</h2>
-				<div className={"flex min-h-80 w-full flex-col gap-2 md:min-w-96 relative overflow-hidden " + shimmer}>
+				<div className={"relative flex min-h-80 w-full animate-pulse flex-col gap-2 overflow-hidden md:min-w-96 "}>
 					<div className="flex flex-row gap-2">
 						<div className={className}>
 							<span className="text-4xl">0.00</span>
@@ -27,10 +27,12 @@ export function ProfileInfoBoxesSkeleton() {
 					</div>
 					<div className="flex flex-row gap-2">
 						<div className={className}>
+							<span className="text-4xl">00.00</span>
+							<span>חודשים בתפקיד</span>
+						</div>
+						<div className={className}>
 							<div className="m-auto my-2 h-8 w-14 rounded-xl bg-gray-300"></div>
 							<div className="h-4 w-full rounded-xl bg-gray-300"></div>
-						</div>
-						<div className="bg-slate-300">
 						</div>
 					</div>
 					<div className="flex flex-row gap-2">
@@ -49,6 +51,6 @@ export function ProfileInfoBoxesSkeleton() {
 					</div>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 };
