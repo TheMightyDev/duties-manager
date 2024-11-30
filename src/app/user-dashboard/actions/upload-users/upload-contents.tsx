@@ -1,6 +1,6 @@
 "use client";
 
-import { type ParseUsersInfoStrReturn, type UploadCounts } from "@/app/user-dashboard/upload/types";
+import { type ParseUsersInfoStrReturn, type UploadCounts } from "@/app/user-dashboard/actions/types";
 import { useRef, useState } from "react";
 
 interface UploadContentsProps {

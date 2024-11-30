@@ -12,7 +12,7 @@ export function AdminActions() {
 			{
 				<div>
 					פעולות ניהול
-					<Link href={`${pathname}/users`}>
+					<Link href={`${pathname}/upload-users`}>
 						<Button>
 							העלאת משתמשים
 						</Button>

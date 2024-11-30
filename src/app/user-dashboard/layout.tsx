@@ -46,7 +46,7 @@ export default async function Layout({ children }: Readonly<{ children: React.Re
 		{
 			id: "actions",
 			name: "פעולות",
-			href: "/user-dashboard/upload",
+			href: "/user-dashboard/actions",
 			icon: <MagicWandSvgIcon className="m-auto size-9 stroke-black"/>,
 			selectedIcon: <MagicWandSvgIcon className="m-auto size-9 stroke-white/80"/>,
 		},

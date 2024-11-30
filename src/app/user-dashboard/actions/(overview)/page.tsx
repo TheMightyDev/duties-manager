@@ -1,7 +1,7 @@
-import { AdminActions } from "@/app/user-dashboard/upload/(overview)/admin-actions";
+import { AdminActions } from "@/app/user-dashboard/actions/(overview)/admin-actions";
 import { auth } from "@/server/auth";
 
-export default async function UploadPage() {
+export default async function ActionsPage() {
 	const session = await auth();
 	
 	return (
