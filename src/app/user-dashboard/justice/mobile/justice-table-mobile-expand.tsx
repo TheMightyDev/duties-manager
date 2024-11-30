@@ -1,4 +1,3 @@
-import { Button } from "@/app/_components/ui/button";
 import { ExpandViewInfoBox } from "@/app/user-dashboard/justice/mobile/expand-view-info-box";
 import { type UserJustice } from "@/types/justice/user-justice";
 import { ExternalLinkIcon } from "lucide-react";
@@ -38,9 +37,7 @@ export function JusticeTableMobileExpand({ userJustice }: JusticeTableMobileExpa
 			/>
 			
 			<Link href={`/user-dashboard/profile/${userId}/${role}`}>
-				<Button>
-					<ExternalLinkIcon />
-				</Button>
+				<ExternalLinkIcon />
 			</Link>
 		</div>
 	);

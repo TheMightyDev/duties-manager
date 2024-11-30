@@ -4,6 +4,7 @@ import { PeriodsContainer } from "@/app/user-dashboard/profile/[userId]/[role]/p
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { type UserRole } from "@prisma/client";
+import clsx from "clsx";
 
 interface ProfileTabsProps {
 	userId: string;
@@ -38,15 +39,23 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 		<>
 			<Tabs
 				defaultValue="account"
-				className="max-w-[400px] lg:mt-12"
+				className="max-w-[600px] grow  lg:mt-12"
 			>
 				<TabsList
-					className="grid w-full grid-cols-2"
+					className={
+						clsx(
+							"grid w-full",
+							periods ? "grid-cols-2" : "grid-cols-1"
+						)
+					}
 					dir="rtl"
 				>
 					{
 						assignments &&
-						<TabsTrigger value="assignments">שיבוצים</TabsTrigger>
+						<TabsTrigger
+							value="assignments"
+							className="grow"
+						>שיבוצים</TabsTrigger>
 					}
 					{
 						periods &&
