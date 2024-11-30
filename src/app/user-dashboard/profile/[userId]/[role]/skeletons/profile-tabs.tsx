@@ -15,6 +15,8 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 	const session = await auth();
 	const isLoggedUserOrAdmin = session?.user.id === userId || session?.user.isAdmin;
 	
+	const isLoggedUserNotAdmin = !(session?.user.isAdmin);
+	
 	const [ assignments, periods ] = await (
 		isLoggedUserOrAdmin
 			? Promise.all([
@@ -56,7 +58,10 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 						<AccordionItem value="periods">
 							<AccordionTrigger>תפקידים</AccordionTrigger>
 							<AccordionContent>
-								<PeriodsContainer periods={periods} />
+								<PeriodsContainer
+									periods={periods}
+									isLoggedUserNotAdmin={isLoggedUserNotAdmin}
+								/>
 							</AccordionContent>
 						</AccordionItem>
 					}
@@ -75,7 +80,12 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 						{
 							title: "תפקידים",
 							isVisible: isLoggedUserOrAdmin,
-							contents: periods && <PeriodsContainer periods={periods} />,
+							contents: periods && (
+								<PeriodsContainer
+									periods={periods}
+									isLoggedUserNotAdmin={isLoggedUserNotAdmin}
+								/>
+							),
 						},
 					]}
 				/>
