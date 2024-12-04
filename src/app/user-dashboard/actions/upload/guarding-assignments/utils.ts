@@ -1,4 +1,4 @@
-import { type ParsedAssignment, type ParsedDutiesAssignments } from "@/app/user-dashboard/actions/upload/assignments/types";
+import { type ParsedAssignment, type ParsedDutiesAssignments } from "@/app/user-dashboard/actions/upload/guarding-assignments/types";
 import { type User } from "@prisma/client";
 
 function isNumeric(str: string) {

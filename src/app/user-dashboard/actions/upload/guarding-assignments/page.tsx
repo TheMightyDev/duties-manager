@@ -1,6 +1,6 @@
-import { type AssignmentsUploadCounts, type ParsedDutiesAssignments } from "@/app/user-dashboard/actions/upload/assignments/types";
-import { UploadAssignmentsContents } from "@/app/user-dashboard/actions/upload/assignments/upload-assignments-contents";
-import { parseAssignmentInfoStr } from "@/app/user-dashboard/actions/upload/assignments/utils";
+import { type AssignmentsUploadCounts, type ParsedDutiesAssignments } from "@/app/user-dashboard/actions/upload/guarding-assignments/types";
+import { UploadAssignmentsContents } from "@/app/user-dashboard/actions/upload/guarding-assignments/upload-assignments-contents";
+import { parseAssignmentInfoStr } from "@/app/user-dashboard/actions/upload/guarding-assignments/utils";
 import { type InitialParseResults } from "@/app/user-dashboard/actions/upload/types";
 import { api } from "@/trpc/server";
 

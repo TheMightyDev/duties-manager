@@ -15,10 +15,10 @@ export function AdminActions() {
 				העלאת משתמשים
 			</Link>
 			<Link
-				href={`${pathname}/upload/assignments`}
+				href={`${pathname}/upload/guarding-assignments`}
 				prefetch={false}
 			>
-				העלאת שיבוצים ותורנויות
+				העלאת שיבוצים לשמירות
 			</Link>
 		</>
 	);

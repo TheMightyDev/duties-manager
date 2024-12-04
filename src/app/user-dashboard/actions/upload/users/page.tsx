@@ -1,4 +1,4 @@
-import { InitialParseResults } from "@/app/user-dashboard/actions/upload/types";
+import { type InitialParseResults } from "@/app/user-dashboard/actions/upload/types";
 import { type ParsedUserAndPeriods, type UsersUploadCounts } from "@/app/user-dashboard/actions/upload/users/types";
 import { UploadContents } from "@/app/user-dashboard/actions/upload/users/upload-contents";
 import { parseUserInfoStr } from "@/app/user-dashboard/actions/upload/users/utils";

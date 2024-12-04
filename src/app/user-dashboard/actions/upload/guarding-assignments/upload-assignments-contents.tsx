@@ -1,6 +1,6 @@
 "use client";
 
-import { type AssignmentsUploadCounts } from "@/app/user-dashboard/actions/upload/assignments/types";
+import { type AssignmentsUploadCounts } from "@/app/user-dashboard/actions/upload/guarding-assignments/types";
 import { UploadProgress, type InitialParseResults } from "@/app/user-dashboard/actions/upload/types";
 import { useRef, useState } from "react";
 
