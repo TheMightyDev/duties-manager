@@ -11,11 +11,11 @@ export function AdminActions() {
 			<div>
 				פעולות ניהול
 			</div>
-			<Link href={`${pathname}/upload-users`}>
+			<Link href={`${pathname}/upload/users`}>
 				העלאת משתמשים
 			</Link>
 			<Link
-				href={`${pathname}/upload-assignments`}
+				href={`${pathname}/upload/assignments`}
 				prefetch={false}
 			>
 				העלאת שיבוצים ותורנויות

@@ -1,4 +1,4 @@
-import { type ParsedUserAndPeriods } from "@/app/user-dashboard/actions/types";
+import { type ParsedUserAndPeriods } from "@/app/user-dashboard/actions/upload/users/types";
 import { PeriodStatus, UserRank, UserRole } from "@prisma/client";
 
 export function parseUserInfoStr(userInfoStr: string): ParsedUserAndPeriods {

@@ -1,10 +1,10 @@
 "use client";
 
-import { type ParseUsersInfoStrReturn, type UploadCounts } from "@/app/user-dashboard/actions/types";
+import { type ParseUsersInfoStrReturn, type UploadCounts } from "@/app/user-dashboard/actions/upload/users/types";
 import { useRef, useState } from "react";
 
 interface UploadContentsProps {
-	validateUsersInfo: (usersInfoUnformatted: string) => Promise<ParseUsersInfoStrReturn>;
+	validateAssignmentsInfo: (usersInfoUnformatted: string) => Promise<ParseUsersInfoStrReturn>;
 	uploadCachedValidParsedInfo: () => Promise<UploadCounts>;
 }
 

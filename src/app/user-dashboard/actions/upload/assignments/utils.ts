@@ -1,4 +1,4 @@
-import { type ParsedAssignment } from "@/app/user-dashboard/actions/types";
+import { type ParsedAssignment } from "@/app/user-dashboard/actions/upload/users/types";
 import { type User } from "@prisma/client";
 
 export function parseAssignmentInfoStr({
