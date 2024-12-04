@@ -1,13 +1,20 @@
-import { type ParsedAssignment } from "@/app/user-dashboard/actions/upload/users/types";
+import { type ParsedAssignment, type ParsedDutiesAssignments } from "@/app/user-dashboard/actions/upload/assignments/types";
 import { type User } from "@prisma/client";
 
+function isNumeric(str: string) {
+	return !isNaN(Number(str)) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+		!isNaN(parseFloat(str)); // ...and ensure strings of whitespace fail
+}
+
 export function parseAssignmentInfoStr({
+	dutiesAssignments,
 	infoStr,
 	allUsersIdsByFullName,
 }: {
+	dutiesAssignments: ParsedDutiesAssignments;
 	infoStr: string;
 	allUsersIdsByFullName: Record<string, User["id"]>;
-}): ParsedAssignment {
+}) {
 	const splitData = infoStr.split("\t");
 	
 	const [
@@ -24,7 +31,7 @@ export function parseAssignmentInfoStr({
 		*/
 		extraScoreOrNote,
 		/** Optional */
-		note,
+		optionalNote,
 	] = splitData;
 	
 	const mark = `"${startDateStr} ${assigneeFullName}"`;
@@ -48,10 +55,61 @@ export function parseAssignmentInfoStr({
 		throw new Error(`${mark} - there's no user with the given name`);
 	}
 	
-	return {
-		startDateStr,
-		durationInDays,
+	const key = startDateStr + "_" + durationInDays;
+	
+	const parsedAssignment: ParsedAssignment = {
 		assigneeFullName,
-		assigneeId: allUsersIdsByFullName[assigneeFullName],
+		...parseOptionalSegments({
+			reserveFullNameOrExtraScore,
+			extraScoreOrNote,
+			optionalNote,
+		}),
+	};
+	
+	if (dutiesAssignments[key]) {
+		dutiesAssignments[key].push(parsedAssignment);
+	} else {
+		dutiesAssignments[key] = [ parsedAssignment ];
+	}
+}
+
+function parseOptionalSegments({ reserveFullNameOrExtraScore, extraScoreOrNote, optionalNote }: {
+	reserveFullNameOrExtraScore?: string;
+	extraScoreOrNote?: string;
+	optionalNote?: string;
+}): Omit<ParsedAssignment, "assigneeFullName"> {
+	let reserveFullName: string | undefined = undefined;
+	let extraScore: number | undefined = undefined;
+	let note: string | undefined = undefined;
+	
+	if (reserveFullNameOrExtraScore) {
+		// If the string can be parsed as a number
+		if (isNumeric(reserveFullNameOrExtraScore)) {
+			extraScore = Number(reserveFullNameOrExtraScore);
+			
+			if (extraScoreOrNote) {
+				note = extraScoreOrNote;
+			}
+		} else {
+			reserveFullName = reserveFullNameOrExtraScore;
+			
+			if (extraScoreOrNote) {
+				if (isNumeric(extraScoreOrNote)) {
+					extraScore = Number(extraScoreOrNote);
+				
+					if (optionalNote) {
+						note = optionalNote;
+					}
+				} else {
+					note = extraScoreOrNote;
+				}
+			}
+		}
+	}
+	
+	return {
+		reserveFullName,
+		note,
+		extraScore,
 	};
 }

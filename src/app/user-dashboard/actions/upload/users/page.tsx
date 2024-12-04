@@ -1,4 +1,5 @@
-import { type ParsedUserAndPeriods, type ParseUsersInfoStrReturn, type UploadCounts } from "@/app/user-dashboard/actions/upload/users/types";
+import { InitialParseResults } from "@/app/user-dashboard/actions/upload/types";
+import { type ParsedUserAndPeriods, type UsersUploadCounts } from "@/app/user-dashboard/actions/upload/users/types";
 import { UploadContents } from "@/app/user-dashboard/actions/upload/users/upload-contents";
 import { parseUserInfoStr } from "@/app/user-dashboard/actions/upload/users/utils";
 import { auth } from "@/server/auth";
@@ -9,7 +10,7 @@ import { type Period, type User } from "@prisma/client";
 let cachedValidParsedInfo: ParsedUserAndPeriods[] = [];
 
 export default async function UploadUsersPage() {
-	async function validateUsersInfo(usersInfoStr: string): Promise<ParseUsersInfoStrReturn> {
+	async function validateUsersInfo(usersInfoStr: string): Promise<InitialParseResults> {
 		"use server";
 		
 		const isOnlyWhitespaceStr = (str: string) => !/\S/.test(str);
@@ -39,7 +40,7 @@ export default async function UploadUsersPage() {
 		};
 	}
 	
-	async function uploadCachedValidParsedInfo(): Promise<UploadCounts> {
+	async function uploadCachedValidParsedInfo(): Promise<UsersUploadCounts> {
 		"use server";
 		
 		// The APIs for periods and user were designed to expect

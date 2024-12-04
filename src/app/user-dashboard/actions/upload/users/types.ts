@@ -5,13 +5,7 @@ export interface ParsedUserAndPeriods {
 	periods: (Omit<Period, "id" | "userId">)[];
 }
 
-export interface ParseUsersInfoStrReturn {
-	errorMessages: string[];
-	/** Array of the parsed data of each line, if the parsing failed, the value is `undefined` */
-	parsedInfoJson: string;
-}
-
-export interface UploadCounts {
+export interface UsersUploadCounts {
 	users: number;
 	periods: number;
 }

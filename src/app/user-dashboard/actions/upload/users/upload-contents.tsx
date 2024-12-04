@@ -1,18 +1,12 @@
 "use client";
 
-import { type ParseUsersInfoStrReturn, type UploadCounts } from "@/app/user-dashboard/actions/upload/users/types";
+import { type InitialParseResults, UploadProgress } from "@/app/user-dashboard/actions/upload/types";
+import { type UsersUploadCounts } from "@/app/user-dashboard/actions/upload/users/types";
 import { useRef, useState } from "react";
 
 interface UploadContentsProps {
-	validateUsersInfo: (usersInfoUnformatted: string) => Promise<ParseUsersInfoStrReturn>;
-	uploadCachedValidParsedInfo: () => Promise<UploadCounts>;
-}
-
-enum UploadProgress {
-	NOTHING_SUBMITTED,
-	ERRONEOUS_DATA,
-	CAN_BE_UPLOADED,
-	UPLOAD_DONE,
+	validateUsersInfo: (usersInfoUnformatted: string) => Promise<InitialParseResults>;
+	uploadCachedValidParsedInfo: () => Promise<UsersUploadCounts>;
 }
 
 export function UploadContents(props: UploadContentsProps) {
@@ -20,7 +14,7 @@ export function UploadContents(props: UploadContentsProps) {
 	const [ errorMessages, setErrorMessages ] = useState<string[]>([]);
 	const [ parsedInfoJson, setParsedInfoJson ] = useState<string>("");
 	const [ uploadProgress, setUploadProgress ] = useState<UploadProgress>(UploadProgress.NOTHING_SUBMITTED);
-	const [ uploadCounts, setUploadCounts ] = useState<UploadCounts | null>(null);
+	const [ uploadCounts, setUploadCounts ] = useState<UsersUploadCounts | null>(null);
 	
 	function validateInfo() {
 		const usersInfoStr = usersInfoTextAreaRef.current?.value ?? "";

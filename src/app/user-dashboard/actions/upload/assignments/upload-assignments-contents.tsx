@@ -1,32 +1,26 @@
 "use client";
 
-import { type ParseUsersInfoStrReturn, type UploadCounts } from "@/app/user-dashboard/actions/upload/users/types";
+import { type AssignmentsUploadCounts } from "@/app/user-dashboard/actions/upload/assignments/types";
+import { UploadProgress, type InitialParseResults } from "@/app/user-dashboard/actions/upload/types";
 import { useRef, useState } from "react";
 
 interface UploadContentsProps {
-	validateAssignmentsInfo: (usersInfoUnformatted: string) => Promise<ParseUsersInfoStrReturn>;
-	uploadCachedValidParsedInfo: () => Promise<UploadCounts>;
+	validateUploadedInfo: (uploadedInfoStr: string) => Promise<InitialParseResults>;
+	uploadCachedValidParsedInfo: () => Promise<AssignmentsUploadCounts>;
 }
 
-enum UploadProgress {
-	NOTHING_SUBMITTED,
-	ERRONEOUS_DATA,
-	CAN_BE_UPLOADED,
-	UPLOAD_DONE,
-}
-
-export function UploadContents(props: UploadContentsProps) {
-	const usersInfoTextAreaRef = useRef<HTMLTextAreaElement>(null);
+export function UploadAssignmentsContents(props: UploadContentsProps) {
+	const infoTextAreaRef = useRef<HTMLTextAreaElement>(null);
 	const [ errorMessages, setErrorMessages ] = useState<string[]>([]);
 	const [ parsedInfoJson, setParsedInfoJson ] = useState<string>("");
 	const [ uploadProgress, setUploadProgress ] = useState<UploadProgress>(UploadProgress.NOTHING_SUBMITTED);
-	const [ uploadCounts, setUploadCounts ] = useState<UploadCounts | null>(null);
+	const [ uploadCounts, setUploadCounts ] = useState<AssignmentsUploadCounts | null>(null);
 	
 	function validateInfo() {
-		const usersInfoStr = usersInfoTextAreaRef.current?.value ?? "";
+		const usersInfoStr = infoTextAreaRef.current?.value ?? "";
 		console.log("it's good");
 		
-		props.validateUsersInfo(usersInfoStr)
+		props.validateUploadedInfo(usersInfoStr)
 			.then((data) => {
 				setErrorMessages(data.errorMessages);
 				setParsedInfoJson(data.parsedInfoJson);
@@ -62,7 +56,7 @@ export function UploadContents(props: UploadContentsProps) {
 	return (
 		<>
 			<textarea
-				ref={usersInfoTextAreaRef}
+				ref={infoTextAreaRef}
 				className="w-full"
 			/>
 			<button onClick={validateInfo}>
@@ -86,8 +80,8 @@ export function UploadContents(props: UploadContentsProps) {
 					{
 						uploadCounts &&
 						<ul>
-							<li> Users: { uploadCounts.users } </li>
-							<li> Periods: { uploadCounts.periods } </li>
+							<li> Duties: { uploadCounts.duties } </li>
+							<li> Assignments: { uploadCounts.assignments } </li>
 						</ul>
 					}
 				</>
