@@ -20,8 +20,8 @@ export function UserRoleMark({ role, hasTooltip = true }: UserRoleMarkProps) {
 	
 	return (
 		<div className="group/role-mark relative inline-block">
-			<div className={`m-auto size-7 rounded-xl leading-7 text-white ${userRoleBgs[role]} text-center`}>
-				<iconObj.icon className="m-auto size-5"/>
+			<div className={`m-auto flex size-7 items-center justify-center rounded-xl text-white ${userRoleBgs[role]}`}>
+				<iconObj.icon className="size-5"/>
 			</div>
 			{
 				hasTooltip &&
