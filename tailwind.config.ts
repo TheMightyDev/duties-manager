@@ -13,6 +13,9 @@ export default {
 			width: {
 				18: "4.5rem",
 			},
+			maxHeight: {
+				18: "4.5rem",
+			},
 			colors: {
 				"role-squad": "#8843F2",
 				"role-officer": "#59D5E0",

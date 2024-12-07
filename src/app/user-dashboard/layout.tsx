@@ -23,7 +23,7 @@ export default async function Layout({ children }: Readonly<{ children: React.Re
 	
 	const loggedUserId = session.user.id;
 	
-	const sharedIconClassName = "size-8 m-auto ";
+	const sharedIconClassName = "size-8 m-auto sm:size-9 ";
 	
 	const routeInfos: RouteInfo[] = [
 		{
@@ -38,7 +38,7 @@ export default async function Layout({ children }: Readonly<{ children: React.Re
 			name: "טבלת הצדק",
 			href: "/user-dashboard/justice",
 			icon: <JusticeSvgIcon className={sharedIconClassName + "fill-black p-0.25"} />,
-			selectedIcon: <JusticeFilledSvgIcon className={sharedIconClassName + "fill-blue-600 p-0.5"} />,
+			selectedIcon: <JusticeFilledSvgIcon className={sharedIconClassName + "fill-blue-600 p-0.25"} />,
 		},
 		{
 			id: "my-profile",
