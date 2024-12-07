@@ -45,8 +45,11 @@ export async function ProfileTabsSkeleton(props: ProfileTabsSkeletonProps) {
 					className="flex flex-col gap-2 px-2"
 				>
 					{
-						new Array(3).fill(0).map(() => (
-							<div className="h-16 w-full animate-pulse rounded-xl bg-slate-200"></div>
+						new Array(3).fill(0).map((_, i) => (
+							<div
+								key={`box-${String(i)}`}
+								className="h-16 w-full animate-pulse rounded-xl bg-slate-200"
+							></div>
 						))
 					}
 				</TabsContent>

@@ -12,12 +12,12 @@ export function ProfileInfoBoxes(props: UserProfileProps) {
 		otherDutiesScoreSum,
 	} = props.userJustice;
 	
-	const className = "flex flex-col rounded-xl bg-slate-200 p-4 hover:bg-slate-300 flex-1 text-center";
+	const className = "flex flex-col rounded-xl bg-slate-200 p-3 sm:p-4 hover:bg-slate-300 flex-1 text-center";
 	
 	const isEarlyRole = props.roleRecords.find((record) => record.role === role)?.latestFulfilledDate != null;
 
 	return (
-		<div className="flex min-h-80 w-full flex-col gap-2 md:min-w-96">
+		<div className="flex w-full flex-col gap-2 md:min-w-96">
 			<div className="flex flex-row gap-2">
 				<div className={className}>
 					<span className="text-4xl">{weightedScore}</span>

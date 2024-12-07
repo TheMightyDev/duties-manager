@@ -4,7 +4,7 @@ const shimmer =
   "before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent";
 	
 export function ProfileInfoBoxesSkeleton() {
-	const className = "flex flex-col rounded-xl bg-slate-200 p-4 hover:bg-slate-300 flex-1 text-center ";
+	const className = "flex flex-col rounded-xl bg-slate-200 p-3 sm:p-4 hover:bg-slate-300 flex-1 text-center ";
 	
 	return (
 		<div className="flex flex-col">
@@ -14,7 +14,7 @@ export function ProfileInfoBoxesSkeleton() {
 					<div className={"h-8 w-44 animate-pulse overflow-hidden rounded-xl bg-slate-200 shadow-sm"}>
 					</div>
 				</h2>
-				<div className={"relative flex min-h-80 w-full animate-pulse flex-col gap-2 overflow-hidden md:min-w-96 "}>
+				<div className="relative flex w-full animate-pulse flex-col gap-2 overflow-hidden p-2 md:min-w-96 md:p-0">
 					<div className="flex flex-row gap-2">
 						<div className={className}>
 							<span className="text-4xl">0.00</span>
