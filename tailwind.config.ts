@@ -13,6 +13,9 @@ export default {
 			width: {
 				18: "4.5rem",
 			},
+			minHeight: {
+				18: "4.5rem",
+			},
 			maxHeight: {
 				18: "4.5rem",
 			},
