@@ -1,5 +1,6 @@
+import { ProfileTabs } from "@/app/user-dashboard/profile/[userId]/[role]/profile-tabs";
 import { ProfileInfoBoxesSkeleton } from "@/app/user-dashboard/profile/[userId]/[role]/skeletons/profile-info-boxes-skeleton";
-import { ProfileTabs } from "@/app/user-dashboard/profile/[userId]/[role]/skeletons/profile-tabs";
+import { ProfileTabsSkeleton } from "@/app/user-dashboard/profile/[userId]/[role]/skeletons/profile-tabs-skeleton";
 import { Test } from "@/app/user-dashboard/profile/[userId]/[role]/test-suspense";
 import { type UserRole } from "@prisma/client";
 import { Suspense } from "react";
@@ -20,7 +21,7 @@ export default async function UserProfilePage({ params }: UserProfilePageProps) 
 				<Suspense fallback={<ProfileInfoBoxesSkeleton />}>
 					<Test {...extractedParams} />
 				</Suspense>
-				<Suspense fallback={<div className="w-full"></div>}>
+				<Suspense fallback={<ProfileTabsSkeleton userId={extractedParams.userId} />}>
 					<ProfileTabs {...extractedParams} />
 				</Suspense>
 			</div>

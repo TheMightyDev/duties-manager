@@ -11,7 +11,7 @@ export function ProfileInfoBoxesSkeleton() {
 		
 			<div>
 				<h2 className="sticky top-0 h-12 animate-pulse bg-white/50 p-1 text-xl backdrop-blur-md">
-					<div className={"w-28 animate-bounce overflow-hidden rounded-xl bg-slate-500 p-2 shadow-sm"}>
+					<div className={"h-8 w-44 animate-pulse overflow-hidden rounded-xl bg-slate-200 shadow-sm"}>
 					</div>
 				</h2>
 				<div className={"relative flex min-h-80 w-full animate-pulse flex-col gap-2 overflow-hidden md:min-w-96 "}>

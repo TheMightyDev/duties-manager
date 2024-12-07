@@ -5,6 +5,7 @@ import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { type UserRole } from "@prisma/client";
 import clsx from "clsx";
+import { Suspense } from "react";
 
 interface ProfileTabsProps {
 	userId: string;
@@ -38,7 +39,7 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 	return (
 		<>
 			<Tabs
-				defaultValue="account"
+				defaultValue="assignments"
 				className="max-w-[600px] grow  lg:mt-12"
 			>
 				<TabsList
@@ -68,7 +69,9 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 						value="assignments"
 						dir="rtl"
 					>
-						<DutyAssignments assignments={assignments} />
+						<Suspense fallback="h">
+							<DutyAssignments assignments={assignments} />
+						</Suspense>
 					</TabsContent>
 				}
 				{
@@ -77,10 +80,12 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 						value="periods"
 						dir="rtl"
 					>
-						<PeriodsContainer
-							periods={periods}
-							isLoggedUserNotAdmin={isLoggedUserNotAdmin}
-						/>
+						<Suspense fallback="w">
+							<PeriodsContainer
+								periods={periods}
+								isLoggedUserNotAdmin={isLoggedUserNotAdmin}
+							/>
+						</Suspense>
 					</TabsContent>
 				}
 			</Tabs>
