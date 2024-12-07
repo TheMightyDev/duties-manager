@@ -3,6 +3,20 @@
 @tailwind utilities;
 
 @layer base {
+	@font-face {
+		font-family: "Assistant";
+		font-weight: 400;
+		src: url(/fonts/assistant-regular.woff2) format("woff2"),
+				 url(/fonts/assistant-regular.woff) format("woff");
+	}
+	
+	
+	@font-face {
+		font-family: "Assistant";
+		font-weight: 700;
+		src: url(/fonts/assistant-bold.woff2) format("woff2"),
+				 url(/fonts/assistant-bold.woff) format("woff");
+	}
 	summary {
 		cursor: pointer;
 	}

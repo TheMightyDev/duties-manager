@@ -8,7 +8,7 @@ export default {
 	theme: {
 		extend: {
 			fontFamily: {
-				sans: [ "var(--font-geist-sans)", ...fontFamily.sans ],
+				sans: [ "Assistant", ...fontFamily.sans ],
 			},
 			colors: {
 				"role-squad": "#8843F2",
