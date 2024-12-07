@@ -99,6 +99,28 @@ async function fetchUsersByRole({ role, definitiveDate, ctxDb, includeExemptAndA
 }
 
 export const userRouter = createTRPCRouter({
+	getUserFullNameById: protectedProcedure
+		.input(z.string())
+		.query((async ({ ctx, input: userId }) => {
+			const user = await ctx.db.user.findUnique({
+				select: {
+					firstName: true,
+					lastName: true,
+				},
+				where: {
+					id: userId,
+				},
+			});
+			
+			if (!user) {
+				return null;
+			}
+			
+			const fullName = user.firstName + " " + user.lastName;
+			
+			return fullName;
+		})),
+		
 	getAllUserEventsById: publicProcedure
 		.input(z.string())
 		.query((async ({ ctx, input: userId }) => {

@@ -40,7 +40,7 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 		<>
 			<Tabs
 				defaultValue="assignments"
-				className="max-w-[600px] grow  lg:mt-12"
+				className="max-w-[600px] grow"
 			>
 				<TabsList
 					className={
@@ -69,9 +69,7 @@ export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
 						value="assignments"
 						dir="rtl"
 					>
-						<Suspense fallback="h">
-							<DutyAssignments assignments={assignments} />
-						</Suspense>
+						<DutyAssignments assignments={assignments} />
 					</TabsContent>
 				}
 				{

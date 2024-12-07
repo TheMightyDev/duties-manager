@@ -14,7 +14,7 @@ export async function ProfileTabsSkeleton(props: ProfileTabsSkeletonProps) {
 		<>
 			<Tabs
 				defaultValue="assignments"
-				className="max-w-[600px] grow lg:mt-12"
+				className="max-w-[600px] grow"
 			>
 				<TabsList
 					className={
