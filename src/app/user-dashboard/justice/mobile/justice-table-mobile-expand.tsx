@@ -1,7 +1,5 @@
 import { ExpandViewInfoBox } from "@/app/user-dashboard/justice/mobile/expand-view-info-box";
 import { type UserJustice } from "@/types/justice/user-justice";
-import { ExternalLinkIcon } from "lucide-react";
-import Link from "next/link";
 
 interface JusticeTableMobileExpandProps {
 	userJustice: UserJustice;
@@ -13,8 +11,6 @@ export function JusticeTableMobileExpand({ userJustice }: JusticeTableMobileExpa
 		weekdaysGuardingCount,
 		weekendsGuardingCount,
 		otherDutiesScoreSum,
-		userId,
-		role,
 	} = userJustice;
 	
 	return (
@@ -35,10 +31,6 @@ export function JusticeTableMobileExpand({ userJustice }: JusticeTableMobileExpa
 				value={otherDutiesScoreSum}
 				title="נק' תורנויות נוספות"
 			/>
-			
-			<Link href={`/user-dashboard/profile/${userId}/${role}`}>
-				<ExternalLinkIcon />
-			</Link>
 		</div>
 	);
 };
