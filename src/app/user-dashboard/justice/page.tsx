@@ -11,9 +11,7 @@ export default async function JusticePage() {
 	if (!loggedUserId) {
 		return <>Not logged in</>;
 	}
-	
-	const roleRecords = await api.user.getAllUserRolesById(loggedUserId);
-	
+			
 	async function fetchUsersJustice(params: FetchUsersJusticeParams) {
 		"use server";
 		
@@ -24,7 +22,7 @@ export default async function JusticePage() {
 		<>
 			<JusticeOverview
 				fetchUsersJustice={fetchUsersJustice}
-				loggedUserLatestRole={roleRecords?.at(-1)?.role}
+				loggedUserLatestRole={session.user.roleRecords.at(-1)?.role}
 			/>
 		</>
 	);

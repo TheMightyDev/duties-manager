@@ -14,7 +14,7 @@ export async function ProfileTabsSkeleton(props: ProfileTabsSkeletonProps) {
 		<>
 			<Tabs
 				defaultValue="assignments"
-				className="max-w-[600px] grow  lg:mt-12"
+				className="max-w-[600px] grow lg:mt-12"
 			>
 				<TabsList
 					className={
@@ -25,14 +25,12 @@ export async function ProfileTabsSkeleton(props: ProfileTabsSkeletonProps) {
 					}
 					dir="rtl"
 				>
-					{
-						<TabsTrigger
-							value="assignments"
-							className="grow"
-						>
-							שיבוצים
-						</TabsTrigger>
-					}
+					<TabsTrigger
+						value="assignments"
+						className="grow"
+					>
+						שיבוצים
+					</TabsTrigger>
 					{
 						isLoggedUserOrAdmin &&
 						<TabsTrigger value="periods">

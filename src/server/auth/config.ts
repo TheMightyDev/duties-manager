@@ -1,4 +1,6 @@
 import { db } from "@/server/db";
+import { api } from "@/trpc/server";
+import { type RoleRecord } from "@/types/user/role-record";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { type UserRank } from "@prisma/client";
 import { type DefaultSession, type NextAuthConfig } from "next-auth";
@@ -7,16 +9,20 @@ import { decode, encode } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
 import DiscordProvider from "next-auth/providers/discord";
 
+interface UserExtensions {
+	firstName: string;
+	lastName: string;
+	fullName: string;
+	isAdmin: boolean;
+	organizationId: string;
+	phoneNumber: string;
+	rank: UserRank;
+	roleRecords: RoleRecord[];
+}
+
 declare module "next-auth/jwt" {
-	interface JWT {
+	interface JWT extends UserExtensions {
 		id: string;
-		firstName: string;
-		lastName: string;
-		fullName: string;
-		isAdmin: boolean;
-		organizationId: string;
-		phoneNumber: string;
-		rank: UserRank;
 	}
 }
 
@@ -26,30 +32,18 @@ declare module "next-auth/jwt" {
  *
  * @see https://next-auth.js.org/getting-started/typescript#module-augmentation
  */
+
 declare module "next-auth" {
 	interface Session extends DefaultSession {
 		user: {
 			id: string;
-			// ...other properties
-			// role: UserRole;
-			firstName: string;
-			lastName: string;
-			fullName: string;
-			isAdmin: boolean;
-			organizationId: string;
-			phoneNumber: string;
-			rank: UserRank;
-		} & DefaultSession["user"];
+		} & UserExtensions & DefaultSession["user"];
 	}
 
-	interface User {
-		firstName: string;
-		lastName: string;
-		fullName: string;
-		isAdmin: boolean;
-		organizationId: string;
-		phoneNumber: string;
-		rank: UserRank;
+	// This remains an interface because when an interface is re-declared the properties
+	// are merged to form a single interface
+	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+	interface User extends UserExtensions {
 	}
 }
 
@@ -88,6 +82,14 @@ export const authConfig = {
 				console.log("user", user);
 				
 				if (user) {
+					const roleRecords = await api.user.getAllUserRolesById(user.id);
+					
+					console.log("@roleRecords", roleRecords);
+					
+					if (!roleRecords) {
+						return null;
+					}
+					
 					return {
 						id: user.id,
 						firstName: user.firstName,
@@ -97,6 +99,8 @@ export const authConfig = {
 						organizationId: user.organizationId,
 						phoneNumber: user.phoneNumber,
 						rank: user.rank,
+						roleRecords,
+						makeupdie: "he",
 					};
 				}
 
@@ -127,8 +131,7 @@ export const authConfig = {
 				token.organizationId = user.organizationId;
 				token.isAdmin = user.isAdmin;
 				token.rank = user.rank;
-				// token.email = user.email;
-				// token.name = user.name;
+				token.roleRecords = user.roleRecords;
 			}
 
 			return token; // Return the modified token
@@ -147,6 +150,7 @@ export const authConfig = {
 				session.user.organizationId = token.organizationId;
 				session.user.rank = token.rank;
 				session.user.isAdmin = token.isAdmin;
+				session.user.roleRecords = token.roleRecords;
 			}
 
 			return session; // Return the session with added user data

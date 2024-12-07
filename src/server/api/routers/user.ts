@@ -257,6 +257,8 @@ export const userRouter = createTRPCRouter({
 		})),
 	
 	/**
+	 * This is a public procedure because it's called during login to cache the roles the user fulfilled in session!
+	 *
 	 * Finds all roles fulfilled by a specific user (given their ID)
 	 * so far as of *today* (future roles are not taken into account).
 	 * Returns an array of objects that have 2 properties:
@@ -277,7 +279,7 @@ export const userRouter = createTRPCRouter({
 	 * } ]
 	 * ```
 	 */
-	getAllUserRolesById: protectedProcedure
+	getAllUserRolesById: publicProcedure
 		.input(z.string())
 		.output(z.array(roleRecordSchema).nullable())
 		.query((async ({ ctx, input: userId }) => {
