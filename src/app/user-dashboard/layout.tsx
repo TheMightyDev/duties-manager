@@ -37,7 +37,7 @@ export default async function Layout({ children }: Readonly<{ children: React.Re
 			id: "justice",
 			name: "טבלת הצדק",
 			href: "/user-dashboard/justice",
-			icon: <JusticeSvgIcon className={sharedIconClassName + "fill-black p-0.5"} />,
+			icon: <JusticeSvgIcon className={sharedIconClassName + "fill-black p-0.25"} />,
 			selectedIcon: <JusticeFilledSvgIcon className={sharedIconClassName + "fill-blue-600 p-0.5"} />,
 		},
 		{

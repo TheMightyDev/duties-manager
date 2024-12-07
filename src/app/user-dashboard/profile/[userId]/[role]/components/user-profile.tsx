@@ -19,7 +19,7 @@ export function UserProfile(props: UserProfileProps) {
 			</h2>
 			
 			<div>
-				<div className="flex flex-col gap-2">
+				<div className="flex flex-col gap-2 p-2 md:p-0">
 					<ProfileInfoBoxes {...props} />
 					<button className="rounded-full bg-purple-400">עריכת פרטים אישיים</button>
 				</div>

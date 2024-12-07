@@ -24,7 +24,7 @@ const onCheckClassNames: Record<UserRole, string> = {
 	[UserRole.EXEMPT]: "has-[:checked]:bg-role-exempt",
 };
 
-// size-5 md:size-6
+// size-5 sm:size-6
 export function UserRolesSelector(props: UserRolesSelectorProps) {
 	function onContainerChange() {
 		const selectedRoles = Object.entries(props.rolesCheckboxRefs)
@@ -38,7 +38,7 @@ export function UserRolesSelector(props: UserRolesSelectorProps) {
 		<div>
 			<h4>תפקידים</h4>
 			<div
-				className="md:flex md:gap-1"
+				className="sm:flex sm:gap-1"
 				onChange={onContainerChange}
 			>
 				{
@@ -50,7 +50,7 @@ export function UserRolesSelector(props: UserRolesSelectorProps) {
 						return (
 							<label
 								className={cn(
-									"group relative block py-1 has-[:checked]:text-white has-[:checked]:ring-indigo-500 md:size-9 md:cursor-pointer md:rounded-xl md:text-center bg-white hover:brightness-90", onCheckClassNames[role as UserRole]
+									"group relative block py-1 has-[:checked]:text-white has-[:checked]:ring-indigo-500 sm:size-9 sm:cursor-pointer sm:rounded-xl sm:text-center bg-white hover:brightness-90", onCheckClassNames[role as UserRole]
 								)}
 								key={`justice-user-role-${role}`}
 							>
@@ -59,17 +59,17 @@ export function UserRolesSelector(props: UserRolesSelectorProps) {
 									ref={ref}
 									defaultChecked={props.defaultCheckedRoles?.includes(role as UserRole)}
 									className={clsx(
-										"-bottom-1 -end-1 inline-block accent-green-600  md:absolute",
+										"-bottom-1 -end-1 inline-block accent-green-600  sm:absolute",
 										accentClassNames[role as UserRole]
 									)}
 								/>
-								<iconObj.icon className="size-5 md:size-6" />
-								<span className="inline-block md:hidden">
+								<iconObj.icon className="size-5 sm:size-6" />
+								<span className="inline-block sm:hidden">
 									{role}
 								</span>
 								<div
 									role="tooltip"
-									className="absolute left-1/2 top-full z-10 mt-2 hidden w-max -translate-x-1/2 rounded bg-slate-500 px-2 py-1 text-xs text-white md:group-hover:block"
+									className="absolute left-1/2 top-full z-10 mt-2 hidden w-max -translate-x-1/2 rounded bg-slate-500 px-2 py-1 text-xs text-white sm:group-hover:block"
 								>
 									{role}
 									<div className="absolute bottom-full left-1/2 size-0 -translate-x-1/2 border-x-4 border-b-4 border-x-transparent border-b-slate-500"></div>

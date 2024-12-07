@@ -8,7 +8,6 @@ import { JusticeTableMobileFabs } from "@/app/user-dashboard/justice/mobile/just
 import { type FetchUsersJusticeFunc } from "@/app/user-dashboard/justice/types";
 import { useJusticeOverview } from "@/app/user-dashboard/justice/use-justice-overview";
 import { type UserRole } from "@prisma/client";
-import { useRef } from "react";
 
 interface JusticeOverviewProps {
 	fetchUsersJustice: FetchUsersJusticeFunc;
@@ -24,20 +23,13 @@ export function JusticeOverview({
 		loggedUserLatestRole,
 	});
 	
-	const someRef = useRef<string>("watch me");
-	
-	function clickMe() {
-		someRef.current = "doesn't";
-		console.log("@someRef.current", someRef.current);
-	}
-	
 	return (
 		<>
-			<div className="hidden md:block">
+			<div className="hidden sm:block">
 				<JusticeTableHeader {...params} />
 				<JusticeTableDesktop {...params} />
 			</div>
-			<div className="block md:hidden">
+			<div className="block sm:hidden">
 				<JusticeTableMobile {...params} />
 				<JusticeTableMobileFabs {...params} />
 			</div>

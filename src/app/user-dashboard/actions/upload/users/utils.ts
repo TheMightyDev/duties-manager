@@ -58,7 +58,7 @@ export function parseUserInfoStr(userInfoStr: string): ParsedUserAndPeriods {
 		throw new Error(`${fullNameQuoted} - Invalid phone number (${phoneNumber}) - must be of format 05X-1234567 OR without dash 05X1234567`);
 	}
 	const roleStartDate = new Date(roleStartDateStr);
-	const permanentEntryDate = permanentEntryDateStr === "אין"
+	const permanentEntryDate = permanentEntryDateStr === "אין" || permanentEntryDateStr === "עתיד"
 		? null
 		: new Date(permanentEntryDateStr);
 	

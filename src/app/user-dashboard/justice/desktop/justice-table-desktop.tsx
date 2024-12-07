@@ -2,7 +2,8 @@ import { UserRoleMark } from "@/app/_components/svg-icons/user-roles/user-role-m
 import { type UserJusticeTableColId, usersJusticeTableColTitles } from "@/app/_utils/justice/users-justice-table-cols";
 import { type UsersJusticeTableSettings } from "@/app/user-dashboard/justice/types";
 import { type UserJustice } from "@/types/justice/user-justice";
-import { redirect } from "next/navigation";
+import { ExternalLinkIcon } from "lucide-react";
+import Link from "next/link";
 import { type MutableRefObject } from "react";
 
 interface JusticeTableDesktopProps {
@@ -19,9 +20,9 @@ export function JusticeTableDesktop({
 }: JusticeTableDesktopProps) {
 	return (
 		<>
-			<table className="text-center">
+			<table className="p-2 text-center">
 				<thead>
-					<tr>
+					<tr className="sticky top-0 z-10 bg-white">
 						{
 							Object.entries(usersJusticeTableColTitles).map(([ id, title ]) => (
 								<th
@@ -29,18 +30,20 @@ export function JusticeTableDesktop({
 									onClick={() => {
 										changeColIdToSortBy(id as UserJusticeTableColId);
 									}}
-									className="cursor-pointer p-2"
+									className="relative cursor-pointer p-2"
 								>
 									{title}
 									{
 										id === settingsRef.current.sortParams.colIdToSortBy &&
-										<span className="inline-block w-6 font-normal">
+										<span className="absolute inline-block w-6 font-normal">
 											{settingsRef.current.sortParams.ascending ? "↑" : "↓"}
 										</span>
 									}
 								</th>
 							))
 						}
+						{/* For more information buttons */}
+						<th></th>
 					</tr>
 				</thead>
 				<tbody>
@@ -57,10 +60,10 @@ export function JusticeTableDesktop({
 						}) => (
 							<tr
 								key={userId}
-								className="h-10 cursor-pointer odd:bg-slate-50 even:bg-slate-200 hover:bg-slate-300"
-								onClick={() => {
-									redirect(`/user-dashboard/profile/${userId}/${role}`);
-								}}
+								className="h-10 odd:bg-slate-50 even:bg-slate-200 hover:bg-slate-300"
+								// onClick={() => {
+								// 	redirect(`/user-dashboard/profile/${userId}/${role}`);
+								// }}
 							>
 								<th className="pe-4 ps-2 text-start">{userFullName}</th>
 								<td><UserRoleMark role={role}/></td>
@@ -69,6 +72,13 @@ export function JusticeTableDesktop({
 								<td>{weekdaysGuardingCount}</td>
 								<td>{weekendsGuardingCount}</td>
 								<td>{otherDutiesScoreSum}</td>
+								<td className="px-2">
+									<Link
+										href={`/user-dashboard/profile/${userId}/${role}`}
+									>
+										<ExternalLinkIcon />
+									</Link>
+								</td>
 							</tr>
 						))
 					}
