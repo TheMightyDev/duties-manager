@@ -2,12 +2,17 @@
 
 import { UserRoleMark } from "@/app/_components/svg-icons/user-roles/user-role-mark";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/_components/ui/select";
-import { type ProfileRoleSelectorProps } from "@/app/user-dashboard/profile/[userId]/[role]/types";
+import { type RoleRecord } from "@/types/user/role-record";
 import { type UserRole } from "@prisma/client";
 import { DirectionProvider } from "@radix-ui/react-direction";
 import { usePathname, useRouter } from "next/navigation";
 
-export function ProfileRoleSelector({ roleRecords, selectedRole }: ProfileRoleSelectorProps) {
+interface ProfileRoleSelectorProps {
+	roleRecords: RoleRecord[];
+	selectedRole: UserRole | "LATEST";
+}
+
+export function ProfileRoleSelector(props: ProfileRoleSelectorProps) {
 	const router = useRouter();
 	const pathname = usePathname();
 	
@@ -19,16 +24,7 @@ export function ProfileRoleSelector({ roleRecords, selectedRole }: ProfileRoleSe
 		
 		return nextPathname;
 	}
-	
-	// useEffect(() => {
-	// 	roleRecords.splice(0, roleRecords.length - 1).forEach((record) => {
-	// 		console.log("prefetch", switchRoleInPathname(record.role));
-	// 		router.prefetch(switchRoleInPathname(record.role));
-	// 	});
-		
-	// 	router.prefetch(switchRoleInPathname("LATEST"));
-	// }, []);
-	
+
 	function handleValueChange(nextRole: string) {
 		router.push(switchRoleInPathname(nextRole as UserRole));
 	}
@@ -37,7 +33,7 @@ export function ProfileRoleSelector({ roleRecords, selectedRole }: ProfileRoleSe
 		<>
 			<DirectionProvider dir="rtl">
 				<Select
-					value={selectedRole}
+					value={props.selectedRole}
 					onValueChange={handleValueChange}
 				>
 					<SelectTrigger className="w-[200px]">
@@ -45,8 +41,8 @@ export function ProfileRoleSelector({ roleRecords, selectedRole }: ProfileRoleSe
 					</SelectTrigger>
 					<SelectContent>
 						{
-							roleRecords.map((record, i) => {
-								const value = i === roleRecords.length - 1 ? "LATEST" : record.role;
+							props.roleRecords.map((record, i) => {
+								const value = i === props.roleRecords.length - 1 ? "LATEST" : record.role;
 							
 								return (
 									<SelectItem

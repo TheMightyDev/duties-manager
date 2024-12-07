@@ -1,16 +1,11 @@
 import { calcUserPosition } from "@/app/_utils/justice/calc-user-position";
-import { UserProfile } from "@/app/user-dashboard/profile/[userId]/[role]/components/user-profile";
+import { ProfileInfoBoxes } from "@/app/user-dashboard/profile/[userId]/[role]/components/profile-info-boxes";
+import { type ProfilePageUrlParams } from "@/app/user-dashboard/profile/[userId]/[role]/types";
 import { api } from "@/trpc/server";
 import { UTCDate } from "@date-fns/utc";
-import { type UserRole } from "@prisma/client";
 import { endOfDay } from "date-fns";
 
-interface TestProps {
-	userId: string;
-	role: UserRole | "LATEST";
-}
-
-export async function Test({ userId, role }: TestProps) {
+export async function ProfileInfoBoxesWrapper({ userId, role }: ProfilePageUrlParams) {
 	const roleRecords = await api.user.getAllUserRolesById(userId);
 	
 	if (!roleRecords) {
@@ -40,13 +35,11 @@ export async function Test({ userId, role }: TestProps) {
 	const userJustice = usersJusticeInSameRole.find((curr) => curr.userId === userId);
 	
 	return (
-		<>
-			<UserProfile
-				userJustice={userJustice!}
-				totalRelevantUsersCount={usersJusticeInSameRole.length}
-				userPosition={userPosition}
-				roleRecords={roleRecords}
-			/>
-		</>
+		<ProfileInfoBoxes
+			userJustice={userJustice!}
+			totalRelevantUsersCount={usersJusticeInSameRole.length}
+			userPosition={userPosition}
+			roleRecords={roleRecords}
+		/>
 	);
 };

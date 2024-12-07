@@ -1,14 +1,9 @@
 import { ProfileRoleSelector } from "@/app/user-dashboard/profile/[userId]/[role]/components/profile-role-selector";
+import { type ProfilePageUrlParams } from "@/app/user-dashboard/profile/[userId]/[role]/types";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
-import { type UserRole } from "@prisma/client";
 
-interface ProfileHeaderProps {
-	userId: string;
-	role: UserRole | "LATEST";
-}
-
-export async function ProfileHeader(props: ProfileHeaderProps) {
+export async function ProfileHeader(props: ProfilePageUrlParams) {
 	const session = await auth();
 	
 	let viewedUserFullName = props.userId === session?.user.id

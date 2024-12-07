@@ -1,6 +1,6 @@
 import { LockSvgIcon } from "@/app/_components/svg-icons/ui/lock-svg-icon";
 import { Alert, AlertDescription, AlertTitle } from "@/app/_components/ui/alert";
-import { PeriodRecord } from "@/app/user-dashboard/profile/[userId]/[role]/profile-data-components/period-record";
+import { PeriodRecord } from "@/app/user-dashboard/profile/[userId]/[role]/components/period-record";
 import { PeriodStatus, UserRole, type Period } from "@prisma/client";
 
 interface PeriodsContainerProps {

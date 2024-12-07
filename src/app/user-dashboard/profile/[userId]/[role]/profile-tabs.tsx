@@ -1,18 +1,13 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/_components/ui/tabs";
 import { DutyAssignments } from "@/app/user-dashboard/profile/[userId]/[role]/components/duty-assignments";
-import { PeriodsContainer } from "@/app/user-dashboard/profile/[userId]/[role]/profile-data-components/periods-container";
+import { PeriodsContainer } from "@/app/user-dashboard/profile/[userId]/[role]/components/periods-container";
+import { type ProfilePageUrlParams } from "@/app/user-dashboard/profile/[userId]/[role]/types";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
-import { type UserRole } from "@prisma/client";
 import clsx from "clsx";
 import { Suspense } from "react";
 
-interface ProfileTabsProps {
-	userId: string;
-	role: UserRole | "LATEST";
-}
-
-export async function ProfileTabs({ userId, role }: ProfileTabsProps) {
+export async function ProfileTabs({ userId, role }: ProfilePageUrlParams) {
 	const session = await auth();
 	const isLoggedUserOrAdmin = session?.user.id === userId || session?.user.isAdmin;
 	
