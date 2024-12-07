@@ -23,34 +23,36 @@ export default async function Layout({ children }: Readonly<{ children: React.Re
 	
 	const loggedUserId = session.user.id;
 	
+	const sharedIconClassName = "size-8 m-auto ";
+	
 	const routeInfos: RouteInfo[] = [
 		{
 			id: "calendar",
 			name: "לוח שנה",
 			href: "/user-dashboard/calendar",
-			icon: <CalendarSvgIcon className="m-auto size-9 stroke-black"/>,
-			selectedIcon: <CalendarFilledSvgIcon className="m-auto size-9 stroke-blue-600"/>,
+			icon: <CalendarSvgIcon className={sharedIconClassName + "stroke-black"}/>,
+			selectedIcon: <CalendarFilledSvgIcon className={sharedIconClassName + "stroke-blue-600"}/>,
 		},
 		{
 			id: "justice",
 			name: "טבלת הצדק",
 			href: "/user-dashboard/justice",
-			icon: <JusticeSvgIcon className="m-auto size-9 fill-black p-0.5" />,
-			selectedIcon: <JusticeFilledSvgIcon className="m-auto size-9 fill-blue-600 p-0.5" />,
+			icon: <JusticeSvgIcon className={sharedIconClassName + "fill-black p-0.5"} />,
+			selectedIcon: <JusticeFilledSvgIcon className={sharedIconClassName + "fill-blue-600 p-0.5"} />,
 		},
 		{
 			id: "my-profile",
 			name: "הפרופיל שלי",
 			href: `/user-dashboard/profile/${loggedUserId}/LATEST`,
-			icon: <ProfileCircleSvgIcon className="m-auto size-9 stroke-black"/>,
-			selectedIcon: <ProfileCircleFilledSvgIcon className="m-auto size-9 fill-blue-600 "/>,
+			icon: <ProfileCircleSvgIcon className={sharedIconClassName + "stroke-black"}/>,
+			selectedIcon: <ProfileCircleFilledSvgIcon className={sharedIconClassName + "fill-blue-600"}/>,
 		},
 		{
 			id: "actions",
 			name: "פעולות",
 			href: "/user-dashboard/actions",
-			icon: <MagicWandSvgIcon className="m-auto size-9 stroke-black"/>,
-			selectedIcon: <MagicWandSvgIcon className="m-auto size-9 stroke-blue-600"/>,
+			icon: <MagicWandSvgIcon className={sharedIconClassName + "stroke-black"}/>,
+			selectedIcon: <MagicWandSvgIcon className={sharedIconClassName + "stroke-blue-600"}/>,
 		},
 	] as const;
 	
@@ -67,7 +69,7 @@ export default async function Layout({ children }: Readonly<{ children: React.Re
 			<main className="max-h-[90vh] flex-auto overflow-y-auto md:max-h-screen md:pb-0">
 				{children}
 			</main>
-			<div className="fixed bottom-0">
+			<div className="fixed bottom-0 md:hidden">
 				<BottomNavigation {...linkGroupProps}	/>
 			</div>
 		</div>
