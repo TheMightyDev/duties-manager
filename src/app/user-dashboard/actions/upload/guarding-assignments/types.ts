@@ -1,3 +1,5 @@
+import { type Assignment, type Duty } from "@prisma/client";
+
 export interface ParsedAssignment {
 	assigneeFullName: string;
 	reserveFullName?: string;
@@ -12,4 +14,9 @@ export type ParsedDutiesAssignments = Record<DutyDateAndDuration, ParsedAssignme
 export interface AssignmentsUploadCounts {
 	duties: number;
 	assignments: number;
+}
+
+export interface UploadableDutiesAndAssignments {
+	duties: Duty[];
+	assignments: Assignment[];
 }

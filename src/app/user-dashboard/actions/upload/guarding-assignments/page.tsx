@@ -1,12 +1,14 @@
 import { type AssignmentsUploadCounts, type ParsedDutiesAssignments } from "@/app/user-dashboard/actions/upload/guarding-assignments/types";
 import { UploadAssignmentsContents } from "@/app/user-dashboard/actions/upload/guarding-assignments/upload-assignments-contents";
-import { parseAssignmentInfoStr } from "@/app/user-dashboard/actions/upload/guarding-assignments/utils";
+import { convertParsedDataToUploadableData, parseAssignmentInfoStr } from "@/app/user-dashboard/actions/upload/guarding-assignments/utils";
 import { type InitialParseResults } from "@/app/user-dashboard/actions/upload/types";
+import { auth } from "@/server/auth";
+import { db } from "@/server/db";
 import { api } from "@/trpc/server";
 
-let cachedParsedDutiesAssignments: ParsedDutiesAssignments | undefined = undefined;
+let cachedValidParsedInfo: ParsedDutiesAssignments | null = null;
 
-export default async function UploadAssignmentsPage() {
+export default async function UploadGuardingAssignmentsPage() {
 	const allUsersIdsByFullName = await api.user.getAllUsersFullNameAndId();
 	
 	async function validateUploadedInfo(infoStr: string): Promise<InitialParseResults> {
@@ -33,7 +35,7 @@ export default async function UploadAssignmentsPage() {
 			}
 		});
 		
-		cachedParsedDutiesAssignments = dutiesAssignments;
+		cachedValidParsedInfo = dutiesAssignments;
 		
 		return {
 			errorMessages,
@@ -44,12 +46,39 @@ export default async function UploadAssignmentsPage() {
 	async function uploadCachedValidParsedInfo(): Promise<AssignmentsUploadCounts> {
 		"use server";
 		
-		console.log("@cachedParsedDutiesAssignments", cachedParsedDutiesAssignments);
+		if (!cachedValidParsedInfo) {
+			console.error("You cannot call this function if there's no cached valid parsed info");
+
+			return {
+				assignments: 0,
+				duties: 0,
+			};
+		}
+		console.log("@cachedParsedDutiesAssignments", cachedValidParsedInfo);
 		
-		return {
-			assignments: 0,
-			duties: 0,
+		// There must be a logged user to view the page
+		const organizationId = (await auth())!.user.organizationId;
+		
+		const uploadableData = convertParsedDataToUploadableData({
+			allUsersIdsByFullName,
+			dutiesAssignments: cachedValidParsedInfo,
+			organizationId,
+		});
+		
+		console.log(uploadableData);
+		
+		const uploadCountResults: AssignmentsUploadCounts = {
+			// assignments: 0,
+			// duties: 0,
+			duties:	(await db.duty.createMany({
+				data: uploadableData.duties,
+			})).count,
+			assignments:	(await db.assignment.createMany({
+				data: uploadableData.assignments,
+			})).count,
 		};
+		
+		return uploadCountResults;
 	}
 	
 	return (
