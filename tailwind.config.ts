@@ -7,6 +7,9 @@ export default {
 	content: [ "./src/**/*.tsx" ],
 	theme: {
 		extend: {
+			screens: {
+				"xs": "350px",
+			},
 			fontFamily: {
 				sans: [ "Assistant", ...fontFamily.sans ],
 			},

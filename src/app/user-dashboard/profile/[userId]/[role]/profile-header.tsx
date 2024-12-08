@@ -33,7 +33,7 @@ export async function ProfileHeader(props: ProfilePageUrlParams) {
 			className="sticky top-0 z-10 flex h-12 flex-row flex-wrap justify-center gap-2 bg-white/50 p-1 text-xl backdrop-blur-md lg:justify-start"
 			dir="rtl"
 		>
-			<span className="text-3xl font-bold">
+			<span className="text-xl font-bold leading-10 sm:text-3xl">
 				{viewedUserFullName}
 			</span>
 			<ProfileRoleSelector

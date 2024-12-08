@@ -26,10 +26,10 @@ export function ProfileInfoBoxes(props: ProfileInfoBoxesProps) {
 
 	return (
 		<div className="p-2 md:p-0">
-			<div className="flex w-full flex-col gap-2 md:min-w-96 ">
+			<div className="flex w-full flex-col gap-2 md:min-w-96">
 				<div className="flex flex-row gap-2">
 					<div className={className}>
-						<span className="text-4xl">{weightedScore}</span>
+						<span className="text-4xl">{weightedScore.toFixed(2)}</span>
 						<span>ניקוד משוקלל</span>
 					</div>
 					<div className={className}>
@@ -39,7 +39,7 @@ export function ProfileInfoBoxes(props: ProfileInfoBoxesProps) {
 				</div>
 				<div className="flex flex-row gap-2">
 					<div className={className}>
-						<span className="text-4xl">{monthsInRole}</span>
+						<span className="text-4xl">{monthsInRole.toFixed(2)}</span>
 						<span>חודשים בתפקיד</span>
 					</div>
 					<PeriodStatusInfoBox

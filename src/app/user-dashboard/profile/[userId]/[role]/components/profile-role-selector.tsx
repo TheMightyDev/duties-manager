@@ -36,7 +36,7 @@ export function ProfileRoleSelector(props: ProfileRoleSelectorProps) {
 					value={props.selectedRole}
 					onValueChange={handleValueChange}
 				>
-					<SelectTrigger className="w-[200px]">
+					<SelectTrigger className="w-16 xs:w-40 sm:w-52">
 						<SelectValue placeholder="Theme" />
 					</SelectTrigger>
 					<SelectContent>
