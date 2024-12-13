@@ -12,11 +12,13 @@ import { useState } from "react";
 interface PeriodsContainerProps {
 	periods: Period[];
 	isLoggedUserAdmin: boolean;
+	replacePeriodsWith: (nextPeriods: Period[]) => Promise<void>;
 }
 
 export function PeriodsContainer({
 	periods,
 	isLoggedUserAdmin,
+	replacePeriodsWith,
 }: PeriodsContainerProps) {
 	const [ isEditorDialogOpen, setIsEditorDialogOpen ] = useState(false);
 	
@@ -48,9 +50,7 @@ export function PeriodsContainer({
 				closeDialog={() => {
 					setIsEditorDialogOpen(false);
 				}}
-				applyChanges={() => {
-					alert("TODO");
-				}}
+				replacePeriodsWith={replacePeriodsWith}
 			/>
 			{
 				isLoggedUserAdmin &&

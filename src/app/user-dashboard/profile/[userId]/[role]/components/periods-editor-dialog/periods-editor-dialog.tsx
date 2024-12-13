@@ -5,20 +5,49 @@ import { Button } from "@/app/_components/ui/button";
 import { PeriodEditRow } from "@/app/user-dashboard/profile/[userId]/[role]/components/periods-editor-dialog/period-edit-row";
 import { PeriodInsertRow } from "@/app/user-dashboard/profile/[userId]/[role]/components/periods-editor-dialog/period-insert-button";
 import { RetireDateEdit } from "@/app/user-dashboard/profile/[userId]/[role]/components/periods-editor-dialog/retire-date-edit";
+import { createId } from "@paralleldrive/cuid2";
 import { type Period } from "@prisma/client";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface PeriodsEditorDialogProps {
 	isOpen: boolean;
 	initialPeriods: Period[];
 	closeDialog: () => void;
-	applyChanges: (newPeriods: Period[]) => void;
+	replacePeriodsWith: (nextPeriods: Period[]) => Promise<void>;
 }
 
 export function PeriodsEditorDialog(props: PeriodsEditorDialogProps) {
-	const [ proposedPeriods, setProposedPeriods ] = useState<Period[]>(props.initialPeriods);
+	const [ proposedPeriods, setProposedPeriods ] = useState<Period[]>([
+		...props.initialPeriods,
+	]);
+	
+	const router = useRouter();
 	
 	const lastPeriod = proposedPeriods.at(-1);
+	
+	function applyChanges() {
+		const formattedNextPeriods = proposedPeriods.map((currPeriod, i) => {
+			currPeriod.id = createId();
+			
+			const nextPeriod = proposedPeriods[i + 1];
+			
+			if (nextPeriod) {
+				currPeriod.endDate = nextPeriod.startDate;
+			}
+			
+			return currPeriod;
+		});
+		
+		props.replacePeriodsWith(formattedNextPeriods)
+			.then(() => {
+				router.refresh();
+			});
+	}
+	
+	function resetProposedPeriods() {
+		setProposedPeriods(props.initialPeriods);
+	}
 	
 	return (
 		<>
@@ -77,13 +106,16 @@ export function PeriodsEditorDialog(props: PeriodsEditorDialogProps) {
 				</div>
 				<div className="absolute bottom-0 flex w-full justify-end p-2">
 					<Button
-						onClick={props.closeDialog}
+						onClick={() => {
+							resetProposedPeriods();
+							props.closeDialog();
+						}}
 						variant="ghost"
 					>
 						ביטול
 					</Button>
 					<Button onClick={() => {
-						props.applyChanges(proposedPeriods);
+						applyChanges();
 						props.closeDialog();
 					}}
 					>

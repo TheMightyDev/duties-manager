@@ -4,14 +4,20 @@ import { PeriodsContainer } from "@/app/user-dashboard/profile/[userId]/[role]/c
 import { type ProfilePageUrlParams } from "@/app/user-dashboard/profile/[userId]/[role]/types";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
+import { type Period } from "@prisma/client";
 import clsx from "clsx";
 import { Suspense } from "react";
 
 export async function ProfileTabs({ userId, role }: ProfilePageUrlParams) {
 	const session = await auth();
-	const isLoggedUserOrAdmin = session?.user.id === userId || session?.user.isAdmin;
 	
-	const isLoggedUserAdmin = Boolean(session?.user.isAdmin);
+	if (!session) {
+		return <></>;
+	}
+	
+	const isLoggedUserOrAdmin = session.user.id === userId || session.user.isAdmin;
+	
+	const isLoggedUserAdmin = Boolean(session.user.isAdmin);
 	
 	const [ assignments, periods ] = await (
 		isLoggedUserOrAdmin
@@ -29,8 +35,19 @@ export async function ProfileTabs({ userId, role }: ProfilePageUrlParams) {
 				}),
 				null,
 			])
-	) ;
+	);
 	
+	async function replacePeriodsWith(nextPeriods: Period[]) {
+		"use server";
+		
+		if (session) {
+			await api.user.replacePeriods({
+				userId: session.user.id,
+				nextPeriods,
+			});
+		}
+	}
+
 	return (
 		<>
 			<Tabs
@@ -77,6 +94,7 @@ export async function ProfileTabs({ userId, role }: ProfilePageUrlParams) {
 							<PeriodsContainer
 								periods={periods}
 								isLoggedUserAdmin={isLoggedUserAdmin}
+								replacePeriodsWith={replacePeriodsWith}
 							/>
 						</Suspense>
 					</TabsContent>

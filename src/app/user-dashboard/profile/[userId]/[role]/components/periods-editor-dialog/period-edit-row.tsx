@@ -26,6 +26,9 @@ export function PeriodEditRow({
 				return prev;
 			}
 			
+			prev[affectedPeriodIndex] = {
+				...prev[affectedPeriodIndex],
+			};
 			prev[affectedPeriodIndex] = change(prev[affectedPeriodIndex]);
 			
 			return [ ...prev ];
