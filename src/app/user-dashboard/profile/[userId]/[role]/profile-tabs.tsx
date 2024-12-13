@@ -40,12 +40,10 @@ export async function ProfileTabs({ userId, role }: ProfilePageUrlParams) {
 	async function replacePeriodsWith(nextPeriods: Period[]) {
 		"use server";
 		
-		if (session) {
-			await api.user.replacePeriods({
-				userId: session.user.id,
-				nextPeriods,
-			});
-		}
+		await api.user.replacePeriods({
+			userId,
+			nextPeriods,
+		});
 	}
 
 	return (
