@@ -1,17 +1,25 @@
+"use client";
+
 import { LockSvgIcon } from "@/app/_components/svg-icons/ui/lock-svg-icon";
+import { PenLineSvgIcon } from "@/app/_components/svg-icons/ui/pen-line-svg-icon";
 import { Alert, AlertDescription, AlertTitle } from "@/app/_components/ui/alert";
+import { Button } from "@/app/_components/ui/button";
 import { PeriodRecord } from "@/app/user-dashboard/profile/[userId]/[role]/components/period-record";
+import { PeriodsEditorDialog } from "@/app/user-dashboard/profile/[userId]/[role]/components/periods-editor-dialog/periods-editor-dialog";
 import { PeriodStatus, UserRole, type Period } from "@prisma/client";
+import { useState } from "react";
 
 interface PeriodsContainerProps {
 	periods: Period[];
-	isLoggedUserNotAdmin: boolean;
+	isLoggedUserAdmin: boolean;
 }
 
 export function PeriodsContainer({
 	periods,
-	isLoggedUserNotAdmin,
+	isLoggedUserAdmin,
 }: PeriodsContainerProps) {
+	const [ isEditorDialogOpen, setIsEditorDialogOpen ] = useState(false);
+	
 	if (periods.length === 0) {
 		return <>No periods found for user</>;
 	}
@@ -34,8 +42,28 @@ export function PeriodsContainer({
 	
 	return (
 		<>
+			<PeriodsEditorDialog
+				isOpen={isEditorDialogOpen}
+				initialPeriods={periods}
+				closeDialog={() => {
+					setIsEditorDialogOpen(false);
+				}}
+				applyChanges={() => {
+					alert("TODO");
+				}}
+			/>
 			{
-				isLoggedUserNotAdmin &&
+				isLoggedUserAdmin &&
+				<Button onClick={() => {
+					setIsEditorDialogOpen(true);
+				}}
+				>
+					עריכת הסתייגויות
+					<PenLineSvgIcon className="stroke-white"/>
+				</Button>
+			}
+			{
+				(!isLoggedUserAdmin) &&
 				<Alert variant="default">
 					<LockSvgIcon className="size-6 stroke-black"/>
 					<AlertTitle>
@@ -65,14 +93,6 @@ export function PeriodsContainer({
 						key={retirePeriod.id}
 					/>
 				</ol>
-				{/* {
-				periods.map((period) => (
-					<PeriodRecord
-						period={period}
-						isCurrentPeriod={period === currentPeriod}
-					/>
-				))
-			} */}
 			</div>
 		</>
 	);

@@ -11,7 +11,7 @@ export async function ProfileTabs({ userId, role }: ProfilePageUrlParams) {
 	const session = await auth();
 	const isLoggedUserOrAdmin = session?.user.id === userId || session?.user.isAdmin;
 	
-	const isLoggedUserNotAdmin = !(session?.user.isAdmin);
+	const isLoggedUserAdmin = Boolean(session?.user.isAdmin);
 	
 	const [ assignments, periods ] = await (
 		isLoggedUserOrAdmin
@@ -76,7 +76,7 @@ export async function ProfileTabs({ userId, role }: ProfilePageUrlParams) {
 						<Suspense fallback="w">
 							<PeriodsContainer
 								periods={periods}
-								isLoggedUserNotAdmin={isLoggedUserNotAdmin}
+								isLoggedUserAdmin={isLoggedUserAdmin}
 							/>
 						</Suspense>
 					</TabsContent>
