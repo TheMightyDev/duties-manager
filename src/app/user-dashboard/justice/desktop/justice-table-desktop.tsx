@@ -22,7 +22,7 @@ export function JusticeTableDesktop({
 		<>
 			<table className="p-2 text-center">
 				<thead>
-					<tr className="sticky top-0 z-10 bg-white">
+					<tr className="sticky top-0 z-10 bg-white [&_th]:text-center">
 						{
 							Object.entries(usersJusticeTableColTitles).map(([ id, title ]) => (
 								<th

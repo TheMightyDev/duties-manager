@@ -1,5 +1,5 @@
 import { createId } from "@paralleldrive/cuid2";
-import { type Period } from "@prisma/client";
+import { PeriodStatus, type Period } from "@prisma/client";
 import { addDays, subDays } from "date-fns";
 
 interface PeriodInsertButtonProps {
@@ -8,7 +8,7 @@ interface PeriodInsertButtonProps {
 	setProposedPeriods: React.Dispatch<React.SetStateAction<Period[]>>;
 }
 
-export function PeriodInsertButton({
+export function PeriodInsertRow({
 	index,
 	insertMode,
 	setProposedPeriods,
@@ -24,6 +24,7 @@ export function PeriodInsertButton({
 			const addedPeriod: Period =	{
 				...existingPeriod,
 				id: createId(),
+				status: PeriodStatus.FULFILLS_ROLE,
 				description: null,
 				startDate: insertMode === "before"
 					? subDays(existingPeriod.startDate, 10)
@@ -39,11 +40,15 @@ export function PeriodInsertButton({
 	}
 	
 	return (
-		<button
-			className="bg-blue-300"
-			onClick={insertPeriod}
-		>
-			+
-		</button>
+		<tr>
+			<td colSpan={5}>
+				<button
+					className="w-full bg-blue-300"
+					onClick={insertPeriod}
+				>
+					+
+				</button>
+			</td>
+		</tr>
 	);
 };
