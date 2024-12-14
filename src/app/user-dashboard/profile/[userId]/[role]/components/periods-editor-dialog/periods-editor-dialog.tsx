@@ -8,7 +8,7 @@ import { RetireDateEdit } from "@/app/user-dashboard/profile/[userId]/[role]/com
 import { createId } from "@paralleldrive/cuid2";
 import { type Period } from "@prisma/client";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 
 interface PeriodsEditorDialogProps {
 	isOpen: boolean;
@@ -76,20 +76,18 @@ export function PeriodsEditorDialog(props: PeriodsEditorDialogProps) {
 						/>
 						{
 							proposedPeriods.map((period, index) => (
-								<>
+								<Fragment key={period.id}>
 									<PeriodEditRow
-										key={period.id}
 										period={period}
 										setProposedPeriods={setProposedPeriods}
 										canDeletePeriod={proposedPeriods.length > 1}
 									/>
 									<PeriodInsertRow
-										key={`${period.id}-insert-after`}
 										index={index}
 										insertMode="after"
 										setProposedPeriods={setProposedPeriods}
 									/>
-								</>
+								</Fragment>
 							))
 						}
 					</tbody>
