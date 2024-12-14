@@ -92,18 +92,15 @@ export function PeriodsEditorDialog(props: PeriodsEditorDialogProps) {
 								</>
 							))
 						}
-						{
-							lastPeriod &&
-							<RetireDateEdit
-								lastPeriod={lastPeriod}
-								setPeriods={setProposedPeriods}
-							/>
-						}
 					</tbody>
 				</table>
-				<div className="flex flex-col gap-2 overflow-y-scroll md:max-h-[70vh] ">
-					
-				</div>
+				{
+					lastPeriod &&
+					<RetireDateEdit
+						lastPeriod={lastPeriod}
+						setPeriods={setProposedPeriods}
+					/>
+				}
 				<div className="absolute bottom-0 flex w-full justify-end p-2">
 					<Button
 						onClick={() => {
