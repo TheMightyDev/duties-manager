@@ -328,6 +328,10 @@ export const userRouter = createTRPCRouter({
 				},
 			});
 			
+			if (!userWithPeriods) {
+				return null;
+			}
+			
 			const fulfilledRolesSoFar: RoleRecord[] = [];
 			
 			userWithPeriods?.periods.forEach(({ role, endDate }) => {
@@ -347,17 +351,17 @@ export const userRouter = createTRPCRouter({
 				}
 			});
 			
-			const fulfilled = fulfilledRolesSoFar.sort((recordA, recordB) => (
-				recordA.latestFulfilledDate === null ? 1 : (Number(recordA.latestFulfilledDate) - Number(recordB.latestFulfilledDate) ? 1 : -1)
-			));
+			const fulfilledSorted = fulfilledRolesSoFar.sort((recordA, recordB) => {
+				if (recordA.latestFulfilledDate === null) return 1;
+				
+				if (recordB.latestFulfilledDate === null) return -1;
+				
+				return (recordA.latestFulfilledDate.getTime() > recordB.latestFulfilledDate.getTime()) ? 1 : -1;
+			});
 			
-			console.log("@@fulfilledRolesSoFar", fulfilled);
+			console.log("@@fulfilledRolesSoFar", fulfilledSorted);
 			
-			if (!userWithPeriods) {
-				return null;
-			}
-			
-			return fulfilled;
+			return fulfilledSorted;
 		})),
 		
 	getUserAssignments: protectedProcedure
