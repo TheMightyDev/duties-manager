@@ -363,7 +363,11 @@ export const userRouter = createTRPCRouter({
 			
 			return fulfilledSorted;
 		})),
-		
+	
+	/**
+	 * Returns all assignments of a specific user,
+	 * ordered from the latest duty to the oldest duty
+	 */
 	getUserAssignments: protectedProcedure
 		.input(z.object({
 			userId: z.string(),
@@ -420,7 +424,11 @@ export const userRouter = createTRPCRouter({
 					id: userId,
 				},
 				include: {
-					periods: true,
+					periods: {
+						orderBy: {
+							startDate: "asc",
+						},
+					},
 				},
 			});
 			

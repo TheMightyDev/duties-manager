@@ -1,6 +1,6 @@
 import { splitToLinesAndFilterEmpty } from "@/app/_utils/string-utils";
 import { type AssignmentsUploadCounts, type ParsedDutiesAssignments, type ValidateUploadedInfoParams } from "@/app/user-dashboard/actions/upload/guarding-assignments/types";
-import { UploadAssignmentsContents } from "@/app/user-dashboard/actions/upload/guarding-assignments/upload-assignments-contents";
+import { UploadGuardingAssignmentsContents } from "@/app/user-dashboard/actions/upload/guarding-assignments/upload-guarding-assignments-contents";
 import { convertParsedDataToUploadableData, parseAssignmentInfoStr } from "@/app/user-dashboard/actions/upload/guarding-assignments/utils";
 import { type InitialParseResults } from "@/app/user-dashboard/actions/upload/types";
 import { auth } from "@/server/auth";
@@ -87,7 +87,7 @@ export default async function UploadGuardingAssignmentsPage() {
 	
 	return (
 		<>
-			<UploadAssignmentsContents
+			<UploadGuardingAssignmentsContents
 				validateUploadedInfo={validateUploadedInfo}
 				uploadCachedValidParsedInfo={uploadCachedValidParsedInfo}
 			/>

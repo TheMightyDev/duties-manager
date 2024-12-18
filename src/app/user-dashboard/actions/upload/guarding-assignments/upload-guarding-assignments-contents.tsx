@@ -6,12 +6,12 @@ import { UploadProgress, type InitialParseResults } from "@/app/user-dashboard/a
 import { UserRole } from "@prisma/client";
 import { useRef, useState } from "react";
 
-interface UploadContentsProps {
+interface UploadGuardingContentsProps {
 	validateUploadedInfo: (params: ValidateUploadedInfoParams) => Promise<InitialParseResults>;
 	uploadCachedValidParsedInfo: () => Promise<AssignmentsUploadCounts>;
 }
 
-export function UploadAssignmentsContents(props: UploadContentsProps) {
+export function UploadGuardingAssignmentsContents(props: UploadGuardingContentsProps) {
 	const infoTextAreaRef = useRef<HTMLTextAreaElement>(null);
 	const [ errorMessages, setErrorMessages ] = useState<string[]>([]);
 	const [ parsedInfoJson, setParsedInfoJson ] = useState<string>("");
@@ -20,8 +20,9 @@ export function UploadAssignmentsContents(props: UploadContentsProps) {
 	const [ selectedUserRole, setSelectedUserRole ] = useState<UserRole>(UserRole.SQUAD);
 	
 	function validateInfo() {
-		const usersInfoStr = infoTextAreaRef.current?.value ?? "";
-		console.log("it's good");
+		if (!infoTextAreaRef.current) return;
+		
+		const usersInfoStr = infoTextAreaRef.current.value;
 		
 		props.validateUploadedInfo({
 			infoStr: usersInfoStr,
@@ -61,6 +62,26 @@ export function UploadAssignmentsContents(props: UploadContentsProps) {
 	
 	return (
 		<>
+			<div className="flex w-full flex-row justify-between">
+				<div>
+					תאריך התחלה
+				</div>
+				<div>
+					משך בימים
+				</div>
+				<div>
+					שם מלא משובץ
+				</div>
+				<div>
+					?שם מלא רזרבה\ניקוד נוסף\הערה
+				</div>
+				<div>
+					?ניקוד נוסף\הערה
+				</div>
+				<div>
+					הערה?
+				</div>
+			</div>
 			<textarea
 				ref={infoTextAreaRef}
 				className="w-full"
