@@ -42,7 +42,10 @@ function getAllUserAssignmentsErrors({ user }: {
 		
 		const periodAtDutyTime = user.periods.find((period) => (
 			period.startDate < duty.startDate &&
-			period.endDate > duty.endDate
+			period.endDate > duty.startDate
+			// We don't look at the end date of the duty because there's the edge case
+			// that the duty starts in one period and end in another, so only the
+			// start date is interesting to us.
 		));
 		
 		if (!periodAtDutyTime) {
