@@ -6,11 +6,11 @@ import { type SanityCheckError } from "@/types/sanity-check/sanity-check-error";
 import Link from "next/link";
 import { useRef, useState } from "react";
 
-interface StartSanityChecksButtonProps {
+interface SanityChecksRunnerProps {
 	runChecks: () => AsyncGenerator<string, void, unknown>;
 }
 
-export function StartSanityChecksButton({ runChecks }: StartSanityChecksButtonProps) {
+export function SanityChecksRunner({ runChecks }: SanityChecksRunnerProps) {
 	const countChecksTimeRef = useRef<NodeJS.Timeout | null>(null);
 	const [ errors, setErrors ] = useState<SanityCheckError[]>([]);
 	const [ secondsPassed, setSecondsPassed ] = useState(0);

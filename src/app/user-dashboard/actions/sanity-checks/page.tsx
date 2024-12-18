@@ -1,5 +1,5 @@
 import { SanityChecksDescription } from "@/app/user-dashboard/actions/sanity-checks/description";
-import { StartSanityChecksButton } from "@/app/user-dashboard/actions/sanity-checks/start-sanity-checks-button";
+import { SanityChecksRunner } from "@/app/user-dashboard/actions/sanity-checks/sanity-checks-runner";
 import { api } from "@/trpc/server";
 
 export default function SanityChecksPage() {
@@ -16,7 +16,7 @@ export default function SanityChecksPage() {
 	return (
 		<div dir="ltr">
 			<SanityChecksDescription />
-			<StartSanityChecksButton runChecks={runChecks}/>
+			<SanityChecksRunner runChecks={runChecks}/>
 		</div>
 	);
 }
