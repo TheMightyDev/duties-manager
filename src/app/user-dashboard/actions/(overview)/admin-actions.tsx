@@ -11,7 +11,11 @@ export function AdminActions() {
 			<div>
 				פעולות ניהול
 			</div>
-			<Link href={`${pathname}/upload/users`}>
+			
+			<Link
+				href={`${pathname}/upload/users`}
+				prefetch={false}
+			>
 				העלאת משתמשים
 			</Link>
 			<Link
@@ -19,6 +23,12 @@ export function AdminActions() {
 				prefetch={false}
 			>
 				העלאת שיבוצים לשמירות
+			</Link>
+			<Link
+				href={`${pathname}/sanity-checks`}
+				prefetch={false}
+			>
+				בדיקת שפיות
 			</Link>
 		</>
 	);
