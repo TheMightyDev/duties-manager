@@ -1,5 +1,6 @@
 import { ArchiveSvgIcon } from "@/app/_components/svg-icons/archive-svg-icon";
 import { CheckmarkSvgIcon } from "@/app/_components/svg-icons/checkmark-svg-icon";
+import { HealthSvgIcon } from "@/app/_components/svg-icons/health-svg-icon";
 import { PathLocationSvgIcon } from "@/app/_components/svg-icons/path-location-svg-icon";
 import { cn } from "@/app/_utils/cn";
 import { auth } from "@/server/auth";
@@ -11,11 +12,13 @@ interface PeriodStatusInfoBoxProps {
 	isEarlyRole: boolean;
 }
 
-function getIcon({ status, isEarlyRole }: {
+function getIcon({ status, isEarlyRole, isAdmin }: {
 	status: PeriodStatus;
 	isEarlyRole: boolean;
+	isAdmin: boolean;
 }) {
 	const className = "size-10 fill-white m-auto";
+	const heartClassName = "size-10 fill-white stroke-white m-auto";
 	
 	if (isEarlyRole) {
 		return <ArchiveSvgIcon className={className} />;
@@ -24,7 +27,11 @@ function getIcon({ status, isEarlyRole }: {
 	if (status === PeriodStatus.FULFILLS_ROLE) {
 		return <CheckmarkSvgIcon className={className} />;
 	} else {
-		return <PathLocationSvgIcon className={className} />;
+		if (!isAdmin || status === PeriodStatus.TEMPORARILY_ABSENT) {
+			return <PathLocationSvgIcon className={className} />;
+		} else {
+			return <HealthSvgIcon className={heartClassName} />;
+		}
 	}
 }
 
@@ -67,6 +74,7 @@ export async function PeriodStatusInfoBox({ baseClassName, status, isEarlyRole }
 				{ getIcon({
 					status,
 					isEarlyRole,
+					isAdmin,
 				}) }
 			</span>
 			<span className="font-bold">
