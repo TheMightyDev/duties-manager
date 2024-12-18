@@ -12,11 +12,12 @@ function mimicLongOperation() {
 }
 
 interface StartSanityChecksButtonProps {
-	
+	runChecks: () => AsyncGenerator<number, void, unknown>;
 }
 
-export function StartSanityChecksButton({}: StartSanityChecksButtonProps) {
+export function StartSanityChecksButton({ runChecks }: StartSanityChecksButtonProps) {
 	const countChecksTimeRef = useRef<NodeJS.Timeout | null>(null);
+	const [ findings, setFindings ] = useState<string[]>([]);
 	const [ secondsPassed, setSecondsPassed ] = useState(0);
 	
 	function startCountUp() {
@@ -33,12 +34,17 @@ export function StartSanityChecksButton({}: StartSanityChecksButtonProps) {
 		}
 	}
 	
-	function startSanityChecks() {
+	async function startSanityChecks() {
 		startCountUp();
+		const asyncGenerator = await runChecks();
+		for await (let m of asyncGenerator) {
+			setFindings((prev) => [
+				String(m),
+				...prev,
+			]);
+		}
 		
-		mimicLongOperation().then(() => {
-			stopCountUp();
-		});
+		stopCountUp();
 	}
 	
 	const areSanityChecksRunning = secondsPassed > 0;
@@ -53,6 +59,9 @@ export function StartSanityChecksButton({}: StartSanityChecksButtonProps) {
 				areSanityChecksRunning &&
 				<p>{secondsPassed} seconds passed</p>
 			}
+			<div dir="ltr">
+				{JSON.stringify(findings, null, 2)}
+			</div>
 		</>
 	);
 };
