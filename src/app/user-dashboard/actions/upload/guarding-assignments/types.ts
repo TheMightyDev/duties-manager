@@ -1,4 +1,9 @@
-import { type Assignment, type Duty } from "@prisma/client";
+import { type Assignment, type Duty, type UserRole } from "@prisma/client";
+
+export interface ValidateUploadedInfoParams {
+	infoStr: string;
+	userRole: UserRole;
+}
 
 export interface ParsedAssignment {
 	assigneeFullName: string;

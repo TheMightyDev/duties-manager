@@ -1,7 +1,7 @@
+import { PrimitiveUserRoleSelect } from "@/app/_components/selects/primitive-user-role-select";
 import { TrashSvgIcon } from "@/app/_components/svg-icons/ui/trash-svg-icon";
 import { Button } from "@/app/_components/ui/button";
 import { formatDate } from "@/app/_utils/date-format-utils";
-import { PeriodEditorRoleSelector } from "@/app/user-dashboard/profile/[userId]/[role]/components/periods-editor-dialog/period-editor-role-selector";
 import { PeriodEditorStatusSelector } from "@/app/user-dashboard/profile/[userId]/[role]/components/periods-editor-dialog/period-editor-status-selector";
 import { UserRole, type Period, type PeriodStatus } from "@prisma/client";
 
@@ -97,10 +97,10 @@ export function PeriodEditRow({
 				/>
 			</td>
 			<td>
-				<PeriodEditorRoleSelector
+				<PrimitiveUserRoleSelect
 					availableRoles={Object.values(UserRole)}
 					selectedRole={period.role}
-					changeRole={handleRoleChange}
+					handleRoleChange={handleRoleChange}
 				/>
 			</td>
 			<td>

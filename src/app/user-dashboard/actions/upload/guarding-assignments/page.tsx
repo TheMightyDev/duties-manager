@@ -1,18 +1,23 @@
 import { splitToLinesAndFilterEmpty } from "@/app/_utils/string-utils";
-import { type AssignmentsUploadCounts, type ParsedDutiesAssignments } from "@/app/user-dashboard/actions/upload/guarding-assignments/types";
+import { type AssignmentsUploadCounts, type ParsedDutiesAssignments, type ValidateUploadedInfoParams } from "@/app/user-dashboard/actions/upload/guarding-assignments/types";
 import { UploadAssignmentsContents } from "@/app/user-dashboard/actions/upload/guarding-assignments/upload-assignments-contents";
 import { convertParsedDataToUploadableData, parseAssignmentInfoStr } from "@/app/user-dashboard/actions/upload/guarding-assignments/utils";
 import { type InitialParseResults } from "@/app/user-dashboard/actions/upload/types";
 import { auth } from "@/server/auth";
 import { db } from "@/server/db";
 import { api } from "@/trpc/server";
+import { type UserRole } from "@prisma/client";
 
 let cachedValidParsedInfo: ParsedDutiesAssignments | null = null;
+let cachedUserRole: UserRole | null = null;
 
 export default async function UploadGuardingAssignmentsPage() {
 	const allUsersIdsByFullName = await api.user.getAllUsersFullNameAndId();
 	
-	async function validateUploadedInfo(infoStr: string): Promise<InitialParseResults> {
+	async function validateUploadedInfo({
+		infoStr,
+		userRole,
+	}: ValidateUploadedInfoParams): Promise<InitialParseResults> {
 		"use server";
 		
 		const splitInfoStrs = splitToLinesAndFilterEmpty(infoStr);
@@ -34,6 +39,7 @@ export default async function UploadGuardingAssignmentsPage() {
 		});
 		
 		cachedValidParsedInfo = dutiesAssignments;
+		cachedUserRole = userRole;
 		
 		return {
 			errorMessages,
@@ -44,7 +50,7 @@ export default async function UploadGuardingAssignmentsPage() {
 	async function uploadCachedValidParsedInfo(): Promise<AssignmentsUploadCounts> {
 		"use server";
 		
-		if (!cachedValidParsedInfo) {
+		if (!cachedValidParsedInfo || !cachedUserRole) {
 			console.error("You cannot call this function if there's no cached valid parsed info");
 
 			return {
@@ -52,6 +58,7 @@ export default async function UploadGuardingAssignmentsPage() {
 				duties: 0,
 			};
 		}
+		
 		console.log("@cachedParsedDutiesAssignments", cachedValidParsedInfo);
 		
 		// There must be a logged user to view the page
@@ -61,6 +68,7 @@ export default async function UploadGuardingAssignmentsPage() {
 			allUsersIdsByFullName,
 			dutiesAssignments: cachedValidParsedInfo,
 			organizationId,
+			userRole: cachedUserRole,
 		});
 		
 		console.log(uploadableData);

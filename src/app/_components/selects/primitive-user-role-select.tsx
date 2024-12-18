@@ -5,15 +5,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger } from "@/app/_compone
 import { type UserRole } from "@prisma/client";
 import { DirectionProvider } from "@radix-ui/react-direction";
 
-interface PeriodEditorRoleSelectorProps {
+interface PrimitiveUserRoleSelectProps {
 	availableRoles: UserRole[];
 	selectedRole: UserRole;
-	changeRole: (nextRole: UserRole) => void;
+	handleRoleChange: (nextRole: UserRole) => void;
 }
 
-export function PeriodEditorRoleSelector(props: PeriodEditorRoleSelectorProps) {
+export function PrimitiveUserRoleSelect(props: PrimitiveUserRoleSelectProps) {
 	function handleValueChange(nextRole: string) {
-		props.changeRole(nextRole as UserRole);
+		props.handleRoleChange(nextRole as UserRole);
 	}
 	
 	return (

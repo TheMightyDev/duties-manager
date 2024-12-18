@@ -1,7 +1,7 @@
 import { USE_DEFAULT_SCORE } from "@/app/_utils/constants";
 import { type ParsedAssignment, type ParsedDutiesAssignments, type UploadableDutiesAndAssignments } from "@/app/user-dashboard/actions/upload/guarding-assignments/types";
 import { createId } from "@paralleldrive/cuid2";
-import { type Assignment, type Duty, DutyKind, type Organization, type User, UserRole } from "@prisma/client";
+import { type Assignment, type Duty, DutyKind, type Organization, type User, type UserRole } from "@prisma/client";
 import { addDays, parseISO, setHours } from "date-fns";
 
 function isNumeric(str: string) {
@@ -89,8 +89,10 @@ export function convertParsedDataToUploadableData({
 	dutiesAssignments,
 	allUsersIdsByFullName,
 	organizationId,
+	userRole,
 }: SharedParams & {
 	organizationId: Organization["id"];
+	userRole: UserRole;
 }): UploadableDutiesAndAssignments {
 	const uploadableData: UploadableDutiesAndAssignments = {
 		duties: [],
@@ -116,7 +118,7 @@ export function convertParsedDataToUploadableData({
 			startDate,
 			endDate,
 			quantity: assignments.length,
-			role: UserRole.SQUAD,
+			role: userRole,
 			score: USE_DEFAULT_SCORE,
 			isPrivate: false,
 			description: null,
