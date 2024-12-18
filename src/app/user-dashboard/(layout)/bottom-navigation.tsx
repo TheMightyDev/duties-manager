@@ -39,7 +39,7 @@ export function BottomNavigation({ routeInfos, loggedUserId }: BottomNavigationP
 									? routeInfo.selectedIcon
 									: routeInfo.icon}
 							</div>
-							<span className={(isOnRoute ? "font-bold" : "")}>
+							<span className={(isOnRoute ? "text-sm font-bold" : "text-sm")}>
 								{routeInfo.name}
 							</span>
 						</Link>

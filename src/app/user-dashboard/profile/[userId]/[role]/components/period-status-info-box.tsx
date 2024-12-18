@@ -12,10 +12,10 @@ interface PeriodStatusInfoBoxProps {
 	isEarlyRole: boolean;
 }
 
-function getIcon({ status, isEarlyRole, isAdmin }: {
+function getIcon({ status, isEarlyRole, isLoggedUserAdmin }: {
 	status: PeriodStatus;
 	isEarlyRole: boolean;
-	isAdmin: boolean;
+	isLoggedUserAdmin: boolean;
 }) {
 	const className = "size-10 fill-white m-auto";
 	const heartClassName = "size-10 fill-white stroke-white m-auto";
@@ -27,18 +27,18 @@ function getIcon({ status, isEarlyRole, isAdmin }: {
 	if (status === PeriodStatus.FULFILLS_ROLE) {
 		return <CheckmarkSvgIcon className={className} />;
 	} else {
-		if (!isAdmin || status === PeriodStatus.TEMPORARILY_ABSENT) {
-			return <PathLocationSvgIcon className={className} />;
-		} else {
+		if (status === PeriodStatus.TEMPORARILY_EXEMPT && isLoggedUserAdmin) {
 			return <HealthSvgIcon className={heartClassName} />;
+		} else {
+			return <PathLocationSvgIcon className={className} />;
 		}
 	}
 }
 
-function getDescription({ status, isEarlyRole, isAdmin }: {
+function getDescription({ status, isEarlyRole, isLoggedUserAdmin }: {
 	status: PeriodStatus;
 	isEarlyRole: boolean;
-	isAdmin: boolean;
+	isLoggedUserAdmin: boolean;
 }) {
 	if (isEarlyRole) {
 		return "תפקיד בעבר";
@@ -46,7 +46,7 @@ function getDescription({ status, isEarlyRole, isAdmin }: {
 	if (status === PeriodStatus.FULFILLS_ROLE) {
 		return "נוכח.ת בתפקיד";
 	} else {
-		if (!isAdmin) {
+		if (!isLoggedUserAdmin) {
 			return "לא נוכח.ת כעת";
 		}
 
@@ -58,7 +58,7 @@ function getDescription({ status, isEarlyRole, isAdmin }: {
 
 export async function PeriodStatusInfoBox({ baseClassName, status, isEarlyRole }: PeriodStatusInfoBoxProps) {
 	const session = await auth();
-	const isAdmin = session?.user.isAdmin ?? false;
+	const isLoggedUserAdmin = session?.user.isAdmin ?? false;
 	
 	const className = isEarlyRole
 		? "bg-slate-500 hover:bg-slate-600"
@@ -74,14 +74,14 @@ export async function PeriodStatusInfoBox({ baseClassName, status, isEarlyRole }
 				{ getIcon({
 					status,
 					isEarlyRole,
-					isAdmin,
+					isLoggedUserAdmin,
 				}) }
 			</span>
 			<span className="font-bold">
 				{ getDescription({
 					status,
 					isEarlyRole,
-					isAdmin,
+					isLoggedUserAdmin,
 				}) }
 			</span>
 		</div>

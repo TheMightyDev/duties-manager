@@ -1,7 +1,9 @@
+import { AbsentOrExemptMark } from "@/app/_components/svg-icons/user-roles/absent-or-exempt-mark";
 import { UserRoleMark } from "@/app/_components/svg-icons/user-roles/user-role-mark";
 import { type UserJusticeTableColId, usersJusticeTableColTitles } from "@/app/_utils/justice/users-justice-table-cols";
 import { type UsersJusticeTableSettings } from "@/app/user-dashboard/justice/types";
 import { type UserJustice } from "@/types/justice/user-justice";
+import { PeriodStatus } from "@prisma/client";
 import { ExternalLinkIcon } from "lucide-react";
 import Link from "next/link";
 import { type MutableRefObject } from "react";
@@ -11,12 +13,14 @@ interface JusticeTableDesktopProps {
 	;
 	usersJusticeSorted: UserJustice[];
 	changeColIdToSortBy: (colId: UserJusticeTableColId) => void;
+	isLoggedUserAdmin: boolean;
 }
 
 export function JusticeTableDesktop({
 	settingsRef,
 	usersJusticeSorted,
 	changeColIdToSortBy,
+	isLoggedUserAdmin,
 }: JusticeTableDesktopProps) {
 	return (
 		<>
@@ -51,6 +55,7 @@ export function JusticeTableDesktop({
 						usersJusticeSorted.map(({
 							userId,
 							userFullName,
+							latestPeriodStatus,
 							role,
 							weightedScore,
 							monthsInRole,
@@ -61,11 +66,17 @@ export function JusticeTableDesktop({
 							<tr
 								key={userId}
 								className="h-10 odd:bg-slate-50 even:bg-slate-200 hover:bg-slate-300"
-								// onClick={() => {
-								// 	redirect(`/user-dashboard/profile/${userId}/${role}`);
-								// }}
 							>
-								<th className="pe-4 ps-2 text-start">{userFullName}</th>
+								<th className="pe-4 ps-2 text-start">
+									{userFullName}
+									{
+										latestPeriodStatus !== PeriodStatus.FULFILLS_ROLE &&
+										<AbsentOrExemptMark
+											periodStatus={latestPeriodStatus}
+											isLoggedUserAdmin={isLoggedUserAdmin}
+										/>
+									}
+								</th>
 								<td><UserRoleMark role={role}/></td>
 								<th className="font-mono">{weightedScore.toFixed(2)}</th>
 								<td>{monthsInRole.toFixed(2)}</td>

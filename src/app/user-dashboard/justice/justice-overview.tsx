@@ -12,11 +12,13 @@ import { type UserRole } from "@prisma/client";
 interface JusticeOverviewProps {
 	fetchUsersJustice: FetchUsersJusticeFunc;
 	loggedUserLatestRole?: UserRole;
+	isLoggedUserAdmin: boolean;
 }
 
 export function JusticeOverview({
 	fetchUsersJustice,
 	loggedUserLatestRole,
+	isLoggedUserAdmin,
 }: JusticeOverviewProps) {
 	const params = useJusticeOverview({
 		fetchUsersJustice,
@@ -27,10 +29,16 @@ export function JusticeOverview({
 		<>
 			<div className="hidden sm:block">
 				<JusticeTableHeader {...params} />
-				<JusticeTableDesktop {...params} />
+				<JusticeTableDesktop
+					{...params}
+					isLoggedUserAdmin={isLoggedUserAdmin}
+				/>
 			</div>
 			<div className="block sm:hidden">
-				<JusticeTableMobile {...params} />
+				<JusticeTableMobile
+					{...params}
+					isLoggedUserAdmin={isLoggedUserAdmin}
+				/>
 				<JusticeTableMobileFabs {...params} />
 			</div>
 			<EditSettingsDialog

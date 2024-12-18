@@ -1,17 +1,23 @@
 "use client";
 
 import { LightArrowDownSvgIcon } from "@/app/_components/svg-icons/ui/light-arrow-down-svg-icon";
+import { AbsentOrExemptMark } from "@/app/_components/svg-icons/user-roles/absent-or-exempt-mark";
 import { UserRoleMark } from "@/app/_components/svg-icons/user-roles/user-role-mark";
 import { JusticeTableMobileExpand } from "@/app/user-dashboard/justice/mobile/justice-table-mobile-expand";
 import { type UserJustice } from "@/types/justice/user-justice";
+import { PeriodStatus } from "@prisma/client";
 import { ExternalLinkIcon } from "lucide-react";
 import Link from "next/link";
 
 interface JusticeTableMobileProps {
 	usersJusticeSorted: UserJustice[];
+	isLoggedUserAdmin: boolean;
 }
 
-export function JusticeTableMobile({ usersJusticeSorted }: JusticeTableMobileProps) {
+export function JusticeTableMobile({
+	usersJusticeSorted,
+	isLoggedUserAdmin,
+}: JusticeTableMobileProps) {
 	return (
 		<>
 			<div>
@@ -24,6 +30,13 @@ export function JusticeTableMobile({ usersJusticeSorted }: JusticeTableMobilePro
 							<summary className="flex h-10 items-center bg-black/10 px-2 text-lg">
 								<div className="w-2/5">
 									{userJustice.userFullName}
+									{
+										userJustice.latestPeriodStatus !== PeriodStatus.FULFILLS_ROLE &&
+										<AbsentOrExemptMark
+											periodStatus={userJustice.latestPeriodStatus}
+											isLoggedUserAdmin={isLoggedUserAdmin}
+										/>
+									}
 								</div>
 								<div className="w-1/6">
 									<UserRoleMark role={userJustice.role} />

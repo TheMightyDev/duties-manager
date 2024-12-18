@@ -7,6 +7,7 @@ export default async function JusticePage() {
 	const session = await auth();
 	
 	const loggedUserId = session?.user.id;
+	const isLoggedUserAdmin = session?.user.isAdmin ?? false;
 	
 	if (!loggedUserId) {
 		return <>Not logged in</>;
@@ -23,6 +24,7 @@ export default async function JusticePage() {
 			<JusticeOverview
 				fetchUsersJustice={fetchUsersJustice}
 				loggedUserLatestRole={session.user.roleRecords.at(-1)?.role}
+				isLoggedUserAdmin={isLoggedUserAdmin}
 			/>
 		</>
 	);
