@@ -5,13 +5,13 @@ import { auth } from "@/server/auth";
 import { redirect } from "next/navigation";
 import React from "react";
 
-import { CalendarFilledSvgIcon } from "@/app/_components/svg-icons/navigaton/calendar-filled-svg-icon";
-import { CalendarSvgIcon } from "@/app/_components/svg-icons/navigaton/calendar-svg-icon";
-import { JusticeFilledSvgIcon } from "@/app/_components/svg-icons/navigaton/justice-filled-svg-icon";
-import { JusticeSvgIcon } from "@/app/_components/svg-icons/navigaton/justice-svg-icon";
-import { MagicWandSvgIcon } from "@/app/_components/svg-icons/navigaton/magic-wand-svg-icon";
-import { ProfileCircleFilledSvgIcon } from "@/app/_components/svg-icons/navigaton/profile-circle-filled-svg-icon";
-import { ProfileCircleSvgIcon } from "@/app/_components/svg-icons/navigaton/profile-circle-svg-icon";
+import { CalendarFilledSvgIcon } from "@/app/_components/svg-icons/navigation/calendar-filled-svg-icon";
+import { CalendarSvgIcon } from "@/app/_components/svg-icons/navigation/calendar-svg-icon";
+import { JusticeFilledSvgIcon } from "@/app/_components/svg-icons/navigation/justice-filled-svg-icon";
+import { JusticeSvgIcon } from "@/app/_components/svg-icons/navigation/justice-svg-icon";
+import { MagicWandSvgIcon } from "@/app/_components/svg-icons/navigation/magic-wand-svg-icon";
+import { ProfileCircleFilledSvgIcon } from "@/app/_components/svg-icons/navigation/profile-circle-filled-svg-icon";
+import { ProfileCircleSvgIcon } from "@/app/_components/svg-icons/navigation/profile-circle-svg-icon";
 import { type RouteInfo } from "@/app/user-dashboard/(layout)/types";
 
 export default async function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
