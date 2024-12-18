@@ -3,7 +3,7 @@ import { ProfileInfoBoxes } from "@/app/user-dashboard/profile/[userId]/[role]/c
 import { type ProfilePageUrlParams } from "@/app/user-dashboard/profile/[userId]/[role]/types";
 import { api } from "@/trpc/server";
 import { UTCDate } from "@date-fns/utc";
-import { endOfDay } from "date-fns";
+import { endOfDay, subDays } from "date-fns";
 
 export async function ProfileInfoBoxesWrapper({ userId, role }: ProfilePageUrlParams) {
 	const roleRecords = await api.user.getAllUserRolesById(userId);
@@ -21,7 +21,11 @@ export async function ProfileInfoBoxesWrapper({ userId, role }: ProfilePageUrlPa
 	const usersJusticeInSameRole = await api.user.getManyUsersJustice({
 		roles: [ selectedRecord.role ],
 		/** The `latestFulfilledDate` is `null` if the user currently assigned to the role */
-		definitiveDate: selectedRecord.latestFulfilledDate ?? endOfDay(new UTCDate()),
+		definitiveDate: selectedRecord.latestFulfilledDate !== null
+			// The end date of periods is **exclusive**, so if we don't subtract any
+			// day from the latest fulfilled date, we won't get any periods, and that'd result in fatal errors
+			? subDays(selectedRecord.latestFulfilledDate, 1)
+			: endOfDay(new UTCDate()),
 		includeExemptAndAbsentUsers: true,
 	});
 	
