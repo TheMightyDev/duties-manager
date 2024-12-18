@@ -6,7 +6,7 @@ export default function SanityChecksPage() {
 	async function* runChecks() {
 		"use server";
 		
-		const asyncGenerator = await api.sanityCheck.runChecks();
+		const asyncGenerator = await api.sanityCheck.runChecksAndGenerateErrors();
 		
 		for await (const m of asyncGenerator) {
 			yield m;

@@ -59,9 +59,13 @@ export function StartSanityChecksButton({ runChecks }: StartSanityChecksButtonPr
 				areSanityChecksRunning &&
 				<p>{secondsPassed} seconds passed</p>
 			}
-			<div dir="ltr">
-				{JSON.stringify(findings, null, 2)}
-			</div>
+			<ul className="list-disc ps-5">
+				{
+					findings.map((finding) => (
+						<li key={finding}>{finding}</li>
+					))
+				}
+			</ul>
 		</>
 	);
 };
