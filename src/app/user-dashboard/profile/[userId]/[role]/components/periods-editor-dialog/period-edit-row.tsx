@@ -83,6 +83,17 @@ export function PeriodEditRow({
 		setProposedPeriods((prev) => {
 			const periodIndex = prev.findIndex((curr) => curr === period);
 			
+			const isLastPeriod = periodIndex === prev.length - 1;
+			
+			// If we delete the last period, we want the one period before it to inherit the end date of the deleted period
+			// So the retire date isn't messed up
+			if (isLastPeriod) {
+				const newLastPeriod = prev[prev.length - 2];
+				// Both periods cannot be null because deletion is only enabled
+				// if there are at least 2 periods
+				newLastPeriod!.endDate = prev[prev.length - 1]!.endDate;
+			}
+			
 			return prev.toSpliced(periodIndex, 1);
 		});
 	}
