@@ -1,3 +1,4 @@
+import { checkIfRoleMatchDutyRequiredRole } from "@/app/_utils/check-if-role-match-duty-required-role";
 import {
 	adminProcedure,
 	createTRPCRouter
@@ -25,11 +26,37 @@ function getAllUserAssignmentsErrors({ user }: {
 	const formatDate = (date: Date) => format(date, "yyyy-MM-dd");
 	
 	user.assignments.forEach((assignment) => {
-		if (assignment.duty.startDate < unitJoinDate) {
-			errorMessages.push(`The duty at ${formatDate(assignment.duty.startDate)} starts before the user joined the unit (${formatDate(unitJoinDate)})`);
+		const duty = assignment.duty;
+		
+		if (duty.startDate < unitJoinDate) {
+			errorMessages.push(`The duty at ${formatDate(duty.startDate)} starts before the user joined the unit (${formatDate(unitJoinDate)})`);
+			
+			return;
 		}
-		if (assignment.duty.startDate > unitLeaveDate || assignment.duty.endDate > unitLeaveDate) {
-			errorMessages.push(`The duty at ${formatDate(assignment.duty.startDate)} exceeds the user leaving the unit (${formatDate(unitLeaveDate)})`);
+		if (duty.startDate > unitLeaveDate || duty.endDate > unitLeaveDate) {
+			errorMessages.push(`The duty at ${formatDate(duty.startDate)} exceeds the user leaving the unit (${formatDate(unitLeaveDate)})`);
+			
+			return;
+		}
+		
+		const periodAtDutyTime = user.periods.find((period) => (
+			period.startDate < duty.startDate &&
+			period.endDate > duty.endDate
+		));
+		
+		if (!periodAtDutyTime) {
+			errorMessages.push(`No period was found for duty at ${formatDate(duty.startDate)}`);
+			
+			return;
+		}
+		
+		if (!checkIfRoleMatchDutyRequiredRole({
+			role: periodAtDutyTime.role,
+			dutyRoleRequirement: duty.role,
+		})) {
+			errorMessages.push(`At the duty in ${formatDate(duty.startDate)}, the user is at role ${periodAtDutyTime.role}, but the role requirement of the duty is ${duty.role}`);
+			
+			return;
 		}
 	});
 	
