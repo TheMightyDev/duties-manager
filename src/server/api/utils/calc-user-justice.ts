@@ -83,7 +83,11 @@ export function calcUserJustice({
 		}
 	});
 	
-	userJustice.weightedScore = Number((userJustice.totalScore / userJustice.monthsInRole).toFixed(2));
+	// The months in role can be zero if it's the user's first day in role
+	// It can't be negative, but we check it just in case.
+	userJustice.weightedScore = userJustice.monthsInRole > 0
+		? Number((userJustice.totalScore / userJustice.monthsInRole).toFixed(2))
+		: 0;
 
 	userJustice.monthsInRole = Number(userJustice.monthsInRole.toFixed(2));
 	

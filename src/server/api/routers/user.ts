@@ -79,7 +79,7 @@ async function fetchUsersByRole({ role, definitiveDate, ctxDb, includeExemptAndA
 						lte: definitiveDate,
 					},
 					endDate: {
-						gte: definitiveDate,
+						gt: definitiveDate,
 					},
 					role: role,
 					status: {
