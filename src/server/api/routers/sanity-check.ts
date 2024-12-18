@@ -6,6 +6,7 @@ import {
 import { type UserWithAssignmentsAndPeriods, userWithAssignmentsAndPeriodsInclude } from "@/server/api/types/user-with-assignments-and-periods";
 import { type SanityCheckError } from "@/types/sanity-check/sanity-check-error";
 import { SanityCheckErrorKind } from "@/types/sanity-check/sanity-check-error-kind";
+import { DutyKind, PeriodStatus } from "@prisma/client";
 import { format } from "date-fns";
 
 function getAllUserAssignmentsErrors({ user }: {
@@ -55,6 +56,13 @@ function getAllUserAssignmentsErrors({ user }: {
 			dutyRoleRequirement: duty.role,
 		})) {
 			errorMessages.push(`At the duty in ${formatDate(duty.startDate)}, the user is at role ${periodAtDutyTime.role}, but the role requirement of the duty is ${duty.role}`);
+			
+			return;
+		}
+		
+		if (duty.kind === DutyKind.GUARDING && periodAtDutyTime.status !== PeriodStatus.FULFILLS_ROLE) {
+			errorMessages.push(`The duty at ${formatDate(duty.startDate)} is guarding, but the status of the period at the same time is ${periodAtDutyTime.status}
+			(which goes from ${formatDate(periodAtDutyTime.startDate)} to ${formatDate(periodAtDutyTime.endDate)})`);
 			
 			return;
 		}
