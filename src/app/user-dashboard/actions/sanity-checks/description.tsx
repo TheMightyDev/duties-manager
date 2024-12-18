@@ -21,6 +21,12 @@ export function SanityChecksDescription() {
 						<li>Periods must not overlap to each other. E.g.: a period starts in 2024-10-05 and ends on 2024-12-05. There cannot be a period that starts in any date between 2024-10-05 and 2024-12-05</li>
 					</ul>
 				</li>
+				<li>
+					Making sure all duties are valid:
+					<ul>
+						<li>The required amount of assignees is the same as the actual number of assignees</li>
+					</ul>
+				</li>
 			</ul>
 			<p>
 				It's worth running the checks from time to time. Note that it can take some time.

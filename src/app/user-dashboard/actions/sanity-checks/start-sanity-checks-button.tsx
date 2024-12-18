@@ -1,23 +1,18 @@
 "use client";
 
+import { ExternalLinkSvgIcon } from "@/app/_components/svg-icons/ui/external-link-svg-icon";
 import { Button } from "@/app/_components/ui/button";
+import { type SanityCheckError } from "@/types/sanity-check/sanity-check-error";
+import Link from "next/link";
 import { useRef, useState } from "react";
 
-function mimicLongOperation() {
-	return new Promise<string>((resolve) => {
-		setTimeout(() => {
-			resolve("done");
-		}, 20 * 1_000);
-	});
-}
-
 interface StartSanityChecksButtonProps {
-	runChecks: () => AsyncGenerator<number, void, unknown>;
+	runChecks: () => AsyncGenerator<string, void, unknown>;
 }
 
 export function StartSanityChecksButton({ runChecks }: StartSanityChecksButtonProps) {
 	const countChecksTimeRef = useRef<NodeJS.Timeout | null>(null);
-	const [ findings, setFindings ] = useState<string[]>([]);
+	const [ errors, setErrors ] = useState<SanityCheckError[]>([]);
 	const [ secondsPassed, setSecondsPassed ] = useState(0);
 	
 	function startCountUp() {
@@ -37,9 +32,11 @@ export function StartSanityChecksButton({ runChecks }: StartSanityChecksButtonPr
 	async function startSanityChecks() {
 		startCountUp();
 		const asyncGenerator = await runChecks();
-		for await (let m of asyncGenerator) {
-			setFindings((prev) => [
-				String(m),
+		for await (let errorJson of asyncGenerator) {
+			const parsedError = JSON.parse(errorJson) as SanityCheckError;
+			
+			setErrors((prev) => [
+				parsedError,
 				...prev,
 			]);
 		}
@@ -59,13 +56,31 @@ export function StartSanityChecksButton({ runChecks }: StartSanityChecksButtonPr
 				areSanityChecksRunning &&
 				<p>{secondsPassed} seconds passed</p>
 			}
-			<ul className="list-disc ps-5">
-				{
-					findings.map((finding) => (
-						<li key={finding}>{finding}</li>
-					))
-				}
-			</ul>
+			<table>
+				<thead>
+					<tr>
+						<th>User ID</th>
+						<th>User full name</th>
+						<th>Kind</th>
+						<th>Message</th>
+						<th>Link to profile</th>
+					</tr>
+				</thead>
+				<tbody>
+					{
+						errors.map((error) => (
+							<tr key={`${error.userId}-${error.message}`}>
+								<td className="font-mono">{error.userId}</td>
+								<td>{error.userFullName}</td>
+								<td>{error.kind}</td>
+								<td>{error.message}</td>
+								<td><Link href={`/user-dashboard/profile/${error.userId}/LATEST`}><ExternalLinkSvgIcon className="size-5 stroke-black"/></Link></td>
+							</tr>
+						))
+					}
+				</tbody>
+				
+			</table>
 		</>
 	);
 };

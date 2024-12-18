@@ -3,6 +3,8 @@ import {
 	createTRPCRouter
 } from "@/server/api/trpc";
 import { type UserWithAssignmentsAndPeriods, userWithAssignmentsAndPeriodsInclude } from "@/server/api/types/user-with-assignments-and-periods";
+import { type SanityCheckError } from "@/types/sanity-check/sanity-check-error";
+import { SanityCheckErrorKind } from "@/types/sanity-check/sanity-check-error-kind";
 import { format } from "date-fns";
 
 function getAllUserAssignmentsErrors({ user }: {
@@ -21,6 +23,7 @@ function getAllUserAssignmentsErrors({ user }: {
 	const unitJoinDate = user.periods[0]!.startDate;
 	const unitLeaveDate = user.periods.at(-1)!.endDate;
 	const formatDate = (date: Date) => format(date, "yyyy-MM-dd");
+	
 	user.assignments.forEach((assignment) => {
 		if (assignment.duty.startDate < unitJoinDate) {
 			errorMessages.push(`The duty at ${formatDate(assignment.duty.startDate)} starts before the user joined the unit (${formatDate(unitJoinDate)})`);
@@ -48,12 +51,21 @@ export const sanityCheckRouter = createTRPCRouter({
 			// Simple loops are used instead of `forEach`,
 			// because you can't yield from inner functions cleanly
 			for (const user of allUsersInOrganization) {
-				const errors = getAllUserAssignmentsErrors({
+				const errorMessages = getAllUserAssignmentsErrors({
 					user,
 				});
 				
-				for (const error of errors) {
-					yield `${user.id} - ${user.firstName} ${user.lastName} - ${error}`;
+				const baseError: Omit<SanityCheckError, "message"> = {
+					kind: SanityCheckErrorKind.ASSIGNMENT,
+					userId: user.id,
+					userFullName: user.firstName + " " + user.lastName,
+				};
+				
+				for (const errorMessage of errorMessages) {
+					yield JSON.stringify({
+						message: errorMessage,
+						...baseError,
+					} satisfies SanityCheckError);
 				}
 			}
 			
