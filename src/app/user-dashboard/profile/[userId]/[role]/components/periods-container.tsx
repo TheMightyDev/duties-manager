@@ -58,7 +58,7 @@ export function PeriodsContainer({
 					setIsEditorDialogOpen(true);
 				}}
 				>
-					עריכת הסתייגויות
+					עריכת היסטוריית תפקידים
 					<PenLineSvgIcon className="stroke-white"/>
 				</Button>
 			}
