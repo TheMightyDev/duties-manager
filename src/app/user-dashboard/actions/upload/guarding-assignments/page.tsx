@@ -1,3 +1,4 @@
+import { splitToLinesAndFilterEmpty } from "@/app/_utils/string-utils";
 import { type AssignmentsUploadCounts, type ParsedDutiesAssignments } from "@/app/user-dashboard/actions/upload/guarding-assignments/types";
 import { UploadAssignmentsContents } from "@/app/user-dashboard/actions/upload/guarding-assignments/upload-assignments-contents";
 import { convertParsedDataToUploadableData, parseAssignmentInfoStr } from "@/app/user-dashboard/actions/upload/guarding-assignments/utils";
@@ -14,10 +15,7 @@ export default async function UploadGuardingAssignmentsPage() {
 	async function validateUploadedInfo(infoStr: string): Promise<InitialParseResults> {
 		"use server";
 		
-		const isOnlyWhitespaceStr = (str: string) => !/\S/.test(str);
-		const splitInfoStrs = infoStr
-			.split(/\r?\n/g)
-			.filter((line) => !isOnlyWhitespaceStr(line));
+		const splitInfoStrs = splitToLinesAndFilterEmpty(infoStr);
 		
 		const dutiesAssignments: ParsedDutiesAssignments = {};
 		
@@ -68,8 +66,6 @@ export default async function UploadGuardingAssignmentsPage() {
 		console.log(uploadableData);
 		
 		const uploadCountResults: AssignmentsUploadCounts = {
-			// assignments: 0,
-			// duties: 0,
 			duties:	(await db.duty.createMany({
 				data: uploadableData.duties,
 			})).count,

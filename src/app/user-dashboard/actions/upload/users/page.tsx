@@ -1,3 +1,4 @@
+import { splitToLinesAndFilterEmpty } from "@/app/_utils/string-utils";
 import { type InitialParseResults } from "@/app/user-dashboard/actions/upload/types";
 import { type ParsedUserAndPeriods, type UsersUploadCounts } from "@/app/user-dashboard/actions/upload/users/types";
 import { UploadContents } from "@/app/user-dashboard/actions/upload/users/upload-contents";
@@ -13,10 +14,7 @@ export default async function UploadUsersPage() {
 	async function validateUsersInfo(usersInfoStr: string): Promise<InitialParseResults> {
 		"use server";
 		
-		const isOnlyWhitespaceStr = (str: string) => !/\S/.test(str);
-		const usersInfoStrs = usersInfoStr
-			.split(/\r?\n/g)
-			.filter((line) => !isOnlyWhitespaceStr(line));
+		const usersInfoStrs = splitToLinesAndFilterEmpty(usersInfoStr);
 		
 		const errorMessages: string[] = [];
 			
