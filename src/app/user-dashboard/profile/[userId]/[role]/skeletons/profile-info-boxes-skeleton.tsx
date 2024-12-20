@@ -1,57 +1,67 @@
+import { ProfileMetricBoxSkeleton } from "@/app/user-dashboard/profile/[userId]/[role]/skeletons/profile-metric-box-skeleton";
+
 export function ProfileInfoBoxesSkeleton() {
-	const className = "flex flex-col rounded-xl bg-slate-200 p-3 sm:p-4 hover:bg-slate-300 flex-1 text-center ";
-	
 	return (
-		<div className="flex flex-col">
-			<div className="relative flex w-full animate-pulse flex-col gap-2 overflow-hidden p-2 md:min-w-96 md:p-0">
+		<div className="">
+			<div className="flex w-full animate-pulse flex-col gap-2 md:min-w-96">
 				<div className="flex flex-row gap-2">
-					<div className={className}>
-						<span className="text-4xl">0.00</span>
-						<span>ניקוד משוקלל</span>
-					</div>
-					<div className={className}>
-						<p><span className="text-4xl">0</span><span className="text-xl">/10</span></p>
-						<span>דירוג בתפקיד</span>
-					</div>
+					
+					<ProfileMetricBoxSkeleton
+						title="ניקוד משוקלל"
+						value="0.00"
+						hasInfoMessage={true}
+					/>
+					<ProfileMetricBoxSkeleton
+						title="דירוג בתפקיד"
+						value={1}
+						hasInfoMessage={true}
+						valueSuffix={<span className="text-xl">/10</span>}
+					/>
 				</div>
 				<div className="flex flex-row gap-2">
-					<div className={className}>
-						<span className="text-4xl">00.00</span>
-						<span>חודשים בתפקיד</span>
-					</div>
-					<div className={className}>
+					<ProfileMetricBoxSkeleton
+						title="חודשים בתפקיד"
+						value="00.00"
+						hasInfoMessage={true}
+					/>
+					<div className= "flex flex-1 flex-col rounded-xl bg-slate-200 p-3 text-center sm:p-4">
 						<div className="m-auto my-2 h-8 w-14 rounded-xl bg-gray-300"></div>
 						<div className="h-4 w-full rounded-xl bg-gray-300"></div>
 					</div>
 				</div>
 				<div className="flex flex-row gap-2">
-					<div className={className}>
-						<span className="text-4xl">0</span>
-						<span>שמירות ביום חול</span>
-					</div>
-					<div className={className}>
-						<span className="text-4xl">0</span>
-						<span>שמירות בסופ"ש</span>
-					</div>
-					<div className={className}>
-						<span className="text-4xl">0</span>
-						<span>הגנמ"שים</span>
-					</div>
-					
+					<ProfileMetricBoxSkeleton
+						title="שמירות ביום חול"
+						value={0}
+						hasInfoMessage={false}
+					/>
+					<ProfileMetricBoxSkeleton
+						title='שמירות בסופ"ש'
+						value={0}
+						hasInfoMessage={false}
+					/>
+					<ProfileMetricBoxSkeleton
+						title='הגנמ"שים'
+						value="0.00"
+						hasInfoMessage={true}
+					/>
 				</div>
 				<div className="flex flex-row gap-2">
-					<div className={className}>
-						<span className="text-4xl">0</span>
-						<span>חפיפות עם חגים</span>
-					</div>
-					<div className={className}>
-						<p><span className="text-4xl">0</span>נק'</p>
-						<span>תורנויות נוספות</span>
-					</div>
-					<div className={className}>
-						<p><span className="text-4xl">0</span>נק'</p>
-						<span>סך הבונוסים</span>
-					</div>
+					<ProfileMetricBoxSkeleton
+						title="חפיפות עם חגים"
+						value={0}
+						hasInfoMessage={true}
+					/>
+					<ProfileMetricBoxSkeleton
+						title="תורנויות נוספות"
+						value={0}
+						hasInfoMessage={false}
+					/>
+					<ProfileMetricBoxSkeleton
+						title="סך הבונוסים"
+						value={0}
+						hasInfoMessage={false}
+					/>
 				</div>
 			</div>
 		</div>

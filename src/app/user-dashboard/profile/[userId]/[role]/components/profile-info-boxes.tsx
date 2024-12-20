@@ -24,8 +24,6 @@ export function ProfileInfoBoxes(props: ProfileInfoBoxesProps) {
 		extraScoresSum,
 	} = props.userJustice;
 	
-	const className = "flex flex-col rounded-xl bg-slate-200 p-3 sm:p-4 hover:bg-slate-300 flex-1 text-center";
-	
 	const isEarlyRole = props.roleRecords.find((record) => record.role === role)?.latestFulfilledDate != null;
 
 	return (
@@ -50,43 +48,47 @@ export function ProfileInfoBoxes(props: ProfileInfoBoxesProps) {
 					/>
 				</div>
 				<div className="flex flex-row gap-2">
-					<div className={className}>
-						<span className="text-4xl">{monthsInRole.toFixed(2)}</span>
-						<span>חודשים בתפקיד</span>
-					</div>
+					<ProfileMetricBox
+						title="חודשים בתפקיד"
+						value={monthsInRole.toFixed(2)}
+						infoMessage="סך החודשים נכון להיום שמולא התפקיד (לא כולל היעדרויות ופטורים זמניים)"
+					/>
 					<PeriodStatusInfoBox
-						baseClassName={className}
 						isEarlyRole={isEarlyRole}
 						status={latestPeriodStatus}
 					/>
 				</div>
 				<div className="flex flex-row gap-2">
-					<div className={className}>
-						<span className="text-4xl">{weekdaysGuardingCount}</span>
-						<span>שמירות ביום חול</span>
-					</div>
-					<div className={className}>
-						<span className="text-4xl">{weekendsGuardingCount}</span>
-						<span>שמירות בסופ"ש</span>
-					</div>
-					<div className={className}>
-						<span className="text-4xl">{campAndSettlementDefenseCount}</span>
-						<span>הגנמ"שים</span>
-					</div>
+					<ProfileMetricBox
+						title="שמירות ביום חול"
+						value={weekdaysGuardingCount}
+					/>
+					<ProfileMetricBox
+						title='שמירות בסופ"ש'
+						value={weekendsGuardingCount}
+					/>
+					<ProfileMetricBox
+						title='הגנמ"שים'
+						value={campAndSettlementDefenseCount}
+						infoMessage='מספר ההגנ"מים (הגנות מחנה) וההגנ"שים (הגנות יישובים)'
+					/>
 				</div>
 				<div className="flex flex-row gap-2">
-					<div className={className}>
-						<span className="text-4xl">{holidayOverlapsCount}</span>
-						<span>חפיפות עם חגים</span>
-					</div>
-					<div className={className}>
-						<p><span className="text-4xl">{otherDutiesScoreSum}</span>נק'</p>
-						<span>תורנויות נוספות</span>
-					</div>
-					<div className={className}>
-						<p><span className="text-4xl">{extraScoresSum}</span>נק'</p>
-						<span>סך הבונוסים</span>
-					</div>
+					<ProfileMetricBox
+						title="חפיפות עם חגים"
+						value={holidayOverlapsCount}
+						infoMessage="מספר התורנויות שחפפו לחג כלשהו (לא תורם לסך התורנויות)"
+					/>
+					<ProfileMetricBox
+						title="תורנויות נוספות"
+						value={otherDutiesScoreSum}
+						valueSuffix={<span className="text-xl">נק'</span>}
+					/>
+					<ProfileMetricBox
+						title="סך הבונוסים"
+						value={extraScoresSum}
+						valueSuffix={<span className="text-xl">נק'</span>}
+					/>
 				</div>
 			</div>
 		</div>

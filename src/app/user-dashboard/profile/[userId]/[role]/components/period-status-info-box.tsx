@@ -7,7 +7,6 @@ import { auth } from "@/server/auth";
 import { PeriodStatus } from "@prisma/client";
 
 interface PeriodStatusInfoBoxProps {
-	baseClassName: string;
 	status: PeriodStatus;
 	isEarlyRole: boolean;
 }
@@ -56,31 +55,31 @@ function getDescription({ status, isEarlyRole, isLoggedUserAdmin }: {
 	}
 }
 
-export async function PeriodStatusInfoBox({ baseClassName, status, isEarlyRole }: PeriodStatusInfoBoxProps) {
+export async function PeriodStatusInfoBox(props: PeriodStatusInfoBoxProps) {
 	const session = await auth();
 	const isLoggedUserAdmin = session?.user.isAdmin ?? false;
 	
-	const className = isEarlyRole
+	const className = props.isEarlyRole
 		? "bg-slate-500 hover:bg-slate-600"
 		: (
-			status === PeriodStatus.FULFILLS_ROLE
+			props.status === PeriodStatus.FULFILLS_ROLE
 				? "bg-green-500 hover:bg-green-600"
 				: "bg-red-500 hover:bg-red-600"
 		);
 	
 	return (
-		<div className={cn(baseClassName, className, "text-white")}>
+		<div className={cn("flex flex-col rounded-xl bg-slate-200 p-3 sm:p-4 hover:bg-slate-300 flex-1 text-center", className, "text-white")}>
 			<span className="text-4xl">
 				{ getIcon({
-					status,
-					isEarlyRole,
+					status: props.status,
+					isEarlyRole: props.isEarlyRole,
 					isLoggedUserAdmin,
 				}) }
 			</span>
 			<span className="font-bold">
 				{ getDescription({
-					status,
-					isEarlyRole,
+					status: props.status,
+					isEarlyRole: props.isEarlyRole,
 					isLoggedUserAdmin,
 				}) }
 			</span>
