@@ -15,7 +15,7 @@ export const AccountScalarFieldEnumSchema = z.enum(['id','userId','type','provid
 
 export const SessionScalarFieldEnumSchema = z.enum(['id','sessionToken','userId','expires']);
 
-export const UserScalarFieldEnumSchema = z.enum(['id','firstName','lastName','isAdmin','organizationId','phoneNumber','gender','rank','permanentEntryDate','registerDate']);
+export const UserScalarFieldEnumSchema = z.enum(['id','firstName','lastName','isAdmin','organizationId','phoneNumber','gender','rank','permanentEntryDate','registerDate','adminNote']);
 
 export const VerificationTokenScalarFieldEnumSchema = z.enum(['identifier','token','expires']);
 
@@ -23,7 +23,7 @@ export const OrganizationScalarFieldEnumSchema = z.enum(['id','name','descriptio
 
 export const DutyScalarFieldEnumSchema = z.enum(['id','kind','organizationId','startDate','endDate','role','quantity','score','isPrivate','description']);
 
-export const AssignmentScalarFieldEnumSchema = z.enum(['id','dutyId','assigneeId','reserveId','extraScore']);
+export const AssignmentScalarFieldEnumSchema = z.enum(['id','dutyId','assigneeId','reserveId','extraScore','note']);
 
 export const PeriodScalarFieldEnumSchema = z.enum(['id','userId','role','status','startDate','endDate','description']);
 
@@ -119,6 +119,7 @@ export const UserSchema = z.object({
   gender: z.string(),
   permanentEntryDate: z.coerce.date().nullable(),
   registerDate: z.coerce.date().nullable(),
+  adminNote: z.string().nullable(),
 })
 
 export type User = z.infer<typeof UserSchema>
@@ -176,6 +177,7 @@ export const AssignmentSchema = z.object({
   assigneeId: z.string(),
   reserveId: z.string().nullable(),
   extraScore: z.number().int().nullable(),
+  note: z.string().nullable(),
 })
 
 export type Assignment = z.infer<typeof AssignmentSchema>

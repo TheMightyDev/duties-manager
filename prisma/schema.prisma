@@ -3,8 +3,8 @@ generator client {
 }
 
 generator zod {
-  provider       	 = "zod-prisma-types"
-	createInputTypes = false
+  provider         = "zod-prisma-types"
+  createInputTypes = false
 }
 
 datasource db {
@@ -51,6 +51,7 @@ model User {
   rank               UserRank
   permanentEntryDate DateTime?
   registerDate       DateTime?
+  adminNote          String?
   accounts           Account[]
   reserves           Assignment[] @relation("reserve")
   assignments        Assignment[] @relation("assignee")
@@ -98,6 +99,7 @@ model Assignment {
   assigneeId String
   reserveId  String?
   extraScore Int?
+  note       String?
   duty       Duty    @relation(fields: [dutyId], references: [id], onDelete: Cascade)
   reserve    User?   @relation("reserve", fields: [reserveId], references: [id])
   assignee   User    @relation("assignee", fields: [assigneeId], references: [id], onDelete: Cascade)
@@ -150,7 +152,7 @@ enum PeriodStatus {
 
 enum DutyKind {
   GUARDING
-  KITCHEN
+	KITCHEN
   AGRICULTURE
   FOOD_PACKAGING
   OTHER
