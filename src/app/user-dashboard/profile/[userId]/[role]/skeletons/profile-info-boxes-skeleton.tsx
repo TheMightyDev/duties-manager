@@ -2,10 +2,9 @@ import { ProfileMetricBoxSkeleton } from "@/app/user-dashboard/profile/[userId]/
 
 export function ProfileInfoBoxesSkeleton() {
 	return (
-		<div className="">
+		<div>
 			<div className="flex w-full animate-pulse flex-col gap-2 md:min-w-96">
 				<div className="flex flex-row gap-2">
-					
 					<ProfileMetricBoxSkeleton
 						title="ניקוד משוקלל"
 						value="0.00"

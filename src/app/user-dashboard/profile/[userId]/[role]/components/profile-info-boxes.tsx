@@ -27,7 +27,7 @@ export function ProfileInfoBoxes(props: ProfileInfoBoxesProps) {
 	const isEarlyRole = props.roleRecords.find((record) => record.role === role)?.latestFulfilledDate != null;
 
 	return (
-		<div className="p-2 md:p-0">
+		<div>
 			<div className="flex w-full flex-col gap-2 md:min-w-96">
 				<div className="flex flex-row gap-2 ">
 					<ProfileMetricBox

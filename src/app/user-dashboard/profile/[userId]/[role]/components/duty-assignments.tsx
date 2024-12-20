@@ -55,6 +55,13 @@ export function DutyAssignments({ assignments }: DutyAssignmentsProps) {
 	return (
 		<div className="relative flex w-full flex-col gap-2 p-2">
 			{
+				assignments.length > 0 &&
+				<AssignmentsFilterRuleSelect
+					selectedFilterRule={selectedFilterRule}
+					handleFilterRuleChange={setSelectedFilterRule}
+				/>
+			}
+			{
 				// If there are no visible assignments due to filter
 				(
 					futureAssignments.length === 0 &&
@@ -64,13 +71,7 @@ export function DutyAssignments({ assignments }: DutyAssignmentsProps) {
 					אין שיבוצים להצגה
 				</p>
 			}
-			{
-				assignments.length > 0 &&
-				<AssignmentsFilterRuleSelect
-					selectedFilterRule={selectedFilterRule}
-					handleFilterRuleChange={setSelectedFilterRule}
-				/>
-			}
+			
 			{
 				futureAssignments.length > 0 &&
 				<DutyAssignmentsGroup

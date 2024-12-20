@@ -19,7 +19,7 @@ export function AssignmentsFilterRuleSelect(props: AssignmentsFilterRuleSelectPr
 					value={props.selectedFilterRule}
 					onValueChange={handleValueChange}
 				>
-					<SelectTrigger className="absolute w-44">
+					<SelectTrigger className="w-52 md:absolute">
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
