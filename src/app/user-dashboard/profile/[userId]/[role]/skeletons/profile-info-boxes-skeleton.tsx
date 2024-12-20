@@ -1,8 +1,3 @@
-
-// Loading animation
-const shimmer =
-  "before:absolute before:inset-0 before:-translate-x-full before:animate-[shimmer_2s_infinite] before:bg-gradient-to-r before:from-transparent before:via-white/60 before:to-transparent";
-	
 export function ProfileInfoBoxesSkeleton() {
 	const className = "flex flex-col rounded-xl bg-slate-200 p-3 sm:p-4 hover:bg-slate-300 flex-1 text-center ";
 	
@@ -39,8 +34,23 @@ export function ProfileInfoBoxesSkeleton() {
 						<span>שמירות בסופ"ש</span>
 					</div>
 					<div className={className}>
+						<span className="text-4xl">0</span>
+						<span>הגנמ"שים</span>
+					</div>
+					
+				</div>
+				<div className="flex flex-row gap-2">
+					<div className={className}>
+						<span className="text-4xl">0</span>
+						<span>חפיפות עם חגים</span>
+					</div>
+					<div className={className}>
 						<p><span className="text-4xl">0</span>נק'</p>
 						<span>תורנויות נוספות</span>
+					</div>
+					<div className={className}>
+						<p><span className="text-4xl">0</span>נק'</p>
+						<span>סך הבונוסים</span>
 					</div>
 				</div>
 			</div>

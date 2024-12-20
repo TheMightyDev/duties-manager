@@ -12,7 +12,14 @@ export interface UserJustice {
 	monthsInRole: number;
 	weekdaysGuardingCount: number;
 	weekendsGuardingCount: number;
+	campAndSettlementDefenseCount: number;
+	/** The number of duties overlapped with any holiday.
+	 * Note that the number doesn't contribute to the total number of duties -
+	 * it represents a subset of all duties
+	*/
+	holidayOverlapsCount: number;
 	otherDutiesScoreSum: number;
+	extraScoresSum: number;
 	/** Score granted from all duties done by user */
 	totalScore: number;
 	/** Score relative to time passed since role start -

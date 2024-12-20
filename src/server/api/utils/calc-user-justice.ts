@@ -56,7 +56,10 @@ export function calcUserJustice({
 		}),
 		weekdaysGuardingCount: 0,
 		weekendsGuardingCount: 0,
+		campAndSettlementDefenseCount: 0,
+		holidayOverlapsCount: 0,
 		otherDutiesScoreSum: 0,
+		extraScoresSum: 0,
 		totalScore: 0,
 		weightedScore: 0,
 	};
@@ -67,6 +70,7 @@ export function calcUserJustice({
 	
 	user.assignments.forEach((assignment) => {
 		const duty = assignment.duty;
+		
 		if (duty.kind === DutyKind.GUARDING) {
 			const dutyDuration = differenceInDays(duty.endDate, duty.startDate);
 				
@@ -77,9 +81,17 @@ export function calcUserJustice({
 				userJustice.weekdaysGuardingCount += 1;
 				userJustice.totalScore += duty.score === USE_DEFAULT_SCORE ? 1 : duty.score;
 			}
+		} else if (duty.kind === DutyKind.CAMP_DEFENSE || duty.kind === DutyKind.SETTLEMENTS_DEFENSE) {
+			userJustice.campAndSettlementDefenseCount += 1;
+			userJustice.totalScore += duty.score === USE_DEFAULT_SCORE ? 8 : duty.score;
 		} else {
 			userJustice.otherDutiesScoreSum += duty.score;
 			userJustice.totalScore += duty.score;
+		}
+		
+		if (assignment.extraScore) {
+			userJustice.extraScoresSum += assignment.extraScore;
+			userJustice.totalScore += assignment.extraScore;
 		}
 	});
 	
@@ -88,8 +100,6 @@ export function calcUserJustice({
 	userJustice.weightedScore = userJustice.monthsInRole > 0
 		? Number((userJustice.totalScore / userJustice.monthsInRole).toFixed(2))
 		: 0;
-
-	userJustice.monthsInRole = Number(userJustice.monthsInRole.toFixed(2));
 	
 	return userJustice;
 }

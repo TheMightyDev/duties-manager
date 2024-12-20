@@ -17,7 +17,10 @@ export function ProfileInfoBoxes(props: ProfileInfoBoxesProps) {
 		latestPeriodStatus,
 		weekdaysGuardingCount,
 		weekendsGuardingCount,
+		campAndSettlementDefenseCount,
+		holidayOverlapsCount,
 		otherDutiesScoreSum,
+		extraScoresSum,
 	} = props.userJustice;
 	
 	const className = "flex flex-col rounded-xl bg-slate-200 p-3 sm:p-4 hover:bg-slate-300 flex-1 text-center";
@@ -58,8 +61,22 @@ export function ProfileInfoBoxes(props: ProfileInfoBoxesProps) {
 						<span>שמירות בסופ"ש</span>
 					</div>
 					<div className={className}>
+						<span className="text-4xl">{campAndSettlementDefenseCount}</span>
+						<span>הגנמ"שים</span>
+					</div>
+				</div>
+				<div className="flex flex-row gap-2">
+					<div className={className}>
+						<span className="text-4xl">{holidayOverlapsCount}</span>
+						<span>חפיפות עם חגים</span>
+					</div>
+					<div className={className}>
 						<p><span className="text-4xl">{otherDutiesScoreSum}</span>נק'</p>
 						<span>תורנויות נוספות</span>
+					</div>
+					<div className={className}>
+						<p><span className="text-4xl">{extraScoresSum}</span>נק'</p>
+						<span>סך הבונוסים</span>
 					</div>
 				</div>
 			</div>
