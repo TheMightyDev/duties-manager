@@ -1,4 +1,5 @@
 import { PeriodStatusInfoBox } from "@/app/user-dashboard/profile/[userId]/[role]/components/period-status-info-box";
+import { ProfileMetricBox } from "@/app/user-dashboard/profile/[userId]/[role]/components/profile-metric-box";
 import { type UserJustice } from "@/types/justice/user-justice";
 import { type RoleRecord } from "@/types/user/role-record";
 
@@ -30,15 +31,23 @@ export function ProfileInfoBoxes(props: ProfileInfoBoxesProps) {
 	return (
 		<div className="p-2 md:p-0">
 			<div className="flex w-full flex-col gap-2 md:min-w-96">
-				<div className="flex flex-row gap-2">
-					<div className={className}>
-						<span className="text-4xl">{weightedScore.toFixed(2)}</span>
-						<span>ניקוד משוקלל</span>
-					</div>
-					<div className={className}>
-						<p><span className="text-4xl">{props.userPosition}</span><span className="text-xl">/{props.totalRelevantUsersCount}</span></p>
-						<span>דירוג בתפקיד</span>
-					</div>
+				<div className="flex flex-row gap-2 ">
+					<ProfileMetricBox
+						title="ניקוד משוקלל"
+						value={weightedScore.toFixed(2)}
+						infoMessage="סכום הנקודות שנצברו חלקי מס' החודשים בתפקיד בפועל"
+					/>
+					<ProfileMetricBox
+						title="דירוג בתפקיד"
+						value={props.userPosition}
+						infoMessage={`המיקום בטבלת הצדק מבין כל האנשים בתפקיד
+							${isEarlyRole ? "נכון לתאריך סיום ביצוע התפקיד" : "נכון להיום"}`}
+						valueSuffix={
+							<span className="text-xl">
+								/{props.totalRelevantUsersCount}
+							</span>
+						}
+					/>
 				</div>
 				<div className="flex flex-row gap-2">
 					<div className={className}>
