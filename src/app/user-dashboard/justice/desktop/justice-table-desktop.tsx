@@ -61,6 +61,7 @@ export function JusticeTableDesktop({
 							monthsInRole,
 							weekdaysGuardingCount,
 							weekendsGuardingCount,
+							campAndSettlementDefenseCount,
 							otherDutiesScoreSum,
 						}) => (
 							<tr
@@ -82,6 +83,7 @@ export function JusticeTableDesktop({
 								<td>{monthsInRole.toFixed(2)}</td>
 								<td>{weekdaysGuardingCount}</td>
 								<td>{weekendsGuardingCount}</td>
+								<td>{campAndSettlementDefenseCount}</td>
 								<td>{otherDutiesScoreSum}</td>
 								<td className="px-2">
 									<Link

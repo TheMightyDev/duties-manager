@@ -7,6 +7,7 @@ export const usersJusticeTableColTitles = {
 	monthsInRole: "מס' חודשים בתפקיד",
 	weekdaysGuardingCount: "שמירות בימי חול",
 	weekendsGuardingCount: "שמירות בסופ\"ש",
+	campAndSettlementDefenseCount: "הגנמ\"שים",
 	otherDutiesScoreSum: "ניקוד תורנויות נוספות",
 } as const satisfies Partial<Record<keyof UserJustice, string>>;
 
