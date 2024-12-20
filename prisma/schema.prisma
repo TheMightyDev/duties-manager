@@ -55,7 +55,6 @@ model User {
   accounts           Account[]
   reserves           Assignment[] @relation("reserve")
   assignments        Assignment[] @relation("assignee")
-  exemptions         Exemption[]
   periods            Period[]
   preferences        Preference[]
   sessions           Session[]
@@ -116,16 +115,6 @@ model Period {
   user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model Exemption {
-  id          String          @id @default(cuid())
-  userId      String
-  startDate   DateTime
-  endDate     DateTime?
-  description String
-  impact      ExemptionImpact
-  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
 model Preference {
   id          String               @id @default(cuid())
   userId      String
@@ -176,12 +165,6 @@ enum PreferenceImportance {
   PREFERS_NOT_TO
   CANT
   HIGH_HESITATION
-}
-
-enum ExemptionImpact {
-  EASE_GUARDING
-  NO_GUARDING
-  NO_DUTIES
 }
 
 enum UserRank {

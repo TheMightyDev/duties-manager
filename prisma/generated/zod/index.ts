@@ -27,8 +27,6 @@ export const AssignmentScalarFieldEnumSchema = z.enum(['id','dutyId','assigneeId
 
 export const PeriodScalarFieldEnumSchema = z.enum(['id','userId','role','status','startDate','endDate','description']);
 
-export const ExemptionScalarFieldEnumSchema = z.enum(['id','userId','startDate','endDate','description','impact']);
-
 export const PreferenceScalarFieldEnumSchema = z.enum(['id','userId','importance','startDate','endDate','description','kind']);
 
 export const SortOrderSchema = z.enum(['asc','desc']);
@@ -56,10 +54,6 @@ export type PreferenceKindType = `${z.infer<typeof PreferenceKindSchema>}`
 export const PreferenceImportanceSchema = z.enum(['PREFERS','PREFERS_NOT_TO','CANT','HIGH_HESITATION']);
 
 export type PreferenceImportanceType = `${z.infer<typeof PreferenceImportanceSchema>}`
-
-export const ExemptionImpactSchema = z.enum(['EASE_GUARDING','NO_GUARDING','NO_DUTIES']);
-
-export type ExemptionImpactType = `${z.infer<typeof ExemptionImpactSchema>}`
 
 export const UserRankSchema = z.enum(['PRIVATE','CORPORAL','SERGEANT','STAFF_SERGEANT','SERGEANT_FIRST_CLASS','MASTER_SERGEANT','PROFESSIONAL_ACADEMIC_OFFICER','SENIOR_ACADEMIC_OFFICER','SPECIAL_ACADEMIC_OFFICER','SECOND_LIEUTENANT','LIEUTENANT','CAPTAIN','MAJOR']);
 
@@ -197,21 +191,6 @@ export const PeriodSchema = z.object({
 })
 
 export type Period = z.infer<typeof PeriodSchema>
-
-/////////////////////////////////////////
-// EXEMPTION SCHEMA
-/////////////////////////////////////////
-
-export const ExemptionSchema = z.object({
-  impact: ExemptionImpactSchema,
-  id: z.string().cuid2(),
-  userId: z.string(),
-  startDate: z.coerce.date(),
-  endDate: z.coerce.date().nullable(),
-  description: z.string(),
-})
-
-export type Exemption = z.infer<typeof ExemptionSchema>
 
 /////////////////////////////////////////
 // PREFERENCE SCHEMA
