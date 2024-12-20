@@ -45,7 +45,7 @@ export const PeriodStatusSchema = z.enum(['FULFILLS_ROLE','TEMPORARILY_ABSENT','
 
 export type PeriodStatusType = `${z.infer<typeof PeriodStatusSchema>}`
 
-export const DutyKindSchema = z.enum(['GUARDING','KITCHEN','AGRICULTURE','FOOD_PACKAGING','OTHER']);
+export const DutyKindSchema = z.enum(['GUARDING','CAMP_DEFENSE','SETTLEMENTS_DEFENSE','KITCHEN','AGRICULTURE','FOOD_PACKAGING','OTHER']);
 
 export type DutyKindType = `${z.infer<typeof DutyKindSchema>}`
 
