@@ -7,7 +7,6 @@ import {
 	protectedProcedure,
 	publicProcedure
 } from "@/server/api/trpc";
-import { userWithAllEventsInclude } from "@/server/api/types/user-with-all-events";
 import { type UserWithPeriodsAndAssignments } from "@/server/api/types/user-with-periods-and-assignments";
 import { calcUserJustice } from "@/server/api/utils/calc-user-justice";
 import { type RoleRecord, roleRecordSchema } from "@/types/user/role-record";
@@ -122,128 +121,6 @@ export const userRouter = createTRPCRouter({
 			const fullName = user.firstName + " " + user.lastName;
 			
 			return fullName;
-		})),
-		
-	getAllUserEventsById: publicProcedure
-		.input(z.string())
-		.query((async ({ ctx, input: userId }) => {
-			const userWithAllEvents = await ctx.db.user.findFirst({
-				include: userWithAllEventsInclude,
-				where: {
-					id: userId,
-				},
-			});
-			
-			return userWithAllEvents;
-		})),
-		
-	getUserJustice: publicProcedure
-		.input(z.object({
-			userId: z.string(),
-			definitiveDate: z.date(),
-		}))
-		.query((async ({ ctx, input: { userId, definitiveDate } }) => {
-			const isLoggedUserAdmin = Boolean(ctx.session?.user.isAdmin);
-			
-			const userWithCurrentPeriod = await ctx.db.user.findFirst({
-				include: {
-					periods: {
-						where: {
-							AND: [
-								{
-									startDate: {
-										lte: definitiveDate,
-									},
-								},
-								{
-									endDate: {
-										gte: definitiveDate,
-									},
-								},
-							],
-						},
-					},
-				},
-				where: {
-					id: userId,
-				},
-			});
-			
-			if (!(userWithCurrentPeriod?.periods[0])) return null;
-			
-			const currentRole = userWithCurrentPeriod.periods[0].role;
-			
-			const userWithPeriodsAndAssignments: UserWithPeriodsAndAssignments | null = await ctx.db.user.findFirst({
-				include: {
-					periods: {
-						select: {
-							startDate: true,
-							endDate: true,
-							role: true,
-							status: true,
-						},
-						where: {
-							AND: [
-								{
-									startDate: {
-										lte: definitiveDate,
-									},
-								},
-								{
-									role: currentRole,
-								},
-								// We don't only find periods with "FULFILLS_ROLE" status (filtering happens when calculating users justice)
-								// because we want to find out the user's current status.
-							],
-						},
-						orderBy: [
-							{
-								startDate: "asc",
-							},
-						],
-					},
-					assignments: {
-						include: {
-							duty: {
-								select: {
-									startDate: true,
-									endDate: true,
-									score: true,
-									kind: true,
-								},
-							},
-						},
-						where: {
-							duty: {
-								startDate: {
-									lte: definitiveDate,
-								},
-								requiredRoles: {
-									has: currentRole,
-								},
-								...(
-									isLoggedUserAdmin
-										? {}
-										// If we only fetch public duties, a requirement for the duty is to not be private
-										: {
-											isPrivate: false,
-										}
-								),
-							},
-						},
-					},
-				},
-				where: {
-					id: userId,
-				},
-			});
-			
-			if (!userWithPeriodsAndAssignments) return null;
-			
-			return calcUserJustice({
-				userWithPeriodsAndAssignments,
-				definitiveDate,
-			});
 		})),
 	
 	getManyUsersJustice: publicProcedure
