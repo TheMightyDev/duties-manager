@@ -21,7 +21,7 @@ export const VerificationTokenScalarFieldEnumSchema = z.enum(['identifier','toke
 
 export const OrganizationScalarFieldEnumSchema = z.enum(['id','name','description']);
 
-export const DutyScalarFieldEnumSchema = z.enum(['id','kind','organizationId','startDate','endDate','role','quantity','score','isPrivate','description']);
+export const DutyScalarFieldEnumSchema = z.enum(['id','kind','organizationId','startDate','endDate','roleRequirement','quantity','score','isPrivate','description']);
 
 export const AssignmentScalarFieldEnumSchema = z.enum(['id','dutyId','assigneeId','reserveId','extraScore','note']);
 
@@ -46,6 +46,10 @@ export type PeriodStatusType = `${z.infer<typeof PeriodStatusSchema>}`
 export const DutyKindSchema = z.enum(['GUARDING','CAMP_DEFENSE','SETTLEMENTS_DEFENSE','KITCHEN','AGRICULTURE','FOOD_PACKAGING','OTHER']);
 
 export type DutyKindType = `${z.infer<typeof DutyKindSchema>}`
+
+export const DutyRoleRequirementSchema = z.enum(['SQUAD','OFFICER','COMMANDER','EXEMPT','SQUAD_AND_EXEMPT','EXEMPT_AND_SQUAD','OFFICER_AND_COMMANDER','COMMANDER_AND_OFFICER','ANY']);
+
+export type DutyRoleRequirementType = `${z.infer<typeof DutyRoleRequirementSchema>}`
 
 export const PreferenceKindSchema = z.enum(['VACATION','MEDICAL','EDUCATION','APPOINTMENT','RELIGION','FAMILY_EVENT','CELEBRATION','OTHER']);
 
@@ -148,7 +152,7 @@ export type Organization = z.infer<typeof OrganizationSchema>
 
 export const DutySchema = z.object({
   kind: DutyKindSchema,
-  role: UserRoleSchema,
+  roleRequirement: DutyRoleRequirementSchema,
   id: z.string().cuid2(),
   organizationId: z.string(),
   startDate: z.coerce.date(),

@@ -12,6 +12,7 @@
     "db:push": "prisma db push",
     "db:reset": "prisma migrate reset",
     "db:studio": "prisma studio",
+		"data-migration:replace-duty-role-with-role-requirement": "tsx ./prisma/migrations/20241221170328_added_duty_role_requirement/data-migration.ts",
     "dev": "next dev --turbo",
     "postinstall": "prisma generate",
     "lint": "next lint",

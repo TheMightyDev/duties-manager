@@ -78,18 +78,18 @@ model Organization {
 }
 
 model Duty {
-  id             String       @id @default(cuid())
-  kind           DutyKind
-  organizationId String
-  startDate      DateTime
-  endDate        DateTime
-  role           UserRole
-  quantity       Int
-  score          Int
-  isPrivate      Boolean      @default(true)
-  description    String?
-  assignments    Assignment[]
-  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  id              String              @id @default(cuid())
+  kind            DutyKind
+  organizationId  String
+  startDate       DateTime
+  endDate         DateTime
+  roleRequirement DutyRoleRequirement @default(ANY)
+  quantity        Int
+  score           Int
+  isPrivate       Boolean             @default(true)
+  description     String?
+  assignments     Assignment[]
+  organization    Organization        @relation(fields: [organizationId], references: [id], onDelete: Cascade)
 }
 
 model Assignment {
@@ -141,12 +141,28 @@ enum PeriodStatus {
 
 enum DutyKind {
   GUARDING
-	CAMP_DEFENSE
+  CAMP_DEFENSE
   SETTLEMENTS_DEFENSE
-	KITCHEN
+  KITCHEN
   AGRICULTURE
   FOOD_PACKAGING
   OTHER
+}
+
+enum DutyRoleRequirement {
+  SQUAD
+  OFFICER
+  COMMANDER
+  EXEMPT
+  /// Requires either `SQUAD` or `EXEMPT`, but `SQUAD` is prioritized
+  SQUAD_AND_EXEMPT
+  /// Requires either `EXEMPT` or `SQUAD`, but `EXEMPT` is prioritized
+  EXEMPT_AND_SQUAD
+  /// Requires either `OFFICER` or `COMMANDER`, but `OFFICER` is prioritized
+  OFFICER_AND_COMMANDER
+  /// Requires either `COMMANDER` or `OFFICER`, but `COMMANDER` is prioritized
+  COMMANDER_AND_OFFICER
+  ANY
 }
 
 enum PreferenceKind {
