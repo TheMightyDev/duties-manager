@@ -87,13 +87,16 @@ export function UploadGuardingAssignmentsContents(props: UploadGuardingContentsP
 				className="w-full"
 			/>
 			
-			<PrimitiveUserRoleSelect
-				availableRoles={Object.values(UserRole).filter((role) => role !== UserRole.EXEMPT)}
-				selectedRole={selectedUserRole}
-				handleRoleChange={(nextRole) => {
-					setSelectedUserRole(nextRole);
-				}}
-			/>
+			{
+				uploadProgress === UploadProgress.NOTHING_SUBMITTED &&
+				<PrimitiveUserRoleSelect
+					availableRoles={Object.values(UserRole).filter((role) => role !== UserRole.EXEMPT)}
+					selectedRole={selectedUserRole}
+					handleRoleChange={(nextRole) => {
+						setSelectedUserRole(nextRole);
+					}}
+				/>
+			}
 			
 			<button onClick={validateInfo}>
 				אימות

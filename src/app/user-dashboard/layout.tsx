@@ -22,7 +22,7 @@ export default async function Layout({ children }: Readonly<{ children: React.Re
 	}
 	
 	const loggedUserId = session.user.id;
-	
+	const latestRole = session.user.roleRecords.at(-1)?.role;
 	const sharedIconClassName = "size-8 m-auto sm:size-9 ";
 	
 	const routeInfos: RouteInfo[] = [
@@ -43,7 +43,7 @@ export default async function Layout({ children }: Readonly<{ children: React.Re
 		{
 			id: "my-profile",
 			name: "הפרופיל שלי",
-			href: `/user-dashboard/profile/${loggedUserId}/LATEST`,
+			href: `/user-dashboard/profile/${loggedUserId}/${latestRole}`,
 			icon: <ProfileCircleSvgIcon className={sharedIconClassName + "stroke-black"}/>,
 			selectedIcon: <ProfileCircleFilledSvgIcon className={sharedIconClassName + "fill-blue-600"}/>,
 		},

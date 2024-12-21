@@ -388,9 +388,15 @@ export const userRouter = createTRPCRouter({
 					assignments: {
 						where: {
 							duty: {
-								requiredRoles: {
-									has: role,
-								},
+								...(
+									role
+										? {
+											requiredRoles: {
+												has: role,
+											},
+										}
+										: {}
+								),
 								...(
 									isLoggedUserAdmin
 										? {}

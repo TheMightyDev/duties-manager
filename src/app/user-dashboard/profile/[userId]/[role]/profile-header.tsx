@@ -38,7 +38,7 @@ export async function ProfileHeader(props: ProfilePageUrlParams) {
 			</span>
 			<ProfileRoleSelector
 				roleRecords={viewedUserRoleRecords}
-				selectedRole={viewedUserRoleRecords.at(-1)!.role === props.role ? "LATEST" : props.role}
+				selectedRole={props.role}
 			/>
 		</h2>
 	);

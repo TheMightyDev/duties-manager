@@ -1,4 +1,3 @@
-import { checkIfRoleMatchDutyRequiredRole } from "@/app/_utils/check-if-role-match-duty-required-role";
 import {
 	adminProcedure,
 	createTRPCRouter
@@ -54,11 +53,8 @@ function getAllUserAssignmentsErrors({ user }: {
 			return;
 		}
 		
-		if (!checkIfRoleMatchDutyRequiredRole({
-			role: periodAtDutyTime.role,
-			dutyRoleRequirement: duty.role,
-		})) {
-			errorMessages.push(`At the duty in ${formatDate(duty.startDate)}, the user is at role ${periodAtDutyTime.role}, but the role requirement of the duty is ${duty.role}`);
+		if (!duty.requiredRoles.includes(periodAtDutyTime.role)) {
+			errorMessages.push(`At the duty in ${formatDate(duty.startDate)}, the user is at role ${periodAtDutyTime.role}, but the required roles of the duty are ${duty.requiredRoles.join(", ")}`);
 			
 			return;
 		}

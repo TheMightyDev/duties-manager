@@ -1,8 +1,13 @@
 import { type UserRole } from "@prisma/client";
 
-export interface ProfilePageUrlParams {
+export interface ProfilePageUrlParamsUnparsed {
 	userId: string;
 	role: UserRole | "LATEST";
+}
+
+export interface ProfilePageUrlParams {
+	userId: string;
+	role: UserRole;
 }
 
 export enum AssignmentsFilterRule {

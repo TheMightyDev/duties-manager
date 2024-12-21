@@ -118,7 +118,7 @@ export function convertParsedDataToUploadableData({
 			startDate,
 			endDate,
 			quantity: assignments.length,
-			role: userRole,
+			requiredRoles: [ userRole ],
 			score: USE_DEFAULT_SCORE,
 			isPrivate: false,
 			description: null,
@@ -141,6 +141,7 @@ export function convertParsedDataToUploadableData({
 				? allUsersIdsByFullName[reserveFullName]!
 				: null,
 			extraScore: extraScore ?? null,
+			note: note ?? null,
 		}));
 		
 		uploadableData.assignments.push(...assignmentsData);

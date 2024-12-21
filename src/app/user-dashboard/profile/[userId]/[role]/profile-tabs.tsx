@@ -24,14 +24,14 @@ export async function ProfileTabs({ userId, role }: ProfilePageUrlParams) {
 			? Promise.all([
 				api.user.getUserAssignments({
 					userId,
-					role: role !== "LATEST" ? role : undefined,
+					role,
 				}),
 				api.user.getUserPeriodsById(userId),
 			])
 			: Promise.all([
 				api.user.getUserAssignments({
 					userId,
-					role: role !== "LATEST" ? role : undefined,
+					role,
 				}),
 				null,
 			])

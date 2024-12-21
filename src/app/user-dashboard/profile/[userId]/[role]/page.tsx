@@ -4,16 +4,36 @@ import { ProfileTabs } from "@/app/user-dashboard/profile/[userId]/[role]/profil
 import { ProfileHeaderSkeleton } from "@/app/user-dashboard/profile/[userId]/[role]/skeletons/profile-header-skeleton";
 import { ProfileInfoBoxesSkeleton } from "@/app/user-dashboard/profile/[userId]/[role]/skeletons/profile-info-boxes-skeleton";
 import { ProfileTabsSkeleton } from "@/app/user-dashboard/profile/[userId]/[role]/skeletons/profile-tabs-skeleton";
-import { type ProfilePageUrlParams } from "@/app/user-dashboard/profile/[userId]/[role]/types";
+import { type ProfilePageUrlParams, type ProfilePageUrlParamsUnparsed } from "@/app/user-dashboard/profile/[userId]/[role]/types";
+import { api } from "@/trpc/server";
+import { UserRole } from "@prisma/client";
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
 interface UserProfilePageProps {
-	params: Promise<ProfilePageUrlParams>;
+	params: Promise<ProfilePageUrlParamsUnparsed>;
 }
 
 export default async function UserProfilePage({ params }: UserProfilePageProps) {
-	const extractedParams = await params;
-
+	const extractedParamsUnparsed = await params;
+	const extractedParams: ProfilePageUrlParams = {
+		userId: extractedParamsUnparsed.userId,
+		role: UserRole.SQUAD, // Placeholder
+	};
+	
+	if (extractedParamsUnparsed.role === "LATEST") {
+		const roleRecords = await api.user.getAllUserRolesById(extractedParamsUnparsed.userId);
+		const latestRole = roleRecords?.at(-1)?.role;
+		
+		if (!latestRole) {
+			redirect("/latest");
+		}
+		
+		extractedParams.role = latestRole;
+	} else {
+		extractedParams.role = extractedParamsUnparsed.role;
+	}
+	
 	return (
 		<>
 			<Suspense fallback={<ProfileHeaderSkeleton />}>

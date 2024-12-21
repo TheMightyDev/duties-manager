@@ -9,14 +9,14 @@ import { usePathname, useRouter } from "next/navigation";
 
 interface ProfileRoleSelectorProps {
 	roleRecords: RoleRecord[];
-	selectedRole: UserRole | "LATEST";
+	selectedRole: UserRole;
 }
 
 export function ProfileRoleSelector(props: ProfileRoleSelectorProps) {
 	const router = useRouter();
 	const pathname = usePathname();
 	
-	function switchRoleInPathname(role: UserRole | "LATEST"): string {
+	function switchRoleInPathname(role: UserRole): string {
 		const pathnameArray = pathname.split("/");
 		const nextPathnameArray = pathnameArray.slice(0, pathnameArray.length - 1).concat(role);
 		
@@ -41,13 +41,11 @@ export function ProfileRoleSelector(props: ProfileRoleSelectorProps) {
 					</SelectTrigger>
 					<SelectContent>
 						{
-							props.roleRecords.map((record, i) => {
-								const value = i === props.roleRecords.length - 1 ? "LATEST" : record.role;
-							
+							props.roleRecords.map((record) => {
 								return (
 									<SelectItem
-										value={value}
-										key={value}
+										value={record.role}
+										key={record.role}
 									>
 										<div className="flex flex-row items-center gap-2">
 											<UserRoleMark

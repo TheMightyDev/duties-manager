@@ -12,7 +12,7 @@ export async function ProfileInfoBoxesWrapper({ userId, role }: ProfilePageUrlPa
 		return "No user with the given ID was found";
 	}
 	
-	const selectedRecord = role === "LATEST" ? roleRecords.at(-1) : roleRecords.find((curr) => curr.role === role);
+	const selectedRecord = roleRecords.find((curr) => curr.role === role);
 
 	if (!selectedRecord) {
 		return "The user never fulfilled the given role so far or the role is unknown";
