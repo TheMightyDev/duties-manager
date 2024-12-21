@@ -59,7 +59,9 @@ async function fetchUsersByRole({ role, definitiveDate, ctxDb, includeExemptAndA
 						startDate: {
 							lte: definitiveDate,
 						},
-						role: role,
+						requiredRoles: {
+							has: role,
+						},
 						...(
 							fetchPrivateDuties
 								? {}
@@ -216,7 +218,9 @@ export const userRouter = createTRPCRouter({
 								startDate: {
 									lte: definitiveDate,
 								},
-								role: currentRole,
+								requiredRoles: {
+									has: currentRole,
+								},
 								...(
 									isLoggedUserAdmin
 										? {}
@@ -384,7 +388,9 @@ export const userRouter = createTRPCRouter({
 					assignments: {
 						where: {
 							duty: {
-								role: role,
+								requiredRoles: {
+									has: role,
+								},
 								...(
 									isLoggedUserAdmin
 										? {}
