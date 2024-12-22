@@ -20,7 +20,7 @@ export function Dialog({
 	return (
 		<div
 			className={cn(
-				"fixed inset-0 z-20 flex h-screen w-screen items-center justify-center bg-black/50",
+				"fixed inset-0 start-0 z-20 flex h-screen w-screen items-center justify-center bg-black/50",
 				isOpen ? "visible opacity-100" : "invisible opacity-0",
 				backdropClassName
 			)}

@@ -1,13 +1,15 @@
 import { ProfileRoleSelector } from "@/app/user-dashboard/profile/[userId]/[role]/components/profile-role-selector";
+import { UserInfoEditorDialog } from "@/app/user-dashboard/profile/[userId]/[role]/components/user-info-editor-dialog/user-info-editor-dialog";
 import { type ProfilePageUrlParams } from "@/app/user-dashboard/profile/[userId]/[role]/types";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
+import { type User } from "@prisma/client";
 
 export async function ProfileHeader(props: ProfilePageUrlParams) {
 	const session = await auth();
 	
-	let viewedUserFullName = props.userId === session?.user.id
-		? session?.user.fullName
+	let viewedUserBasicInfo: User | null = props.userId === session?.user.id
+		? session?.user as User
 		: null;
 		
 	let viewedUserRoleRecords = props.userId === session?.user.id
@@ -15,16 +17,21 @@ export async function ProfileHeader(props: ProfilePageUrlParams) {
 		: null;
 		
 	if (!viewedUserRoleRecords) {
-		const [ fullName, roleRecords ] = await Promise.all([
-			await api.user.getUserFullNameById(props.userId),
+		const [ basicInfo, roleRecords ] = await Promise.all([
+			await api.user.getUserBasicInfoById(props.userId),
 			await api.user.getAllUserRolesById(props.userId),
 		]);
 		
-		viewedUserFullName = fullName;
+		if (!basicInfo) {
+			// TODO: Redirect to 404 error page
+			return "No user with given ID";
+		}
+		
+		viewedUserBasicInfo = basicInfo;
 		viewedUserRoleRecords = roleRecords;
 	}
 	
-	if (!viewedUserRoleRecords) {
+	if (!viewedUserRoleRecords || !viewedUserBasicInfo) {
 		return <></>;
 	}
 		
@@ -34,12 +41,13 @@ export async function ProfileHeader(props: ProfilePageUrlParams) {
 			dir="rtl"
 		>
 			<span className="text-xl font-bold leading-10 sm:text-3xl">
-				{viewedUserFullName}
+				{viewedUserBasicInfo.firstName + " " + viewedUserBasicInfo.lastName}
 			</span>
 			<ProfileRoleSelector
 				roleRecords={viewedUserRoleRecords}
 				selectedRole={props.role}
 			/>
+			<UserInfoEditorDialog user={viewedUserBasicInfo} />
 		</h2>
 	);
 }

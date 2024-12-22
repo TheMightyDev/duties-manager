@@ -16,8 +16,12 @@ interface UserExtensions {
 	isAdmin: boolean;
 	organizationId: string;
 	phoneNumber: string;
+	gender: string;
 	rank: UserRank;
 	roleRecords: RoleRecord[];
+	permanentEntryDate: Date | null;
+	adminNote: string | null;
+	registerDate: Date | null;
 }
 
 declare module "next-auth/jwt" {
@@ -91,16 +95,9 @@ export const authConfig = {
 					}
 					
 					return {
-						id: user.id,
-						firstName: user.firstName,
-						lastName: user.lastName,
 						fullName: user.firstName + " " + user.lastName,
-						isAdmin: user.isAdmin,
-						organizationId: user.organizationId,
-						phoneNumber: user.phoneNumber,
-						rank: user.rank,
 						roleRecords,
-						makeupdie: "he",
+						...user,
 					};
 				}
 

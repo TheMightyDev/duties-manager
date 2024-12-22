@@ -34,6 +34,7 @@ export function PeriodEditRow({
 			return [ ...prev ];
 		});
 	}
+	
 	function handleStartDateChange(event: React.ChangeEvent<HTMLInputElement>) {
 		const selectedDate = event.currentTarget.value;
 		applyChange(
@@ -122,8 +123,8 @@ export function PeriodEditRow({
 			</td>
 			<td>
 				<textarea
-					value={period.description ?? ""}
-					onChange={(e) => {
+					defaultValue={period.description ?? ""}
+					onBlur={(e) => {
 						handleDescriptionChange(e.currentTarget.value);
 					}}
 				></textarea>

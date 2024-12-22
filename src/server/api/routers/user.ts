@@ -12,7 +12,7 @@ import { calcUserJustice } from "@/server/api/utils/calc-user-justice";
 import { type RoleRecord, roleRecordSchema } from "@/types/user/role-record";
 import { PeriodStatus, type PrismaClient, type User, UserRole } from "@prisma/client";
 import { endOfDay } from "date-fns";
-import { PeriodSchema } from "prisma/generated/zod";
+import { PeriodSchema, UserSchema } from "prisma/generated/zod";
 
 async function fetchUsersByRole({ role, definitiveDate, ctxDb, includeExemptAndAbsentUsers, fetchPrivateDuties }: {
 	ctxDb: PrismaClient;
@@ -101,6 +101,19 @@ async function fetchUsersByRole({ role, definitiveDate, ctxDb, includeExemptAndA
 }
 
 export const userRouter = createTRPCRouter({
+	getUserBasicInfoById: protectedProcedure
+		.input(z.string())
+		.output(UserSchema.nullable())
+		.query((async ({ ctx, input: userId }) => {
+			const user = await ctx.db.user.findUnique({
+				where: {
+					id: userId,
+				},
+			});
+			
+			return user;
+		})),
+		
 	getUserFullNameById: protectedProcedure
 		.input(z.string())
 		.query((async ({ ctx, input: userId }) => {
