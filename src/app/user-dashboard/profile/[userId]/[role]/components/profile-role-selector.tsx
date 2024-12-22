@@ -5,6 +5,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { type RoleRecord } from "@/types/user/role-record";
 import { type UserRole } from "@prisma/client";
 import { DirectionProvider } from "@radix-ui/react-direction";
+import { useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 
 interface ProfileRoleSelectorProps {
@@ -13,6 +14,8 @@ interface ProfileRoleSelectorProps {
 }
 
 export function ProfileRoleSelector(props: ProfileRoleSelectorProps) {
+	const t = useTranslations();
+	
 	const router = useRouter();
 	const pathname = usePathname();
 	
@@ -53,9 +56,9 @@ export function ProfileRoleSelector(props: ProfileRoleSelectorProps) {
 												hasTooltip={false}
 											/>
 											<span>
-												{record.role} - {record.latestFulfilledDate
-													? "עבר"
-													: "נוכחי"}</span>
+												{t(`UserRole.${record.role}`)}{" - "}{record.latestFulfilledDate
+													? t("General.past")
+													: t("General.present")}</span>
 										</div>
 									</SelectItem>
 								);

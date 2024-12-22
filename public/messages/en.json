@@ -1,0 +1,12 @@
+{
+	"General": {
+		"present": "present",
+		"past": "past"
+	},
+  "UserRole": {
+    "SQUAD": "alert squad",
+		"OFFICER": "officer",
+		"COMMANDER": "commander",
+		"EXEMPT": "exempt"
+  }
+}

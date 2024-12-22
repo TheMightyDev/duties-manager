@@ -1,6 +1,7 @@
 import stylistic from "@stylistic/eslint-plugin";
 import ts from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
+import react from "eslint-plugin-react";
 import tailwind from "eslint-plugin-tailwindcss";
 
 export default [ 
@@ -21,6 +22,7 @@ export default [
 		"plugins": {
 			"@stylistic": stylistic,
 			"@typescript-eslint": ts,
+			react,
 			ts,
 		},
 		"files": [
@@ -30,6 +32,7 @@ export default [
 		"rules": {
 			...ts.configs["eslint-recommended"]?.rules,
 			...ts.configs["recommended"]?.rules,
+			"react/jsx-no-literals": "error",
 			"@stylistic/array-bracket-newline": [
 					"error",
 					"consistent"

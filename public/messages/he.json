@@ -1,0 +1,12 @@
+{
+	"General": {
+		"present": "נוכחי",
+		"past": "עבר"
+	},
+  "UserRole": {
+    "SQUAD": "כיתת כוננות",
+		"OFFICER": "קצין תורן",
+		"COMMANDER": "מפקד תורן",
+		"EXEMPT": "פטור"
+  }
+}

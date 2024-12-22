@@ -1,5 +1,8 @@
 import "@/styles/globals.css";
 
+import { NextIntlClientProvider } from "next-intl";
+import { getLocale, getMessages } from "next-intl/server";
+
 import { GeistSans } from "geist/font/sans";
 import { type Metadata } from "next";
 
@@ -14,15 +17,23 @@ export const metadata: Metadata = {
 	} ],
 };
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+	const locale = await getLocale();
+ 
+	// Providing all messages to the client
+	// side is the easiest way to get started
+	const messages = await getMessages();
+ 
 	return (
 		<html
-			lang="he"
-			dir="rtl"
+			lang={locale}
+			dir={locale === "he" ? "rtl" : "ltr"}
 			className={`${GeistSans.variable}`}
 		>
 			<body>
-				<TRPCReactProvider>{children}</TRPCReactProvider>
+				<NextIntlClientProvider messages={messages}>
+					<TRPCReactProvider>{children}</TRPCReactProvider>
+				</NextIntlClientProvider>
 			</body>
 		</html>
 	);

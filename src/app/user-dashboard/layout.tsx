@@ -62,9 +62,7 @@ export default async function Layout({ children }: Readonly<{ children: React.Re
 	};
 	
 	return (
-		<div
-			className="flex w-full flex-col md:flex-row"
-		>
+		<div className="flex w-full flex-col md:flex-row">
 			<SideNav {...linkGroupProps} />
 			<main className="max-h-[90vh] flex-auto overflow-y-auto pb-3 md:max-h-screen md:pb-0">
 				{children}
