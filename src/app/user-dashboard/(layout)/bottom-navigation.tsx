@@ -39,7 +39,11 @@ export function BottomNavigation({ routeInfos, loggedUserId }: BottomNavigationP
 									? routeInfo.selectedIcon
 									: routeInfo.icon}
 							</div>
-							<span className={(isOnRoute ? "text-sm font-bold" : "text-sm")}>
+							<span className={clsx(
+								"capitalize",
+								isOnRoute ? "text-sm font-bold" : "text-sm"
+							)}
+							>
 								{routeInfo.name}
 							</span>
 						</Link>

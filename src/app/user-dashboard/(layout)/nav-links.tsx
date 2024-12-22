@@ -38,7 +38,7 @@ export function NavLinks({ routeInfos, loggedUserId }: NavLinksProps) {
 								? routeInfo.selectedIcon
 								: routeInfo.icon
 						}
-						<span className="grow">
+						<span className="grow capitalize">
 							{routeInfo.name}
 						</span>
 					</Link>

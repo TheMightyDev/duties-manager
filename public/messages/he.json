@@ -3,6 +3,12 @@
 		"present": "נוכחי",
 		"past": "עבר"
 	},
+	"NavigationTabs": {
+		"calendar": "לוח שנה",
+		"my-profile": "הפרופיל שלי",
+		"justice": "טבלת הצדק",
+		"actions": "פעולות"
+	},
   "UserRole": {
     "SQUAD": "כיתת כוננות",
 		"OFFICER": "קצין תורן",

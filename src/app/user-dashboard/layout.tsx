@@ -13,6 +13,7 @@ import { MagicWandSvgIcon } from "@/app/_components/svg-icons/navigation/magic-w
 import { ProfileCircleFilledSvgIcon } from "@/app/_components/svg-icons/navigation/profile-circle-filled-svg-icon";
 import { ProfileCircleSvgIcon } from "@/app/_components/svg-icons/navigation/profile-circle-svg-icon";
 import { type RouteInfo } from "@/app/user-dashboard/(layout)/types";
+import { getTranslations } from "next-intl/server";
 
 export default async function Layout({ children }: Readonly<{ children: React.ReactNode }>) {
 	const session = await auth();
@@ -21,6 +22,8 @@ export default async function Layout({ children }: Readonly<{ children: React.Re
 		redirect("/api/auth/signin");
 	}
 	
+	const t = await getTranslations("NavigationTabs");
+	
 	const loggedUserId = session.user.id;
 	const latestRole = session.user.roleRecords.at(-1)?.role;
 	const sharedIconClassName = "size-8 m-auto sm:size-9 ";
@@ -28,28 +31,28 @@ export default async function Layout({ children }: Readonly<{ children: React.Re
 	const routeInfos: RouteInfo[] = [
 		{
 			id: "calendar",
-			name: "לוח שנה",
+			name: t("calendar"),
 			href: "/user-dashboard/calendar",
 			icon: <CalendarSvgIcon className={sharedIconClassName + "stroke-black"}/>,
 			selectedIcon: <CalendarFilledSvgIcon className={sharedIconClassName + "stroke-blue-600"}/>,
 		},
 		{
 			id: "justice",
-			name: "טבלת הצדק",
+			name: t("justice"),
 			href: "/user-dashboard/justice",
 			icon: <JusticeSvgIcon className={sharedIconClassName + "fill-black p-0.25"} />,
 			selectedIcon: <JusticeFilledSvgIcon className={sharedIconClassName + "fill-blue-600 p-0.25"} />,
 		},
 		{
 			id: "my-profile",
-			name: "הפרופיל שלי",
+			name: t("my-profile"),
 			href: `/user-dashboard/profile/${loggedUserId}/${latestRole}`,
 			icon: <ProfileCircleSvgIcon className={sharedIconClassName + "stroke-black"}/>,
 			selectedIcon: <ProfileCircleFilledSvgIcon className={sharedIconClassName + "fill-blue-600"}/>,
 		},
 		{
 			id: "actions",
-			name: "פעולות",
+			name: t("actions"),
 			href: "/user-dashboard/actions",
 			icon: <MagicWandSvgIcon className={sharedIconClassName + "stroke-black"}/>,
 			selectedIcon: <MagicWandSvgIcon className={sharedIconClassName + "stroke-blue-600"}/>,

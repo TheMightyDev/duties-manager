@@ -3,6 +3,13 @@
 		"present": "present",
 		"past": "past"
 	},
+	"NavigationTabs": {
+		"calendar": "calendar",
+		"my-profile": "my profile",
+		"justice": "justice",
+		"actions": "actions",
+		"logout": "logout"
+	},
   "UserRole": {
     "SQUAD": "alert squad",
 		"OFFICER": "officer",
