@@ -1,7 +1,7 @@
 import { splitToLinesAndFilterEmpty } from "@/app/_utils/string-utils";
 import { type InitialParseResults } from "@/app/user-dashboard/actions/upload/types";
 import { type ParsedUserAndPeriods, type UsersUploadCounts } from "@/app/user-dashboard/actions/upload/users/types";
-import { UploadContents } from "@/app/user-dashboard/actions/upload/users/upload-contents";
+import { UploadUsersContents } from "@/app/user-dashboard/actions/upload/users/upload-users-contents";
 import { parseUserInfoStr } from "@/app/user-dashboard/actions/upload/users/utils";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
@@ -16,12 +16,19 @@ export default async function UploadUsersPage() {
 		
 		const usersInfoStrs = splitToLinesAndFilterEmpty(usersInfoStr);
 		
+		const usersPhoneNumbers = await api.user.getAllUsersPhoneNumberAndFullName();
+		
 		const errorMessages: string[] = [];
 			
 		const parsedInfo = usersInfoStrs.map((infoStr, i) => {
 			try {
 				const parsedInfo = parseUserInfoStr(infoStr);
-				
+			
+				const userPhoneNumber = usersPhoneNumbers[parsedInfo.user.phoneNumber.replaceAll("-", "")];
+				if (userPhoneNumber) {
+					throw new Error(`There's already a user with the same phone number - ${userPhoneNumber}`);
+				}
+
 				return parsedInfo;
 			} catch (err) {
 				errorMessages.push(`#Line ${String(i + 1)} - ${(err as Error).message}`);
@@ -63,6 +70,7 @@ export default async function UploadUsersPage() {
 				organizationId,
 				isAdmin: false,
 				registerDate: null,
+				adminNote: null,
 			});
 			
 			data.periods.forEach((period) => {
@@ -92,7 +100,7 @@ export default async function UploadUsersPage() {
 	
 	return (
 		<>
-			<UploadContents
+			<UploadUsersContents
 				validateUsersInfo={validateUsersInfo}
 				uploadCachedValidParsedInfo={uploadCachedValidParsedInfo}
 			/>

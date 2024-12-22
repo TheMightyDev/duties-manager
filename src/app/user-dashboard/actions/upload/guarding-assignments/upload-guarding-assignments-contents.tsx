@@ -85,6 +85,9 @@ export function UploadGuardingAssignmentsContents(props: UploadGuardingContentsP
 			<textarea
 				ref={infoTextAreaRef}
 				className="w-full"
+				style={{
+					tabSize: 40,
+				}}
 			/>
 			
 			{

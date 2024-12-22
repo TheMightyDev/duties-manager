@@ -354,6 +354,39 @@ export const userRouter = createTRPCRouter({
 			
 			return allUsersIds;
 		})),
+	
+	/** Returns an object whose keys are phone numbers of each
+	 * user in the organization, and values are the full name of the phone owner.
+	 * Note that the phone number doesn't include dashes (-)
+	 * E.g. a pair in this object can be:
+	 * ```
+	 * 0521234567 - John Black
+	 * ```
+	 */
+	getAllUsersPhoneNumberAndFullName: adminProcedure
+		.query((async ({ ctx }) => {
+			const allUsers = await ctx.db.user.findMany({
+				select: {
+					id: true,
+					phoneNumber: true,
+					firstName: true,
+					lastName: true,
+				},
+				where: {
+					organizationId: ctx.session.user.organizationId,
+				},
+			});
+			
+			/** An object where each key is a phone number of a user in the organization and the value is its string */
+			const allUsersIds: Record<string, string> = {};
+			
+			allUsers.forEach((user) => {
+				const fullName = user.firstName + " " + user.lastName;
+				allUsersIds[user.phoneNumber.replaceAll("-", "")] = fullName;
+			});
+			
+			return allUsersIds;
+		})),
 		
 	replacePeriods: adminProcedure
 		.input(z.object({

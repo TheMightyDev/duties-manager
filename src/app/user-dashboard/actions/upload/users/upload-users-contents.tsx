@@ -4,12 +4,12 @@ import { type InitialParseResults, UploadProgress } from "@/app/user-dashboard/a
 import { type UsersUploadCounts } from "@/app/user-dashboard/actions/upload/users/types";
 import { useRef, useState } from "react";
 
-interface UploadContentsProps {
+interface UploadUsersContentsProps {
 	validateUsersInfo: (usersInfoUnformatted: string) => Promise<InitialParseResults>;
 	uploadCachedValidParsedInfo: () => Promise<UsersUploadCounts>;
 }
 
-export function UploadContents(props: UploadContentsProps) {
+export function UploadUsersContents(props: UploadUsersContentsProps) {
 	const usersInfoTextAreaRef = useRef<HTMLTextAreaElement>(null);
 	const [ errorMessages, setErrorMessages ] = useState<string[]>([]);
 	const [ parsedInfoJson, setParsedInfoJson ] = useState<string>("");
@@ -55,9 +55,27 @@ export function UploadContents(props: UploadContentsProps) {
 	
 	return (
 		<>
+			<table className="w-full">
+				<thead>
+					<tr>
+						<td>דרגה</td>
+						<td>שם פרטי</td>
+						<td>שם משפחה</td>
+						<td>מין (תו אחד)</td>
+						<td>תפקיד</td>
+						<td>תאריך תחילת תפקיד</td>
+						<td>תאריך כניסה לקבע</td>
+						<td>תאריך שחרור</td>
+						<td>מספר טלפון</td>
+					</tr>
+				</thead>
+			</table>
 			<textarea
 				ref={usersInfoTextAreaRef}
 				className="w-full"
+				style={{
+					tabSize: 40,
+				}}
 			/>
 			<button onClick={validateInfo}>
 				אימות
