@@ -47,9 +47,7 @@ export function PeriodsContainer({
 			<PeriodsEditorDialog
 				isOpen={isEditorDialogOpen}
 				initialPeriods={periods}
-				closeDialog={() => {
-					setIsEditorDialogOpen(false);
-				}}
+				setIsOpen={setIsEditorDialogOpen}
 				replacePeriodsWith={replacePeriodsWith}
 			/>
 			{

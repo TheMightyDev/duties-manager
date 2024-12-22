@@ -1,5 +1,5 @@
-import { Dialog } from "@/app/_components/dialog/dialog";
 import { Button } from "@/app/_components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/app/_components/ui/dialog";
 import { type UserJusticeTableColId } from "@/app/_utils/justice/users-justice-table-cols";
 import { DefinitiveDateSelector } from "@/app/user-dashboard/justice/edit-settings-dialog/definitive-date-selector";
 import { SortSettingsSection } from "@/app/user-dashboard/justice/edit-settings-dialog/sort-params-section";
@@ -106,30 +106,34 @@ export function EditSettingsDialog({
 	};
 	
 	return (
-		<Dialog isOpen={isOpen}>
-			<UserRolesSelector rolesCheckboxRefs={rolesCheckboxRefs} />
-			<SortSettingsSection
-				sortByColIdSelectRef={sortByColIdSelectRef}
-				isAscendingInputRef={isAscendingInputRef}
-			/>
+		<Dialog>
+			<DialogTrigger>rr</DialogTrigger>
+			<DialogContent>
+				
+				<UserRolesSelector rolesCheckboxRefs={rolesCheckboxRefs} />
+				<SortSettingsSection
+					sortByColIdSelectRef={sortByColIdSelectRef}
+					isAscendingInputRef={isAscendingInputRef}
+				/>
 			
-			<DefinitiveDateSelector
-				kindSelectRef={definitiveDateKindSelectRef}
-				customDateInputRef={customDefinitiveDateInputRef}
-			/>
+				<DefinitiveDateSelector
+					kindSelectRef={definitiveDateKindSelectRef}
+					customDateInputRef={customDefinitiveDateInputRef}
+				/>
 			
-			<Button
-				onClick={closeDialog}
-				variant="ghost"
-			>
-				ביטול
-			</Button>
-			<Button
-				onClick={closeAndApplyChanges}
-				className="bg-blue-500 hover:bg-blue-600"
-			>
-				החלה
-			</Button>
+				<Button
+					onClick={closeDialog}
+					variant="ghost"
+				>
+					ביטול
+				</Button>
+				<Button
+					onClick={closeAndApplyChanges}
+					className="bg-blue-500 hover:bg-blue-600"
+				>
+					החלה
+				</Button>
+			</DialogContent>
 		</Dialog>
 	);
 };

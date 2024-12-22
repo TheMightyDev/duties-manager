@@ -1,9 +1,10 @@
 import { ProfileRoleSelector } from "@/app/user-dashboard/profile/[userId]/[role]/components/profile-role-selector";
 import { UserInfoEditorDialog } from "@/app/user-dashboard/profile/[userId]/[role]/components/user-info-editor-dialog/user-info-editor-dialog";
-import { type ProfilePageUrlParams } from "@/app/user-dashboard/profile/[userId]/[role]/types";
+import { type formSchema, type ProfilePageUrlParams } from "@/app/user-dashboard/profile/[userId]/[role]/types";
 import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { type User } from "@prisma/client";
+import { type z } from "zod";
 
 export async function ProfileHeader(props: ProfilePageUrlParams) {
 	const session = await auth();
@@ -34,6 +35,12 @@ export async function ProfileHeader(props: ProfilePageUrlParams) {
 	if (!viewedUserRoleRecords || !viewedUserBasicInfo) {
 		return <></>;
 	}
+	
+	async function updateUserInfo(updates: z.infer<typeof formSchema>) {
+		"use server";
+		
+		await api.user.updateUserInfo(updates);
+	}
 		
 	return (
 		<h2
@@ -47,7 +54,10 @@ export async function ProfileHeader(props: ProfilePageUrlParams) {
 				roleRecords={viewedUserRoleRecords}
 				selectedRole={props.role}
 			/>
-			<UserInfoEditorDialog user={viewedUserBasicInfo} />
+			<UserInfoEditorDialog
+				user={viewedUserBasicInfo}
+				updateUserInfo={updateUserInfo}
+			/>
 		</h2>
 	);
 }

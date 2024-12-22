@@ -1,7 +1,7 @@
 "use client";
 
-import { Dialog } from "@/app/_components/dialog/dialog";
 import { Button } from "@/app/_components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/app/_components/ui/dialog";
 import { PeriodEditRow } from "@/app/user-dashboard/profile/[userId]/[role]/components/periods-editor-dialog/period-edit-row";
 import { PeriodInsertRow } from "@/app/user-dashboard/profile/[userId]/[role]/components/periods-editor-dialog/period-insert-button";
 import { RetireDateEdit } from "@/app/user-dashboard/profile/[userId]/[role]/components/periods-editor-dialog/retire-date-edit";
@@ -13,7 +13,7 @@ import { Fragment, useState } from "react";
 interface PeriodsEditorDialogProps {
 	isOpen: boolean;
 	initialPeriods: Period[];
-	closeDialog: () => void;
+	setIsOpen: (nextIsOpen: boolean) => void;
 	replacePeriodsWith: (nextPeriods: Period[]) => Promise<void>;
 }
 
@@ -52,71 +52,73 @@ export function PeriodsEditorDialog(props: PeriodsEditorDialogProps) {
 	return (
 		<>
 			<Dialog
-				isOpen={props.isOpen}
-				className="relative overflow-y-scroll md:h-[80vh] md:w-[80vw] md:overflow-hidden"
+				open={props.isOpen}
+				onOpenChange={props.setIsOpen}
 			>
-				<h3 className="text-center text-3xl font-bold">
-					עריכת תפקידים
-				</h3>
-				<table className="w-full">
-					<thead>
-						<tr className="[&_th]:text-start">
-							<th>תאריך התחלה</th>
-							<th>תפקיד</th>
-							<th>סטטוס</th>
-							<th>פירוט</th>
-							<th></th>
-						</tr>
-					</thead>
-					<tbody>
-						<PeriodInsertRow
-							index={0}
-							insertMode="before"
-							setProposedPeriods={setProposedPeriods}
+				<DialogContent className="max-h-[90vh] max-w-fit overflow-y-scroll">
+					<DialogHeader >
+						<DialogTitle className="text-center">עריכת תפקידים</DialogTitle>
+					</DialogHeader>
+					<table className="w-full">
+						<thead>
+							<tr className="[&_th]:text-start">
+								<th>תאריך התחלה</th>
+								<th>תפקיד</th>
+								<th>סטטוס</th>
+								<th>פירוט</th>
+								<th></th>
+							</tr>
+						</thead>
+						<tbody>
+							<PeriodInsertRow
+								index={0}
+								insertMode="before"
+								setProposedPeriods={setProposedPeriods}
+							/>
+							{
+								proposedPeriods.map((period, index) => (
+									<Fragment key={period.id}>
+										<PeriodEditRow
+											period={period}
+											setProposedPeriods={setProposedPeriods}
+											canDeletePeriod={proposedPeriods.length > 1}
+										/>
+										<PeriodInsertRow
+											index={index}
+											insertMode="after"
+											setProposedPeriods={setProposedPeriods}
+										/>
+									</Fragment>
+								))
+							}
+						</tbody>
+					</table>
+					{
+						lastPeriod &&
+						<RetireDateEdit
+							lastPeriod={lastPeriod}
+							setPeriods={setProposedPeriods}
 						/>
-						{
-							proposedPeriods.map((period, index) => (
-								<Fragment key={period.id}>
-									<PeriodEditRow
-										period={period}
-										setProposedPeriods={setProposedPeriods}
-										canDeletePeriod={proposedPeriods.length > 1}
-									/>
-									<PeriodInsertRow
-										index={index}
-										insertMode="after"
-										setProposedPeriods={setProposedPeriods}
-									/>
-								</Fragment>
-							))
-						}
-					</tbody>
-				</table>
-				{
-					lastPeriod &&
-					<RetireDateEdit
-						lastPeriod={lastPeriod}
-						setPeriods={setProposedPeriods}
-					/>
-				}
-				<div className="absolute bottom-0 flex w-full justify-end p-2">
-					<Button
-						onClick={() => {
-							resetProposedPeriods();
-							props.closeDialog();
+					}
+					<div className="absolute bottom-0 flex w-full justify-end p-2">
+						<Button
+							onClick={() => {
+								resetProposedPeriods();
+								props.setIsOpen(false);
+							}}
+							variant="ghost"
+						>
+							ביטול
+						</Button>
+						<Button onClick={() => {
+							applyChanges();
+							props.setIsOpen(false);
 						}}
-						variant="ghost"
-					>
-						ביטול
-					</Button>
-					<Button onClick={() => {
-						applyChanges();
-						props.closeDialog();
-					}}
-					>
-						החלת השינויים
-					</Button>
-				</div>
+						>
+							החלת השינויים
+						</Button>
+					</div>
+				</DialogContent>
 			</Dialog>
 		</>
 	);

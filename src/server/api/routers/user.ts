@@ -430,4 +430,28 @@ export const userRouter = createTRPCRouter({
 				},
 			});
 		})),
+		
+	updateUserInfo: adminProcedure
+		.input(z.object({
+			id: z.string(),
+			firstName: z.string().min(2, {
+				message: "first name must be at least 2 characters",
+			}),
+			lastName: z.string().min(2, {
+				message: "first name must be at least 2 characters",
+			}),
+		}))
+		.query((async ({ ctx, input }) => {
+			const {
+				id,
+				...changes
+			} = input;
+			
+			return await ctx.db.user.update({
+				where: {
+					id,
+				},
+				data: changes,
+			});
+		})),
 });
