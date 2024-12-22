@@ -5,7 +5,8 @@ import { UserRank } from "@prisma/client";
 import { DirectionProvider } from "@radix-ui/react-direction";
 
 interface PrimitiveUserRankSelectProps {
-	selectedRank: UserRank;
+	currentSelectedRank?: UserRank;
+	defaultSelectedRank?: UserRank;
 	handleRankChange: (nextRank: UserRank) => void;
 }
 
@@ -18,13 +19,14 @@ export function PrimitiveUserRankSelect(props: PrimitiveUserRankSelectProps) {
 		<>
 			<DirectionProvider dir="rtl">
 				<Select
-					value={props.selectedRank}
+					value={props.currentSelectedRank}
+					defaultValue={props.defaultSelectedRank}
 					onValueChange={handleValueChange}
 				>
-					<SelectTrigger className="w-20">
+					<SelectTrigger>
 						<SelectValue />
 					</SelectTrigger>
-					<SelectContent>
+					<SelectContent className="max-h-64">
 						{
 							Object.values(UserRank).map((rank) => {
 								return (

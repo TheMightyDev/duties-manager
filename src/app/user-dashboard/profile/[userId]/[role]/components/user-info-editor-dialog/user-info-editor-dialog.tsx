@@ -1,5 +1,6 @@
 "use client";
 
+import { PrimitiveUserRankSelect } from "@/app/_components/selects/primitive-user-rank-select";
 import { PenLineSvgIcon } from "@/app/_components/svg-icons/ui/pen-line-svg-icon";
 import { Button } from "@/app/_components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/app/_components/ui/dialog";
@@ -7,7 +8,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/app/_components/ui/input";
 import { formSchema } from "@/app/user-dashboard/profile/[userId]/[role]/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { type User } from "@prisma/client";
+import { type User, type UserRank } from "@prisma/client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -15,8 +16,6 @@ import { type z } from "zod";
 
 interface UserInfoEditorDialogProps {
 	user: User;
-	isOpen: boolean;
-	setIsOpen: (nextIsOpen: boolean) => void;
 	updateUserInfo: (updatedInfo: z.infer<typeof formSchema>) => Promise<void>;
 }
 
@@ -93,6 +92,21 @@ export function UserInfoEditorDialog({
 												<Input {...field} />
 											</FormControl>
 											<FormMessage />
+										</FormItem>
+									)}
+								/>
+								<FormField
+									control={form.control}
+									name="rank"
+									render={({ field }) => (
+										<FormItem aria-description="דרגה">
+											<FormLabel>דרגה</FormLabel>
+											<FormControl>
+												<PrimitiveUserRankSelect
+													defaultSelectedRank={field.value as UserRank}
+													handleRankChange={field.onChange}
+												/>
+											</FormControl> <FormMessage />
 										</FormItem>
 									)}
 								/>

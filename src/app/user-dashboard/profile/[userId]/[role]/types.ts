@@ -1,4 +1,5 @@
 import { type UserRole } from "@prisma/client";
+import { UserRankSchema } from "prisma/generated/zod";
 import { z } from "zod";
 
 export interface ProfilePageUrlParamsUnparsed {
@@ -26,4 +27,5 @@ export const formSchema = z.object({
 	lastName: z.string().min(2, {
 		message: "first name must be at least 2 characters",
 	}),
+	rank: UserRankSchema,
 });

@@ -54,10 +54,13 @@ export async function ProfileHeader(props: ProfilePageUrlParams) {
 				roleRecords={viewedUserRoleRecords}
 				selectedRole={props.role}
 			/>
-			<UserInfoEditorDialog
-				user={viewedUserBasicInfo}
-				updateUserInfo={updateUserInfo}
-			/>
+			{
+				session?.user.isAdmin &&
+				<UserInfoEditorDialog
+					user={viewedUserBasicInfo}
+					updateUserInfo={updateUserInfo}
+				/>
+			}
 		</h2>
 	);
 }
