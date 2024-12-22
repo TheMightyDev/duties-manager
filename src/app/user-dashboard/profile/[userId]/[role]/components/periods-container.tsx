@@ -7,6 +7,7 @@ import { Button } from "@/app/_components/ui/button";
 import { PeriodRecord } from "@/app/user-dashboard/profile/[userId]/[role]/components/period-record";
 import { PeriodsEditorDialog } from "@/app/user-dashboard/profile/[userId]/[role]/components/periods-editor-dialog/periods-editor-dialog";
 import { PeriodStatus, UserRole, type Period } from "@prisma/client";
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 
 interface PeriodsContainerProps {
@@ -21,6 +22,8 @@ export function PeriodsContainer({
 	replacePeriodsWith,
 }: PeriodsContainerProps) {
 	const [ isEditorDialogOpen, setIsEditorDialogOpen ] = useState(false);
+	
+	const t = useTranslations();
 	
 	if (periods.length === 0) {
 		return <>No periods found for user</>;
@@ -56,7 +59,7 @@ export function PeriodsContainer({
 					setIsEditorDialogOpen(true);
 				}}
 				>
-					עריכת היסטוריית תפקידים
+					{t("Profile.edit-roles")}
 					<PenLineSvgIcon className="stroke-white"/>
 				</Button>
 			}

@@ -8,6 +8,7 @@ import { cn } from "@/app/_utils/cn";
 import { formatDate } from "@/app/_utils/date-format-utils";
 import { PeriodStatus, UserRole, type Period } from "@prisma/client";
 import clsx from "clsx";
+import { useTranslations } from "next-intl";
 
 interface PeriodRecordProps {
 	period: Period;
@@ -41,6 +42,8 @@ export function PeriodRecord({
 	isCurrentPeriod,
 	isLastPeriod = false,
 }: PeriodRecordProps) {
+	const t = useTranslations();
+	
 	const obj = {
 		elem: isLastPeriod ?
 			RetireSvgIcon :
@@ -65,10 +68,14 @@ export function PeriodRecord({
 				>
 					<obj.elem className={clsx("fill-current ", isCurrentPeriod ? "size-7" : "size-6")} />
 				</span>
-				<h3 className="mb-1 text-lg font-semibold text-gray-900 dark:text-white">
-					{period.status === PeriodStatus.FULFILLS_ROLE ? period.role : period.description}{" "}
+				<h3 className="mb-1 text-lg font-semibold capitalize text-gray-900 dark:text-white">
+					{
+						period.status === PeriodStatus.FULFILLS_ROLE
+							? t(`UserRole.${period.role}`)
+							: period.description
+					}
 					{ isCurrentPeriod && <span>
-						(נוכחי)
+						{` (${t("General.present")})`}
 					</span>}
 				</h3>
 				<time className={clsx(

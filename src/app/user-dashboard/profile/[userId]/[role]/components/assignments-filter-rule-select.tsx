@@ -1,6 +1,10 @@
+"use client";
+
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/_components/ui/select";
+import { getTextDirection } from "@/app/_utils/get-text-direction";
 import { AssignmentsFilterRule } from "@/app/user-dashboard/profile/[userId]/[role]/types";
 import { DirectionProvider } from "@radix-ui/react-direction";
+import { useLocale, useTranslations } from "next-intl";
 
 interface AssignmentsFilterRuleSelectProps {
 	selectedFilterRule: AssignmentsFilterRule;
@@ -8,18 +12,22 @@ interface AssignmentsFilterRuleSelectProps {
 }
 
 export function AssignmentsFilterRuleSelect(props: AssignmentsFilterRuleSelectProps) {
+	const t = useTranslations();
+	const locale = useLocale();
+	const textDir = getTextDirection(locale);
+	
 	function handleValueChange(nextFilterRule: string) {
 		props.handleFilterRuleChange(nextFilterRule as AssignmentsFilterRule);
 	}
 		
 	return (
 		<>
-			<DirectionProvider dir="rtl">
+			<DirectionProvider dir={textDir}>
 				<Select
 					value={props.selectedFilterRule}
 					onValueChange={handleValueChange}
 				>
-					<SelectTrigger className="w-52 md:absolute">
+					<SelectTrigger className="m-auto w-52 capitalize lg:absolute">
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
@@ -29,8 +37,9 @@ export function AssignmentsFilterRuleSelect(props: AssignmentsFilterRuleSelectPr
 									<SelectItem
 										value={filterRule}
 										key={filterRule}
+										className="capitalize"
 									>
-										{filterRule}
+										{t(`AssignmentsFilterRule.${filterRule}`)}
 									</SelectItem>
 								);
 							})

@@ -1,4 +1,5 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/app/_components/ui/tabs";
+import { getTextDirection } from "@/app/_utils/get-text-direction";
 import { DutyAssignments } from "@/app/user-dashboard/profile/[userId]/[role]/components/duty-assignments";
 import { PeriodsContainer } from "@/app/user-dashboard/profile/[userId]/[role]/components/periods-container";
 import { type ProfilePageUrlParams } from "@/app/user-dashboard/profile/[userId]/[role]/types";
@@ -6,6 +7,7 @@ import { auth } from "@/server/auth";
 import { api } from "@/trpc/server";
 import { type Period } from "@prisma/client";
 import clsx from "clsx";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 
 export async function ProfileTabs({ userId, role }: ProfilePageUrlParams) {
@@ -14,6 +16,10 @@ export async function ProfileTabs({ userId, role }: ProfilePageUrlParams) {
 	if (!session) {
 		return <></>;
 	}
+	
+	const locale = await getLocale();
+	const textDir = getTextDirection(locale);
+	const t = await getTranslations();
 	
 	const isLoggedUserOrAdmin = session.user.id === userId || session.user.isAdmin;
 	
@@ -59,25 +65,32 @@ export async function ProfileTabs({ userId, role }: ProfilePageUrlParams) {
 							periods ? "grid-cols-2" : "grid-cols-1"
 						)
 					}
-					dir="rtl"
+					dir={textDir}
 				>
 					{
 						assignments &&
 						<TabsTrigger
 							value="assignments"
-							className="grow"
-						>שיבוצים</TabsTrigger>
+							className="capitalize"
+						>
+							{t("Profile.assignments")}
+						</TabsTrigger>
 					}
 					{
 						periods &&
-						<TabsTrigger value="periods">תפקידים</TabsTrigger>
+						<TabsTrigger
+							value="periods"
+							className="capitalize"
+						>
+							{t("Profile.roles")}
+						</TabsTrigger>
 					}
 				</TabsList>
 				{
 					assignments &&
 					<TabsContent
 						value="assignments"
-						dir="rtl"
+						dir={textDir}
 					>
 						<DutyAssignments assignments={assignments} />
 					</TabsContent>
@@ -86,7 +99,7 @@ export async function ProfileTabs({ userId, role }: ProfilePageUrlParams) {
 					periods &&
 					<TabsContent
 						value="periods"
-						dir="rtl"
+						dir={textDir}
 					>
 						<Suspense fallback="w">
 							<PeriodsContainer

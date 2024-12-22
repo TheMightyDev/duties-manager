@@ -1,7 +1,8 @@
 {
 	"General": {
 		"present": "present",
-		"past": "past"
+		"past": "past",
+		"pts": "pts"
 	},
 	"NavigationTabs": {
 		"calendar": "calendar",
@@ -15,5 +16,40 @@
 		"OFFICER": "officer",
 		"COMMANDER": "commander",
 		"EXEMPT": "exempt"
-  }
+  },
+	"Profile": {
+		"assignments": "assignments",
+		"roles": "roles",
+		"no-assignments": "no assignments to show",
+		"past-duties": "past duties",
+		"future-duties": "future duties",
+		"edit-roles": "edit roles"
+	},
+	"AssignmentsFilterRule": {
+		"ALL": "all duties",
+		"GUARDING_ONLY": "guarding only",
+		"CAMP_OR_SETTLEMENT_DEFENSE": "camp or settlement defense only",
+		"MISC_DUTIES": "misc duties"
+	},
+	"JusticeMetric": {
+		"weighted-score": "weighted score",
+		"position-in-role": "position in role",
+		"months-in-role": "months in role",
+		"guarding-in-weekday": "guarding in weekday",
+		"guarding-in-weekends": "guarding in weekends",
+		"camp-and-settlement-defense-count": "c&s defense",
+		"holiday-overlaps": "holiday overlaps",
+		"more-duties": "more duties",
+		"total-bonuses": "total bonuses"
+	},
+	"JusticeMetricExplanation": {
+		"weighted-score": "The total amount of score earned in the role divided by the months in the role",
+		"position-in-role": {
+			"present-role": "The position among other users in the same role as of today",
+			"past-role": "The position among other users in the same role as the last day the role was done by the user"
+		},
+		"months-in-role": "The number of months in the role as of today (excluding absences and temporary exemptions that exempt from guarding). A month is considered 30 days",
+		"camp-and-settlement-defense-count": "Camp defense and settlement defense count",
+		"holiday-overlaps": "The number of duties that overlapped with some holiday (doesn't contribute to the total amount of duties)"
+	}
 }

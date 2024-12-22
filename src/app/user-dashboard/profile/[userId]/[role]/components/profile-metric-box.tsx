@@ -13,7 +13,8 @@ export function ProfileMetricBox(props: ProfileMetricBoxProps) {
 	return (
 		<div className="flex flex-1 flex-col rounded-xl bg-slate-200 p-3 text-center hover:bg-slate-300 sm:p-4">
 			<span className="text-4xl">{props.value}{props.valueSuffix}</span>
-			<span>{props.title}
+			<span className="capitalize">
+				{props.title}
 				{
 					props.infoMessage &&
 					<Popover>

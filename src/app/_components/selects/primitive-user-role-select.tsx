@@ -2,8 +2,10 @@
 
 import { UserRoleMark } from "@/app/_components/svg-icons/user-roles/user-role-mark";
 import { Select, SelectContent, SelectItem, SelectTrigger } from "@/app/_components/ui/select";
+import { getTextDirection } from "@/app/_utils/get-text-direction";
 import { type UserRole } from "@prisma/client";
 import { DirectionProvider } from "@radix-ui/react-direction";
+import { useLocale, useTranslations } from "next-intl";
 
 interface PrimitiveUserRoleSelectProps {
 	availableRoles: UserRole[];
@@ -16,9 +18,12 @@ export function PrimitiveUserRoleSelect(props: PrimitiveUserRoleSelectProps) {
 		props.handleRoleChange(nextRole as UserRole);
 	}
 	
+	const locale = useLocale();
+	const t = useTranslations();
+		
 	return (
 		<>
-			<DirectionProvider dir="rtl">
+			<DirectionProvider dir={getTextDirection(locale)}>
 				<Select
 					value={props.selectedRole}
 					onValueChange={handleValueChange}
@@ -39,8 +44,8 @@ export function PrimitiveUserRoleSelect(props: PrimitiveUserRoleSelectProps) {
 												role={role}
 												hasTooltip={false}
 											/>
-											<span>
-												{role}
+											<span className="capitalize">
+												{t(`UserRole.${role}`)}
 											</span>
 										</div>
 									</SelectItem>

@@ -2,6 +2,7 @@ import { PeriodStatusInfoBox } from "@/app/user-dashboard/profile/[userId]/[role
 import { ProfileMetricBox } from "@/app/user-dashboard/profile/[userId]/[role]/components/profile-metric-box";
 import { type UserJustice } from "@/types/justice/user-justice";
 import { type RoleRecord } from "@/types/user/role-record";
+import { useTranslations } from "next-intl";
 
 interface ProfileInfoBoxesProps {
 	userJustice: UserJustice;
@@ -11,6 +12,8 @@ interface ProfileInfoBoxesProps {
 }
 
 export function ProfileInfoBoxes(props: ProfileInfoBoxesProps) {
+	const t = useTranslations();
+	
 	const {
 		role,
 		weightedScore,
@@ -31,27 +34,26 @@ export function ProfileInfoBoxes(props: ProfileInfoBoxesProps) {
 			<div className="flex w-full flex-col gap-2 md:min-w-96">
 				<div className="flex flex-row gap-2 ">
 					<ProfileMetricBox
-						title="ניקוד משוקלל"
+						title={t("JusticeMetric.weighted-score")}
 						value={weightedScore.toFixed(2)}
-						infoMessage="סכום הנקודות שנצברו חלקי מס' החודשים בתפקיד בפועל"
+						infoMessage={t("JusticeMetricExplanation.weighted-score")}
 					/>
 					<ProfileMetricBox
-						title="דירוג בתפקיד"
+						title={t("JusticeMetric.position-in-role")}
 						value={props.userPosition}
-						infoMessage={`המיקום בטבלת הצדק מבין כל האנשים בתפקיד
-							${isEarlyRole ? "נכון לתאריך סיום ביצוע התפקיד" : "נכון להיום"}`}
+						infoMessage={t(`JusticeMetricExplanation.position-in-role.${isEarlyRole ? "past-role" : "present-role"}`)}
 						valueSuffix={
 							<span className="text-xl">
-								/{props.totalRelevantUsersCount}
+								{`/${props.totalRelevantUsersCount}`}
 							</span>
 						}
 					/>
 				</div>
 				<div className="flex flex-row gap-2">
 					<ProfileMetricBox
-						title="חודשים בתפקיד"
+						title={t("JusticeMetric.months-in-role")}
 						value={monthsInRole.toFixed(2)}
-						infoMessage="סך החודשים נכון להיום שמולא התפקיד (לא כולל היעדרויות ופטורים זמניים)"
+						infoMessage={t("JusticeMetricExplanation.months-in-role")}
 					/>
 					<PeriodStatusInfoBox
 						isEarlyRole={isEarlyRole}
@@ -60,34 +62,34 @@ export function ProfileInfoBoxes(props: ProfileInfoBoxesProps) {
 				</div>
 				<div className="flex flex-row gap-2">
 					<ProfileMetricBox
-						title="שמירות ביום חול"
+						title={t("JusticeMetric.guarding-in-weekday")}
 						value={weekdaysGuardingCount}
 					/>
 					<ProfileMetricBox
-						title='שמירות בסופ"ש'
+						title={t("JusticeMetric.guarding-in-weekends")}
 						value={weekendsGuardingCount}
 					/>
 					<ProfileMetricBox
-						title='הגנמ"שים'
+						title={t("JusticeMetric.camp-and-settlement-defense-count")}
 						value={campAndSettlementDefenseCount}
-						infoMessage='מספר ההגנ"מים (הגנות מחנה) וההגנ"שים (הגנות יישובים)'
+						infoMessage={t("JusticeMetricExplanation.camp-and-settlement-defense-count")}
 					/>
 				</div>
 				<div className="flex flex-row gap-2">
 					<ProfileMetricBox
-						title="חפיפות עם חגים"
+						title={t("JusticeMetric.holiday-overlaps")}
 						value={holidayOverlapsCount}
-						infoMessage="מספר התורנויות שחפפו לחג כלשהו (לא תורם לסך התורנויות)"
+						infoMessage={t("JusticeMetricExplanation.holiday-overlaps")}
 					/>
 					<ProfileMetricBox
-						title="תורנויות נוספות"
+						title={t("JusticeMetric.more-duties")}
 						value={otherDutiesScoreSum}
-						valueSuffix={<span className="text-xl">נק'</span>}
+						valueSuffix={<span className="text-xl">{t("General.pts")}</span>}
 					/>
 					<ProfileMetricBox
-						title="סך הבונוסים"
+						title={t("JusticeMetric.total-bonuses")}
 						value={extraScoresSum}
-						valueSuffix={<span className="text-xl">נק'</span>}
+						valueSuffix={<span className="text-xl">{t("General.pts")}</span>}
 					/>
 				</div>
 			</div>

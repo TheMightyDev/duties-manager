@@ -5,6 +5,7 @@ import { DutyAssignmentsGroup } from "@/app/user-dashboard/profile/[userId]/[rol
 import { AssignmentsFilterRule } from "@/app/user-dashboard/profile/[userId]/[role]/types";
 import { type UserWithAssignments } from "@/server/api/types/user-with-assignments";
 import { DutyKind } from "@prisma/client";
+import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 
 interface DutyAssignmentsProps {
@@ -13,6 +14,8 @@ interface DutyAssignmentsProps {
 
 export function DutyAssignments({ assignments }: DutyAssignmentsProps) {
 	const [ selectedFilterRule, setSelectedFilterRule ] = useState(AssignmentsFilterRule.ALL);
+	
+	const t = useTranslations();
 
 	const currentDate = new Date();
 	
@@ -68,21 +71,21 @@ export function DutyAssignments({ assignments }: DutyAssignmentsProps) {
 					pastAssignments.length === 0
 				) &&
 				<p className="text-center font-bold">
-					אין שיבוצים להצגה
+					{t("Profile.no-assignments")}
 				</p>
 			}
 			
 			{
 				futureAssignments.length > 0 &&
 				<DutyAssignmentsGroup
-					title="תורנויות עתידיות"
+					title={t("Profile.future-duties")}
 					assignments={futureAssignments}
 				/>
 			}
 			{
 				pastAssignments.length > 0 &&
 				<DutyAssignmentsGroup
-					title="תורנויות עבר"
+					title={t("Profile.past-duties")}
 					assignments={pastAssignments}
 				/>
 			}

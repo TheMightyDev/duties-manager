@@ -9,8 +9,8 @@ interface DutyAssignmentsGroupProps {
 export function DutyAssignmentsGroup(props: DutyAssignmentsGroupProps) {
 	return (
 		<>
-			<h4 className="text-center text-lg font-bold">
-				{props.title} ({ props.assignments.length })
+			<h4 className="text-center text-lg font-bold capitalize">
+				{`${props.title} (${ props.assignments.length })`}
 			</h4>
 			{
 				props.assignments.map((assignment) => (

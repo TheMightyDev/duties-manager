@@ -1,20 +1,24 @@
 import { ProfileMetricBoxSkeleton } from "@/app/user-dashboard/profile/[userId]/[role]/skeletons/profile-metric-box-skeleton";
+import { useTranslations } from "next-intl";
 
 export function ProfileInfoBoxesSkeleton() {
+	// `next-intl` knows how to turn this "hook" call into an eligible function on server
+	const t = useTranslations();
+	
 	return (
 		<div>
 			<div className="flex w-full animate-pulse flex-col gap-2 md:min-w-96">
 				<div className="flex flex-row gap-2">
 					<ProfileMetricBoxSkeleton
-						title="ניקוד משוקלל"
+						title={t("JusticeMetric.weighted-score")}
 						value="0.00"
 						hasInfoMessage={true}
 					/>
 					<ProfileMetricBoxSkeleton
-						title="דירוג בתפקיד"
+						title={t("JusticeMetric.position-in-role")}
 						value={1}
 						hasInfoMessage={true}
-						valueSuffix={<span className="text-xl">/10</span>}
+						valueSuffix={<span className="text-xl">{"/10"}</span>}
 					/>
 				</div>
 				<div className="flex flex-row gap-2">

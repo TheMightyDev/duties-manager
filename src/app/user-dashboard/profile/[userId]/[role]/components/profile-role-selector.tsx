@@ -2,10 +2,11 @@
 
 import { UserRoleMark } from "@/app/_components/svg-icons/user-roles/user-role-mark";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/_components/ui/select";
+import { getTextDirection } from "@/app/_utils/get-text-direction";
 import { type RoleRecord } from "@/types/user/role-record";
 import { type UserRole } from "@prisma/client";
 import { DirectionProvider } from "@radix-ui/react-direction";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 
 interface ProfileRoleSelectorProps {
@@ -14,10 +15,10 @@ interface ProfileRoleSelectorProps {
 }
 
 export function ProfileRoleSelector(props: ProfileRoleSelectorProps) {
-	const t = useTranslations();
-	
 	const router = useRouter();
 	const pathname = usePathname();
+	const locale = useLocale();
+	const t = useTranslations();
 	
 	function switchRoleInPathname(role: UserRole): string {
 		const pathnameArray = pathname.split("/");
@@ -34,7 +35,7 @@ export function ProfileRoleSelector(props: ProfileRoleSelectorProps) {
 	
 	return (
 		<>
-			<DirectionProvider dir="rtl">
+			<DirectionProvider dir={getTextDirection(locale)}>
 				<Select
 					value={props.selectedRole}
 					onValueChange={handleValueChange}
@@ -55,10 +56,11 @@ export function ProfileRoleSelector(props: ProfileRoleSelectorProps) {
 												role={record.role}
 												hasTooltip={false}
 											/>
-											<span>
+											<span className="capitalize">
 												{t(`UserRole.${record.role}`)}{" - "}{record.latestFulfilledDate
 													? t("General.past")
-													: t("General.present")}</span>
+													: t("General.present")}
+											</span>
 										</div>
 									</SelectItem>
 								);
