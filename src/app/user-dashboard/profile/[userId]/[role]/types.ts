@@ -1,6 +1,4 @@
 import { type UserRole } from "@prisma/client";
-import { UserRankSchema } from "prisma/generated/zod";
-import { z } from "zod";
 
 export interface ProfilePageUrlParamsUnparsed {
 	userId: string;
@@ -19,13 +17,3 @@ export enum AssignmentsFilterRule {
 	MISC_DUTIES = "MISC_DUTIES",
 }
 
-export const formSchema = z.object({
-	id: z.string(),
-	firstName: z.string().min(2, {
-		message: "first name must be at least 2 characters",
-	}),
-	lastName: z.string().min(2, {
-		message: "first name must be at least 2 characters",
-	}),
-	rank: UserRankSchema,
-});

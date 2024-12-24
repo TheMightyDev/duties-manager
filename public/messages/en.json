@@ -51,5 +51,20 @@
 		"months-in-role": "The number of months in the role as of today (excluding absences and temporary exemptions that exempt from guarding). A month is considered 30 days",
 		"camp-and-settlement-defense-count": "Camp defense and settlement defense count",
 		"holiday-overlaps": "The number of duties that overlapped with some holiday (doesn't contribute to the total amount of duties)"
+	},
+	"UserRank": {
+  	"PRIVATE": "private",
+  	"CORPORAL": "corporal",
+  	"SERGEANT": "sergeant",
+  	"STAFF_SERGEANT": "staff sergeant",
+  	"SERGEANT_FIRST_CLASS": "sergeant first class",
+  	"MASTER_SERGEANT": "master sergeant",
+  	"PROFESSIONAL_ACADEMIC_OFFICER": "professional academic officer",
+  	"SENIOR_ACADEMIC_OFFICER": "senior academic officer",
+  	"SPECIAL_ACADEMIC_OFFICER": "special academic officer",
+  	"SECOND_LIEUTENANT": "second lieutenant",
+  	"LIEUTENANT": "lieutenant",
+  	"CAPTAIN": "captain",
+  	"MAJOR": "major"
 	}
 }

@@ -3,6 +3,7 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/_components/ui/select";
 import { UserRank } from "@prisma/client";
 import { DirectionProvider } from "@radix-ui/react-direction";
+import { useTranslations } from "next-intl";
 
 interface PrimitiveUserRankSelectProps {
 	currentSelectedRank?: UserRank;
@@ -11,6 +12,8 @@ interface PrimitiveUserRankSelectProps {
 }
 
 export function PrimitiveUserRankSelect(props: PrimitiveUserRankSelectProps) {
+	const t = useTranslations();
+	
 	function handleValueChange(nextRank: string) {
 		props.handleRankChange(nextRank as UserRank);
 	}
@@ -34,7 +37,7 @@ export function PrimitiveUserRankSelect(props: PrimitiveUserRankSelectProps) {
 										value={rank}
 										key={rank}
 									>
-										{rank}
+										{t(`UserRank.${rank}`)}
 									</SelectItem>
 								);
 							})

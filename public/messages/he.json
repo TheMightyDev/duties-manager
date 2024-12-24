@@ -48,8 +48,23 @@
 			"present-role": "המיקום בטבלת הצדק מבין כל האנשים בתפקיד נכון להיום",
 			"past-role": "המיקום בטבלת הצדק מבין כל האנשים בתפקיד נכון לתאריך סיום ביצוע התפקיד"
 		},
-		"months-in-role": "סך החודשים נכון להיום שמולא התפקיד (לא כולל היעדרויות ופטורים זמניים שמזכים מפטור שמירות). חודש נחשב כ30 יום.",
+		"months-in-role": "סך החודשים נכון להיום שמולא התפקיד (לא כולל היעדרויות ופטורים זמניים שמזכים מפטור שמירות). חודש נחשב 30 יום.",
 		"camp-and-settlement-defense-count": "ממספר ההגנמ\"ים (הגנות מחנה) וההגנמ\"שים (הגנות ישובים(",
 		"holiday-overlaps": "מספר התורנויות שחפפו לחג כלשהו (לא תורם לסך התורנויות)"
+	},
+  "UserRank": {
+  	"PRIVATE": "טוראי",
+  	"CORPORAL": "רב\"ט",
+  	"SERGEANT": "סמל",
+  	"STAFF_SERGEANT": "סמ\"ר",
+  	"SERGEANT_FIRST_CLASS": "רס\"ל",
+  	"MASTER_SERGEANT": "רס\"ר",
+  	"PROFESSIONAL_ACADEMIC_OFFICER": "קמ\"א",
+  	"SENIOR_ACADEMIC_OFFICER": "קא\"ב",
+  	"SPECIAL_ACADEMIC_OFFICER": "קא\"מ",
+  	"SECOND_LIEUTENANT": "סג\"ם",
+  	"LIEUTENANT": "סגן",
+  	"CAPTAIN": "סרן",
+  	"MAJOR": "רס\"ן"
 	}
 }

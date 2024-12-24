@@ -7,6 +7,7 @@ import {
 	protectedProcedure,
 	publicProcedure
 } from "@/server/api/trpc";
+import { userBasicInfoFormSchema } from "@/server/api/types/user-basic-info-form-schema";
 import { type UserWithPeriodsAndAssignments } from "@/server/api/types/user-with-periods-and-assignments";
 import { calcUserJustice } from "@/server/api/utils/calc-user-justice";
 import { type RoleRecord, roleRecordSchema } from "@/types/user/role-record";
@@ -432,15 +433,7 @@ export const userRouter = createTRPCRouter({
 		})),
 		
 	updateUserInfo: adminProcedure
-		.input(z.object({
-			id: z.string(),
-			firstName: z.string().min(2, {
-				message: "first name must be at least 2 characters",
-			}),
-			lastName: z.string().min(2, {
-				message: "first name must be at least 2 characters",
-			}),
-		}))
+		.input(userBasicInfoFormSchema)
 		.query((async ({ ctx, input }) => {
 			const {
 				id,
