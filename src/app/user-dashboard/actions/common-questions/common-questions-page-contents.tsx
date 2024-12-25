@@ -5,29 +5,22 @@ import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Fragment, useEffect, useRef } from "react";
 
+const questionGroups = {
+	scoringSystem: [
+		"scoringSystemInDepth",
+		"scoringPerDuty",
+	],
+	months: [
+		"monthsInRoleCalculation",
+	],
+} as const;
+
 export function CommonQuestionsPageContents() {
 	const searchParams = useSearchParams();
 	const containerRef = useRef<HTMLDivElement>(null);
 	const t = useTranslations();
 	
 	const defaultOpenQuestionId = searchParams.get("qId");
-	const groups = {
-		scoringSystem: [
-			"scoringSystemInDepth",
-			"scoringPerDuty",
-		],
-		months: [
-			"monthsInRoleCalculation",
-			"monthsInRoleCalculation1",
-			"monthsInRoleCalculation2",
-			"monthsInRoleCalculation3",
-			"monthsInRoleCalculation4",
-			"monthsInRoleCalculation5",
-			"monthsInRoleCalculation6",
-			"monthsInRoleCalculation7",
-			"monthsInRoleCalculation8",
-		],
-	} as const;
 	
 	useEffect(() => {
 		if (!containerRef.current) return;
@@ -38,10 +31,11 @@ export function CommonQuestionsPageContents() {
 		
 		openQuestionElement.scrollIntoView();
 		
-		openQuestionElement.classList.add("bg-green-500");
+		const className = "bg-blue-200";
+		openQuestionElement.classList.add(className);
 		
 		setTimeout(() => {
-			openQuestionElement.classList.remove("bg-green-500");
+			openQuestionElement.classList.remove(className);
 		}, 5000);
 	}, [ defaultOpenQuestionId ]);
 	
@@ -54,11 +48,11 @@ export function CommonQuestionsPageContents() {
 				{t("CommonQuestions.title")}
 			</h1>
 			{
-				Object.entries(groups).map(
+				Object.entries(questionGroups).map(
 					([ groupId, questionIds ]) => (
 						<Fragment key={groupId}>
 							<h3 className="font-bold">
-								{t(`CommonQuestions.groupTitles.${groupId as keyof typeof groups}`)}
+								{t(`CommonQuestions.groupTitles.${groupId as keyof typeof questionGroups}`)}
 							</h3>
 							<Accordion
 								type="multiple"
