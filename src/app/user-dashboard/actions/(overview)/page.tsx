@@ -7,6 +7,12 @@ export default async function ActionsPage() {
 	return (
 		<div>
 			<p>בקרוב תוכלו להגיש כאן הסתייגויות!</p>
+			<p>
+				בקרוב יהיה כאן קישור לדף עם שאלות ותשובות עם אקורדיונים
+			</p>
+			<p>
+				בקרוב יהיה כאן קרדיט לספריות וAPIs שנעשה בהן שימוש
+			</p>
 			{
 				session?.user.isAdmin &&
 				<AdminActions />
