@@ -17,7 +17,8 @@ export const userBasicInfoFormSchema = z.object({
 	), {
 		message: "The phone number must be of form 05X-1234567",
 	}),
+	isAdmin: z.boolean(),
 	gender: z.string(),
-	permanentEntryDate: z.date().nullable(),
+	permanentEntryDate: z.coerce.date().nullable(),
 	adminNote: z.string().nullable(),
 });

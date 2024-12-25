@@ -66,5 +66,14 @@
   	"LIEUTENANT": "סגן",
   	"CAPTAIN": "סרן",
   	"MAJOR": "רס\"ן"
+	},
+	"Actions": {
+		"Admin": {
+			"title": "פעולות ניהול",
+			"upload-users": "העלאת משתמשים",
+			"upload-guarding-assignments": "העלאת שמירות ושיבוצים לשמירות",
+			"sanity-check": "בדיקת שפיות",
+			"create-users": "הוספת משתמשים"
+		}
 	}
 }

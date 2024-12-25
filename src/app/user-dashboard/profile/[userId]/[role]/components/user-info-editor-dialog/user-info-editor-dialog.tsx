@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/app/_components/ui/form";
 import { Input } from "@/app/_components/ui/input";
 import { formatDate } from "@/app/_utils/date-format-utils";
-import { userBasicInfoFormSchema } from "@/server/api/types/user-basic-info-form-schema";
+import { userBasicInfoFormSchema } from "@/types/forms/user-basic-info-form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type User, type UserRank } from "@prisma/client";
 import { useRouter } from "next/navigation";

@@ -66,5 +66,14 @@
   	"LIEUTENANT": "lieutenant",
   	"CAPTAIN": "captain",
   	"MAJOR": "major"
+	},
+	"Actions": {
+		"Admin": {
+			"title": "admin actions",
+			"upload-users": "upload users",
+			"upload-guarding-assignments": "upload guarding duties and their assignments",
+			"sanity-check": "sanity check",
+			"create-users": "create users"
+		}
 	}
 }

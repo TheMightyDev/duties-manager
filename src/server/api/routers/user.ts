@@ -7,9 +7,9 @@ import {
 	protectedProcedure,
 	publicProcedure
 } from "@/server/api/trpc";
-import { userBasicInfoFormSchema } from "@/server/api/types/user-basic-info-form-schema";
 import { type UserWithPeriodsAndAssignments } from "@/server/api/types/user-with-periods-and-assignments";
 import { calcUserJustice } from "@/server/api/utils/calc-user-justice";
+import { userBasicInfoFormSchema } from "@/types/forms/user-basic-info-form-schema";
 import { type RoleRecord, roleRecordSchema } from "@/types/user/role-record";
 import { PeriodStatus, type PrismaClient, type User, UserRole } from "@prisma/client";
 import { endOfDay } from "date-fns";
