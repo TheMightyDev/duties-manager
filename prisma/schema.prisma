@@ -59,6 +59,7 @@ model User {
   preferences        Preference[]
   sessions           Session[]
   organization       Organization @relation(fields: [organizationId], references: [id])
+  Invitation         Invitation?
 }
 
 model VerificationToken {
@@ -67,6 +68,17 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Invitation {
+  /// The invite code sent to each user, which is used
+  /// to create an account
+  inviteCode String    @id @default(cuid())
+  userId     String    @unique
+  createDate DateTime
+  expireDate DateTime
+  redeemDate DateTime?
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Organization {

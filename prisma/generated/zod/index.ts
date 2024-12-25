@@ -19,6 +19,8 @@ export const UserScalarFieldEnumSchema = z.enum(['id','firstName','lastName','is
 
 export const VerificationTokenScalarFieldEnumSchema = z.enum(['identifier','token','expires']);
 
+export const InvitationScalarFieldEnumSchema = z.enum(['inviteCode','userId','createDate','expireDate','redeemDate']);
+
 export const OrganizationScalarFieldEnumSchema = z.enum(['id','name','description']);
 
 export const DutyScalarFieldEnumSchema = z.enum(['id','kind','organizationId','startDate','endDate','requiredRoles','quantity','score','isPrivate','description']);
@@ -129,6 +131,24 @@ export const VerificationTokenSchema = z.object({
 })
 
 export type VerificationToken = z.infer<typeof VerificationTokenSchema>
+
+/////////////////////////////////////////
+// INVITATION SCHEMA
+/////////////////////////////////////////
+
+export const InvitationSchema = z.object({
+  /**
+   * The invite code sent to each user, which is used
+   * to create an account
+   */
+  inviteCode: z.string().cuid2(),
+  userId: z.string(),
+  createDate: z.coerce.date(),
+  expireDate: z.coerce.date(),
+  redeemDate: z.coerce.date().nullable(),
+})
+
+export type Invitation = z.infer<typeof InvitationSchema>
 
 /////////////////////////////////////////
 // ORGANIZATION SCHEMA

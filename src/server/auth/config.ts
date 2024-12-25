@@ -67,6 +67,7 @@ export const authConfig = {
 		decode,
 	},
 	providers: [
+		DiscordProvider,
 		CredentialsProvider({
 			name: "Credentials",
 			credentials: {
@@ -104,7 +105,6 @@ export const authConfig = {
 				return null;
 			},
 		}),
-		DiscordProvider,
 		/**
      * ...add more providers here.
      *

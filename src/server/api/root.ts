@@ -1,4 +1,5 @@
 import { dutyRouter } from "@/server/api/routers/duty";
+import { invitationRouter } from "@/server/api/routers/invitation";
 import { justiceRouter } from "@/server/api/routers/justice";
 import { possibleAssignmentsRouter } from "@/server/api/routers/possible-assignments";
 import { postRouter } from "@/server/api/routers/post";
@@ -22,6 +23,7 @@ export const appRouter = createTRPCRouter({
 	possibleAssignments: possibleAssignmentsRouter,
 	upload: uploadRouter,
 	sanityCheck: sanityCheckRouter,
+	invitation: invitationRouter,
 });
 
 // export type definition of API
