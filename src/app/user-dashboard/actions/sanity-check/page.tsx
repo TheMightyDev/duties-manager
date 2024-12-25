@@ -1,5 +1,5 @@
-import { SanityChecksDescription } from "@/app/user-dashboard/actions/sanity-checks/description";
-import { SanityChecksRunner } from "@/app/user-dashboard/actions/sanity-checks/sanity-checks-runner";
+import { SanityChecksDescription } from "@/app/user-dashboard/actions/sanity-check/description";
+import { SanityChecksRunner } from "@/app/user-dashboard/actions/sanity-check/sanity-check-runner";
 import { api } from "@/trpc/server";
 
 export default function SanityChecksPage() {
