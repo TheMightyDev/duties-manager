@@ -68,12 +68,71 @@
   	"MAJOR": "major"
 	},
 	"Actions": {
+		"soon": "soon",
+		"new": "new!",
+		"User": {
+			"title": "actions",
+			"submit-preferences": "Submit preferences",
+			"q-and-a": "Common questions & answers",
+			"view-credits": "View credits"
+		},
 		"Admin": {
 			"title": "admin actions",
 			"upload-users": "upload users",
 			"upload-guarding-assignments": "upload guarding duties and their assignments",
 			"sanity-check": "sanity check",
 			"create-users": "create users"
+		}
+	},
+	"CommonQuestions": {
+		"title": "Q&A",
+		"groupTitles": {
+			"scoringSystem": "scoring system",
+			"months": "months"
+		},
+		"scoringSystemInDepth": {
+			"question": "How does the scoring system work?",
+			"answer": "A regular guarding..."
+		},
+		"scoringPerDuty": {
+			"question": "How much score each duty grant?",
+			"answer": "it's..."
+		},
+		"monthsInRoleCalculation": {
+			"question": "How's the total number of months in the role calculated?",
+			"answer": "This is simple"
+		},
+		"monthsInRoleCalculation1": {
+			"question": "How's the total number of months in the role calculated?",
+			"answer": "This is simple"
+		},
+		"monthsInRoleCalculation2": {
+			"question": "How's the total number of months in the role calculated?",
+			"answer": "This is simple"
+		},
+		"monthsInRoleCalculation3": {
+			"question": "How's the total number of months in the role calculated?",
+			"answer": "This is simple"
+		},
+		"monthsInRoleCalculation4": {
+			"question": "How's the total number of months in the role calculated?",
+			"answer": "This is simple"
+		},
+		"monthsInRoleCalculation5": {
+			"question": "How's the total number of months in the role calculated?",
+			"answer": "This is simple"
+		},
+		"monthsInRoleCalculation6": {
+			"question": "How's the total number of months in the role calculated?",
+			"answer": "This is simple"
+		},
+		"monthsInRoleCalculation7": {
+			"question": "How's the total number of months in the role calculated?",
+			"answer": "This is simple"
+		},
+		"monthsInRoleCalculation8": {
+			"question": "How's the total number of months in the role calculated?",
+			"answer": "This is simple"
 		}
 	}
 }
