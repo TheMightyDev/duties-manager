@@ -2,23 +2,75 @@ import { z } from "zod";
 
 import {
 	createTRPCRouter,
+	protectedProcedure,
 	publicProcedure
 } from "@/server/api/trpc";
 import { dutyWithAssignmentsInclude } from "@/server/api/types/duty-with-assignments";
-
-// const dutySchema = z.object({
-// 	id: z.string(),
-// 	kind: z.nativeEnum(DutyKind),
-// 	organizationId: z.string(),
-// 	startDate: z.date(),
-// 	endDate: z.date(),
-// 	role: z.nativeEnum(UserRole),
-// 	quantity: z.number().min(1),
-// 	score: z.number(),
-// 	description: z.string().nullable(),
-// }) satisfies ZodType<Duty>;
+import { DutiesSelectOptionsSchema } from "@/types/duties/duties-select-options-schema";
+import { UTCDate } from "@date-fns/utc";
 
 export const dutyRouter = createTRPCRouter({
+	/** Returns all duties that match the given criteria:
+	 * - They **start** in the specified year
+	 * - If provided, they precisely **start** in the specified month
+	 * - If provided, they are one of the specified kinds
+	 * - If provided, they require one (or optionally more) of the specified user roles
+	 *  */
+	getManyDuties: protectedProcedure
+		.input(DutiesSelectOptionsSchema)
+		.query((async ({ ctx, input }) => {
+			const specifiedStartDate = new UTCDate(
+				input.startYear,
+				input.startMonthIndex ?? 0,
+				1,
+				0,
+				0,
+				0
+			);
+			const specifiedEndDate = new UTCDate(
+				input.startYear,
+				// If a start month index wasn't specified, we add 12 months
+				// to advance to the start of the following year
+				input.startMonthIndex ?? 12,
+				1,
+				0,
+				0,
+				0
+			);
+				
+			const duties = await ctx.db.duty.findMany({
+				where: {
+					startDate: {
+						gte: specifiedStartDate,
+						lt: specifiedEndDate,
+					},
+					...(
+						input.kinds
+							? {
+								kind: {
+									in: input.kinds,
+								},
+							}
+							: {}
+					),
+					...(
+						input.requiredUserRoles
+							? {
+								requiredRoles: {
+									hasSome: input.requiredUserRoles,
+								},
+							}
+							: {}
+					),
+				},
+				orderBy: {
+					startDate: "asc",
+				},
+			});
+			
+			return duties;
+		})),
+		
 	/** Returns all duties that either start or the end on the input month */
 	getAllInMonth: publicProcedure
 		.input(z.object({

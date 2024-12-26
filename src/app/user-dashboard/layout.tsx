@@ -32,7 +32,7 @@ export default async function Layout({ children }: Readonly<{ children: React.Re
 		{
 			id: "calendar",
 			name: t("calendar"),
-			href: "/user-dashboard/calendar",
+			href: "/user-dashboard/duties/list-view",
 			icon: <CalendarSvgIcon className={sharedIconClassName + "stroke-black"}/>,
 			selectedIcon: <CalendarFilledSvgIcon className={sharedIconClassName + "stroke-blue-600"}/>,
 		},
