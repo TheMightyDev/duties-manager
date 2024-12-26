@@ -11,6 +11,10 @@
 		"actions": "פעולות",
 		"logout": "התנתקות"
 	},
+	"FormInteractions": {
+		"cancel": "ביטול",
+		"save-changes": "שמירת השינויים" 
+	},
   "UserRole": {
     "SQUAD": "כיתת כוננות",
 		"OFFICER": "קצין תורן",
@@ -101,6 +105,14 @@
 		"monthsInRoleCalculation": {
 			"question": "How's the total number of months in the role calculated?",
 			"answer": "This is simple"
+		}
+	},
+	"Duties": {
+		"month": "חודש",
+		"year": "שנה",
+		"ChangeViewDialog": {
+			"title": "שינוי תצוגה",
+			"description": "שינוי התורנויות שמוצגות"
 		}
 	}
 }

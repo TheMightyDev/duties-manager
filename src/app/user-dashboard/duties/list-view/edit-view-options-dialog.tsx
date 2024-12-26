@@ -58,7 +58,9 @@ export function EditViewOptionsDialog(props: EditViewOptionsDialogProps) {
 			</DialogTrigger>
 				
 			<DialogContent>
-				<DialogTitle>שינוי תצוגה</DialogTitle>
+				<DialogTitle>
+					{t("Duties.ChangeViewDialog.title")}
+				</DialogTitle>
 				<Form {...form}>
 					<form
 						onSubmit={form.handleSubmit(onSubmit)}
@@ -70,8 +72,8 @@ export function EditViewOptionsDialog(props: EditViewOptionsDialogProps) {
 								control={form.control}
 								name="startYear"
 								render={({ field }) => (
-									<FormItem aria-description="שם פרטי">
-										<FormLabel>שנה</FormLabel>
+									<FormItem>
+										<FormLabel>{t("Duties.year")}</FormLabel>
 										<FormControl>
 											<Input
 												{...field}
@@ -85,18 +87,14 @@ export function EditViewOptionsDialog(props: EditViewOptionsDialogProps) {
 								control={form.control}
 								name="startMonthIndex"
 								render={({ field }) => (
-									<FormItem aria-description="אינדקס חודש">
-										<FormLabel>מספר חודש</FormLabel>
+									<FormItem>
+										<FormLabel>{t("Duties.month")}</FormLabel>
 										<FormControl>
 											<StartMonthSelect
 												currentSelectedMonth={field.value}
 												handleMonthChange={field.onChange}
 												hasNoMonthOption={true}
 											/>
-											{/* <Input
-											{...field}
-											value={field.value ?? ""}
-										/> */}
 										</FormControl>
 									</FormItem>
 								)}
@@ -107,13 +105,17 @@ export function EditViewOptionsDialog(props: EditViewOptionsDialogProps) {
 							variant="ghost"
 							onClick={cancelSubmit}
 						>
-							ביטול
+							{t("FormInteractions.cancel")}
 						</Button>
-						<Button type="submit">שמירת השינויים</Button>
+						<Button type="submit">
+							{t("FormInteractions.save-changes")}
+						</Button>
 					</form>
 					
 				</Form>
-				<DialogDescription>hhh</DialogDescription>
+				<DialogDescription>
+					{t("Duties.ChangeViewDialog.description")}
+				</DialogDescription>
 
 			</DialogContent>
 		</Dialog>

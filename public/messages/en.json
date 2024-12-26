@@ -11,6 +11,10 @@
 		"actions": "actions",
 		"logout": "logout"
 	},
+	"FormInteractions": {
+		"cancel": "cancel",
+		"save-changes": "save changes" 
+	},
   "UserRole": {
     "SQUAD": "alert squad",
 		"OFFICER": "officer",
@@ -104,10 +108,11 @@
 		}
 	},
 	"Duties": {
-		"ListView": {
-			"Header": {
-				"guardingOnly": "",
-			}
+		"month": "month",
+		"year": "year",
+		"ChangeViewDialog": {
+			"title": "Change View",
+			"description": "change which duties are displayed"
 		}
 	}
 }
