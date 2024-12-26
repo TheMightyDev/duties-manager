@@ -3,6 +3,7 @@ import { Button } from "@/app/_components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/app/_components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/app/_components/ui/form";
 import { Input } from "@/app/_components/ui/input";
+import { StartMonthSelect } from "@/app/user-dashboard/duties/list-view/start-month-select";
 import { DutiesSelectOptionsSchema, type DutiesSelectOptions } from "@/types/duties/duties-select-options-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
@@ -29,7 +30,7 @@ export function EditViewOptionsDialog(props: EditViewOptionsDialogProps) {
 	function resetFormToActualValues() {
 		form.setValue("kinds", props.viewOptions.kinds);
 		form.setValue("requiredUserRoles", props.viewOptions.requiredUserRoles);
-		form.setValue("startMonthIndex", props.viewOptions.startMonthIndex !== null ? props.viewOptions.startMonthIndex + 1 : null);
+		form.setValue("startMonthIndex", props.viewOptions.startMonthIndex);
 		form.setValue("startYear", props.viewOptions.startYear);
 	}
 	
@@ -40,13 +41,6 @@ export function EditViewOptionsDialog(props: EditViewOptionsDialogProps) {
 	
 	function onSubmit(values: z.infer<typeof DutiesSelectOptionsSchema>) {
 		console.log("@values", values);
-		
-		console.log("@values", values);
-		if (values.startMonthIndex === 0 || values.startMonthIndex === null) {
-			values.startMonthIndex = null;
-		} else {
-			values.startMonthIndex -= 1;
-		}
 		props.changeViewOptions({
 			...values,
 		});
@@ -71,36 +65,43 @@ export function EditViewOptionsDialog(props: EditViewOptionsDialogProps) {
 						className="space-y-2"
 						dir="rtl"
 					>
-						<FormField
-							control={form.control}
-							name="startYear"
-							render={({ field }) => (
-								<FormItem aria-description="שם פרטי">
-									<FormLabel>שנה</FormLabel>
-									<FormControl>
-										<Input
-											{...field}
-											type="number"
-										/>
-									</FormControl>
-								</FormItem>
-							)}
-						/>
-						<FormField
-							control={form.control}
-							name="startMonthIndex"
-							render={({ field }) => (
-								<FormItem aria-description="אינדקס חודש">
-									<FormLabel>מספר חודש</FormLabel>
-									<FormControl>
-										<Input
+						<div className="flex flex-row">
+							<FormField
+								control={form.control}
+								name="startYear"
+								render={({ field }) => (
+									<FormItem aria-description="שם פרטי">
+										<FormLabel>שנה</FormLabel>
+										<FormControl>
+											<Input
+												{...field}
+												type="number"
+											/>
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+							<FormField
+								control={form.control}
+								name="startMonthIndex"
+								render={({ field }) => (
+									<FormItem aria-description="אינדקס חודש">
+										<FormLabel>מספר חודש</FormLabel>
+										<FormControl>
+											<StartMonthSelect
+												currentSelectedMonth={field.value}
+												handleMonthChange={field.onChange}
+												hasNoMonthOption={true}
+											/>
+											{/* <Input
 											{...field}
 											value={field.value ?? ""}
-										/>
-									</FormControl>
-								</FormItem>
-							)}
-						/>
+										/> */}
+										</FormControl>
+									</FormItem>
+								)}
+							/>
+						</div>
 						<Button
 							type="button"
 							variant="ghost"
