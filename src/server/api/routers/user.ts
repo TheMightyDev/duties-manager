@@ -2,10 +2,10 @@ import { UTCDate } from "@date-fns/utc";
 import { z } from "zod";
 
 import {
-    adminProcedure,
-    createTRPCRouter,
-    protectedProcedure,
-    publicProcedure
+	adminProcedure,
+	createTRPCRouter,
+	protectedProcedure,
+	publicProcedure
 } from "@/server/api/trpc";
 import { type UserWithPeriodsAndAssignments } from "@/server/api/types/user-with-periods-and-assignments";
 import { calcUserJustice } from "@/server/api/utils/calc-user-justice";
@@ -31,17 +31,17 @@ async function fetchUsersByRole({ role, definitiveDate, ctxDb, includeExemptAndA
 					role: true,
 					status: true,
 				},
+				where: {
+					startDate: {
+						lte: definitiveDate,
+					},
+					role,
+				},
 				orderBy: [
 					{
 						startDate: "asc",
 					},
 				],
-				where: {
-					startDate: {
-						lte: definitiveDate,
-					},
-					role: role,
-				},
 			},
 			assignments: {
 				include: {
@@ -97,8 +97,29 @@ async function fetchUsersByRole({ role, definitiveDate, ctxDb, includeExemptAndA
 			},
 		},
 	});
+	
+	// A duty may require more than one role (e.g. `SETTLEMENT_DEFENSE` may
+	// require both `OFFICER` and `COMMANDER`), but each assignment for a user
+	// can only belong to a single role (more specifically, to a single period).
+	// It's determined by the duty date.
+	
+	const usersWithEligibleAssignments = users.map((user) => ({
+		...user,
+		assignments: user.assignments.filter((assignment) => {
+			const dutyStartDate = assignment.duty.startDate;
+			/** Determines if a duty spans over one of the fetched periods.
+			 * Recall that we only fetch the periods when the user is
+			 * on a specific role!!
+			 */
+			const doesDutyBelongInAnyPeriod = user.periods.some((period) => (
+				dutyStartDate > period.startDate && dutyStartDate < period.endDate
+			));
+			
+			return doesDutyBelongInAnyPeriod;
+		}),
+	}));
 
-	return users;
+	return usersWithEligibleAssignments;
 }
 
 export const userRouter = createTRPCRouter({
@@ -276,6 +297,30 @@ export const userRouter = createTRPCRouter({
 					id: userId,
 				},
 				include: {
+					periods: {
+						select: {
+							startDate: true,
+							endDate: true,
+							role: true,
+							status: true,
+						},
+						// If `role` is `undefined` (which is possible), then it'd result in
+						// `where: {}` (empty object) which is illegal and yields runtime error!
+						...(
+							role
+								? {
+									where: {
+										role,
+									},
+								}
+								: {}
+						),
+						orderBy: [
+							{
+								startDate: "asc",
+							},
+						],
+					},
 					assignments: {
 						where: {
 							duty: {
@@ -313,7 +358,24 @@ export const userRouter = createTRPCRouter({
 				},
 			});
 			
-			return userWithAssignments?.assignments;
+			// A duty may require more than one role, so a user can do a duty
+			// while they were in a specific role and then switched to another role,
+			// where that duty is still relevant.
+			// The duty from the previous role shouldn't be obtained.
+			const eligibleAssignments = userWithAssignments?.assignments.filter((assignment) => {
+				const dutyStartDate = assignment.duty.startDate;
+				/** Determines if a duty spans over one of the fetched periods.
+					 * Recall that we only fetch the periods when the user is
+					 * on a specific role!!
+					 */
+				const doesDutyBelongInAnyPeriod = userWithAssignments.periods.some((period) => (
+					dutyStartDate > period.startDate && dutyStartDate < period.endDate
+				));
+					
+				return doesDutyBelongInAnyPeriod;
+			});
+			
+			return eligibleAssignments;
 		})),
 	
 	/** Returns all periods of a user ordered chronologically,
