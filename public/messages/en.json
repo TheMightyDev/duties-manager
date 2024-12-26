@@ -25,7 +25,7 @@
 		"future-duties": "future duties",
 		"edit-roles": "edit roles"
 	},
-	"AssignmentsFilterRule": {
+	"DutyGroupKind": {
 		"ALL": "all duties",
 		"GUARDING_ONLY": "guarding only",
 		"CAMP_OR_SETTLEMENT_DEFENSE": "camp or settlement defense only",
@@ -101,6 +101,13 @@
 		"monthsInRoleCalculation": {
 			"question": "How's the total number of months in the role calculated?",
 			"answer": "This is simple"
+		}
+	},
+	"Duties": {
+		"ListView": {
+			"Header": {
+				"guardingOnly": "",
+			}
 		}
 	}
 }

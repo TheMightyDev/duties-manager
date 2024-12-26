@@ -25,7 +25,7 @@
 		"future-duties": "תורנויות עתידיות",
 		"edit-roles": "עריכת היסטוריית תפקידים"
 	},
-	"AssignmentsFilterRule": {
+	"DutyGroupKind": {
 		"ALL": "כל התורנויות",
 		"GUARDING_ONLY": "שמירות בלבד",
 		"CAMP_OR_SETTLEMENT_DEFENSE": "הגנ\"ם והגנ\"ש בלבד",

@@ -6,25 +6,25 @@ import { DutyGroupKind } from "@/types/duties/duty-group-kind";
 import { DirectionProvider } from "@radix-ui/react-direction";
 import { useLocale, useTranslations } from "next-intl";
 
-interface AssignmentsFilterRuleSelectProps {
-	selectedFilterRule: DutyGroupKind;
-	handleFilterRuleChange: (nextFilterRule: DutyGroupKind) => void;
+interface DutyGroupKindSelectProps {
+	selectedGroupKind: DutyGroupKind;
+	handleGroupKindChange: (nextFilterRule: DutyGroupKind) => void;
 }
 
-export function AssignmentsFilterRuleSelect(props: AssignmentsFilterRuleSelectProps) {
+export function DutyGroupKindSelect(props: DutyGroupKindSelectProps) {
 	const t = useTranslations();
 	const locale = useLocale();
 	const textDir = getTextDirection(locale);
 	
 	function handleValueChange(nextFilterRule: string) {
-		props.handleFilterRuleChange(nextFilterRule as DutyGroupKind);
+		props.handleGroupKindChange(nextFilterRule as DutyGroupKind);
 	}
 		
 	return (
 		<>
 			<DirectionProvider dir={textDir}>
 				<Select
-					value={props.selectedFilterRule}
+					value={props.selectedGroupKind}
 					onValueChange={handleValueChange}
 				>
 					<SelectTrigger className="m-auto w-52 capitalize lg:absolute">
@@ -39,7 +39,7 @@ export function AssignmentsFilterRuleSelect(props: AssignmentsFilterRuleSelectPr
 										key={filterRule}
 										className="capitalize"
 									>
-										{t(`AssignmentsFilterRule.${filterRule}`)}
+										{t(`DutyGroupKind.${filterRule}`)}
 									</SelectItem>
 								);
 							})

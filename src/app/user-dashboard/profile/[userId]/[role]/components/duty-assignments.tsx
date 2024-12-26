@@ -1,6 +1,6 @@
 "use client";
 
-import { AssignmentsFilterRuleSelect } from "@/app/user-dashboard/profile/[userId]/[role]/components/assignments-filter-rule-select";
+import { DutyGroupKindSelect } from "@/app/user-dashboard/profile/[userId]/[role]/components/assignments-filter-rule-select";
 import { DutyAssignmentsGroup } from "@/app/user-dashboard/profile/[userId]/[role]/components/duty-assignments-group";
 import { type UserWithAssignments } from "@/server/api/types/user-with-assignments";
 import { DutyGroupKind } from "@/types/duties/duty-group-kind";
@@ -59,9 +59,9 @@ export function DutyAssignments({ assignments }: DutyAssignmentsProps) {
 		<div className="relative flex w-full flex-col gap-2 p-2">
 			{
 				assignments.length > 0 &&
-				<AssignmentsFilterRuleSelect
-					selectedFilterRule={selectedDutyGroupKind}
-					handleFilterRuleChange={setSelectedDutyGroupKind}
+				<DutyGroupKindSelect
+					selectedGroupKind={selectedDutyGroupKind}
+					handleGroupKindChange={setSelectedDutyGroupKind}
 				/>
 			}
 			{
