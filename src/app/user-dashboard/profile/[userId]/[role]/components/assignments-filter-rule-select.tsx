@@ -2,13 +2,13 @@
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/app/_components/ui/select";
 import { getTextDirection } from "@/app/_utils/get-text-direction";
-import { AssignmentsFilterRule } from "@/app/user-dashboard/profile/[userId]/[role]/types";
+import { DutyGroupKind } from "@/types/duties/duty-group-kind";
 import { DirectionProvider } from "@radix-ui/react-direction";
 import { useLocale, useTranslations } from "next-intl";
 
 interface AssignmentsFilterRuleSelectProps {
-	selectedFilterRule: AssignmentsFilterRule;
-	handleFilterRuleChange: (nextFilterRule: AssignmentsFilterRule) => void;
+	selectedFilterRule: DutyGroupKind;
+	handleFilterRuleChange: (nextFilterRule: DutyGroupKind) => void;
 }
 
 export function AssignmentsFilterRuleSelect(props: AssignmentsFilterRuleSelectProps) {
@@ -17,7 +17,7 @@ export function AssignmentsFilterRuleSelect(props: AssignmentsFilterRuleSelectPr
 	const textDir = getTextDirection(locale);
 	
 	function handleValueChange(nextFilterRule: string) {
-		props.handleFilterRuleChange(nextFilterRule as AssignmentsFilterRule);
+		props.handleFilterRuleChange(nextFilterRule as DutyGroupKind);
 	}
 		
 	return (
@@ -32,7 +32,7 @@ export function AssignmentsFilterRuleSelect(props: AssignmentsFilterRuleSelectPr
 					</SelectTrigger>
 					<SelectContent>
 						{
-							Object.values(AssignmentsFilterRule).map((filterRule) => {
+							Object.values(DutyGroupKind).map((filterRule) => {
 								return (
 									<SelectItem
 										value={filterRule}

@@ -2,8 +2,8 @@
 
 import { AssignmentsFilterRuleSelect } from "@/app/user-dashboard/profile/[userId]/[role]/components/assignments-filter-rule-select";
 import { DutyAssignmentsGroup } from "@/app/user-dashboard/profile/[userId]/[role]/components/duty-assignments-group";
-import { AssignmentsFilterRule } from "@/app/user-dashboard/profile/[userId]/[role]/types";
 import { type UserWithAssignments } from "@/server/api/types/user-with-assignments";
+import { DutyGroupKind } from "@/types/duties/duty-group-kind";
 import { DutyKind } from "@prisma/client";
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
@@ -13,7 +13,7 @@ interface DutyAssignmentsProps {
 }
 
 export function DutyAssignments({ assignments }: DutyAssignmentsProps) {
-	const [ selectedFilterRule, setSelectedFilterRule ] = useState(AssignmentsFilterRule.ALL);
+	const [ selectedDutyGroupKind, setSelectedDutyGroupKind ] = useState(DutyGroupKind.ALL);
 	
 	const t = useTranslations();
 
@@ -24,14 +24,14 @@ export function DutyAssignments({ assignments }: DutyAssignmentsProps) {
 	);
 	
 	const checkIfDutyOfDesiredKind = (dutyKind: DutyKind): boolean => {
-		switch (selectedFilterRule) {
-			case AssignmentsFilterRule.ALL:
+		switch (selectedDutyGroupKind) {
+			case DutyGroupKind.ALL:
 				return true;
-			case AssignmentsFilterRule.GUARDING_ONLY:
+			case DutyGroupKind.GUARDING_ONLY:
 				return dutyKind === DutyKind.GUARDING;
-			case AssignmentsFilterRule.CAMP_OR_SETTLEMENT_DEFENSE:
+			case DutyGroupKind.CAMP_OR_SETTLEMENT_DEFENSE:
 				return dutyKind === DutyKind.CAMP_DEFENSE || dutyKind === DutyKind.SETTLEMENTS_DEFENSE;
-			case AssignmentsFilterRule.MISC_DUTIES:
+			case DutyGroupKind.MISC_DUTIES:
 				return dutyKind !== DutyKind.GUARDING &&
 					dutyKind !== DutyKind.CAMP_DEFENSE &&
 					dutyKind !== DutyKind.SETTLEMENTS_DEFENSE;
@@ -46,22 +46,22 @@ export function DutyAssignments({ assignments }: DutyAssignmentsProps) {
 				assignment.duty.startDate > currentDate && checkIfDutyOfDesiredKind(assignment.duty.kind)
 			))
 			.sort(orderEarliestAssignmentsFirst)
-	), [ assignments, selectedFilterRule ]);
+	), [ assignments, selectedDutyGroupKind ]);
 	
 	const pastAssignments = useMemo(() => (
 		assignments.filter((assignment) => (
 			assignment.duty.startDate <= currentDate &&
 			checkIfDutyOfDesiredKind(assignment.duty.kind)
 		))
-	), [ assignments, selectedFilterRule ]);
+	), [ assignments, selectedDutyGroupKind ]);
 	
 	return (
 		<div className="relative flex w-full flex-col gap-2 p-2">
 			{
 				assignments.length > 0 &&
 				<AssignmentsFilterRuleSelect
-					selectedFilterRule={selectedFilterRule}
-					handleFilterRuleChange={setSelectedFilterRule}
+					selectedFilterRule={selectedDutyGroupKind}
+					handleFilterRuleChange={setSelectedDutyGroupKind}
 				/>
 			}
 			{
