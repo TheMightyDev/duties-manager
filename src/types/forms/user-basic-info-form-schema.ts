@@ -1,7 +1,7 @@
 import { UserRankSchema } from "prisma/generated/zod";
 import { z } from "zod";
 
-export const userBasicInfoFormSchema = z.object({
+export const UserBasicInfoFormSchema = z.object({
 	id: z.string(),
 	firstName: z.string().trim().min(2, {
 		message: "first name must be at least 2 characters",

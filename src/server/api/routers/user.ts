@@ -2,14 +2,14 @@ import { UTCDate } from "@date-fns/utc";
 import { z } from "zod";
 
 import {
-	adminProcedure,
-	createTRPCRouter,
-	protectedProcedure,
-	publicProcedure
+    adminProcedure,
+    createTRPCRouter,
+    protectedProcedure,
+    publicProcedure
 } from "@/server/api/trpc";
 import { type UserWithPeriodsAndAssignments } from "@/server/api/types/user-with-periods-and-assignments";
 import { calcUserJustice } from "@/server/api/utils/calc-user-justice";
-import { userBasicInfoFormSchema } from "@/types/forms/user-basic-info-form-schema";
+import { UserBasicInfoFormSchema } from "@/types/forms/user-basic-info-form-schema";
 import { type RoleRecord, roleRecordSchema } from "@/types/user/role-record";
 import { PeriodStatus, type PrismaClient, type User, UserRole } from "@prisma/client";
 import { endOfDay } from "date-fns";
@@ -433,7 +433,7 @@ export const userRouter = createTRPCRouter({
 		})),
 		
 	updateUserInfo: adminProcedure
-		.input(userBasicInfoFormSchema)
+		.input(UserBasicInfoFormSchema)
 		.query((async ({ ctx, input }) => {
 			const {
 				id,

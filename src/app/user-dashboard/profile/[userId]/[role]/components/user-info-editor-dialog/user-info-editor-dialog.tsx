@@ -7,7 +7,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/app/_components/ui/form";
 import { Input } from "@/app/_components/ui/input";
 import { formatDate } from "@/app/_utils/date-format-utils";
-import { userBasicInfoFormSchema } from "@/types/forms/user-basic-info-form-schema";
+import { UserBasicInfoFormSchema } from "@/types/forms/user-basic-info-form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { type User, type UserRank } from "@prisma/client";
 import { useRouter } from "next/navigation";
@@ -17,7 +17,7 @@ import { type z } from "zod";
 
 interface UserInfoEditorDialogProps {
 	user: User;
-	updateUserInfo: (updatedInfo: z.infer<typeof userBasicInfoFormSchema>) => Promise<void>;
+	updateUserInfo: (updatedInfo: z.infer<typeof UserBasicInfoFormSchema>) => Promise<void>;
 }
 
 export function UserInfoEditorDialog({
@@ -25,8 +25,8 @@ export function UserInfoEditorDialog({
 	updateUserInfo,
 }: UserInfoEditorDialogProps) {
 	const [ isOpen, setIsOpen ] = useState(false);
-	const form = useForm<z.infer<typeof userBasicInfoFormSchema>>({
-		resolver: zodResolver(userBasicInfoFormSchema),
+	const form = useForm<z.infer<typeof UserBasicInfoFormSchema>>({
+		resolver: zodResolver(UserBasicInfoFormSchema),
 		defaultValues: {
 			...user,
 		},
@@ -38,7 +38,7 @@ export function UserInfoEditorDialog({
 		setIsOpen(false);
 	}
 	
-	function onSubmit(values: z.infer<typeof userBasicInfoFormSchema>) {
+	function onSubmit(values: z.infer<typeof UserBasicInfoFormSchema>) {
 		// Do something with the form values.
 		// ✅ This will be type-safe and validated.
 		console.log(values);
