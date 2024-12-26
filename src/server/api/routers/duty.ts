@@ -31,7 +31,9 @@ export const dutyRouter = createTRPCRouter({
 				input.startYear,
 				// If a start month index wasn't specified, we add 12 months
 				// to advance to the start of the following year
-				input.startMonthIndex ?? 12,
+				input.startMonthIndex !== null
+					? input.startMonthIndex + 1
+					: 12,
 				1,
 				0,
 				0,

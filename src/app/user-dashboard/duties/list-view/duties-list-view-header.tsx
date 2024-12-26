@@ -1,12 +1,12 @@
+import { EditViewOptionsDialog } from "@/app/user-dashboard/duties/list-view/edit-view-options-dialog";
 import { type DutiesSelectOptions } from "@/types/duties/duties-select-options-schema";
 import { DutyGroupKind } from "@/types/duties/duty-group-kind";
 import { DutyKind } from "@prisma/client";
 import { useTranslations } from "next-intl";
-import React from "react";
 
 interface DutiesListViewHeaderProps {
 	viewOptions: DutiesSelectOptions;
-	setViewOptions: React.Dispatch<React.SetStateAction<DutiesSelectOptions>>;
+	changeViewOptions: (nextOptions: DutiesSelectOptions) => void;
 }
 
 function getDutyGroupKind(dutyKinds: DutyKind[]): DutyGroupKind {
@@ -28,6 +28,7 @@ function getDutyGroupKind(dutyKinds: DutyKind[]): DutyGroupKind {
 		return DutyGroupKind.ALL;
 	}
 }
+
 export function DutiesListViewHeader(props: DutiesListViewHeaderProps) {
 	const t = useTranslations();
 	
@@ -36,6 +37,7 @@ export function DutiesListViewHeader(props: DutiesListViewHeaderProps) {
 	return (
 		<header>
 			{t(`DutyGroupKind.${dutyGroupKind}`)}
+			<EditViewOptionsDialog {...props} />
 		</header>
 	);
 };
