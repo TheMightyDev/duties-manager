@@ -2,20 +2,21 @@
 
 import { initialDutiesSelectOptions } from "@/app/user-dashboard/duties/list-view/const";
 import { DutiesListViewHeader } from "@/app/user-dashboard/duties/list-view/duties-list-view-header";
+import { DutyCard } from "@/app/user-dashboard/duties/list-view/duty-card/duty-card";
+import { type DutyWithAssignments } from "@/server/api/types/duty-with-assignments";
 import { type DutiesSelectOptions } from "@/types/duties/duties-select-options-schema";
-import { type Duty } from "@prisma/client";
 import { useState } from "react";
 
 interface DutiesListViewPageContentsProps {
-	initialDuties: Duty[];
-	getDuties: (options: DutiesSelectOptions) => Promise<Duty[]>;
+	initialDuties: DutyWithAssignments[];
+	getDuties: (options: DutiesSelectOptions) => Promise<DutyWithAssignments[]>;
 }
 
 export function DutiesListViewPageContents(props: DutiesListViewPageContentsProps) {
 	const [ viewOptions, setViewOptions ] = useState<DutiesSelectOptions>({
 		...initialDutiesSelectOptions,
 	});
-	const [ duties, setDuties ] = useState<Duty[]>(props.initialDuties);
+	const [ duties, setDuties ] = useState<DutyWithAssignments[]>(props.initialDuties);
 		
 	function changeViewOptions(nextOptions: DutiesSelectOptions) {
 		setViewOptions(nextOptions);
@@ -32,9 +33,11 @@ export function DutiesListViewPageContents(props: DutiesListViewPageContentsProp
 				viewOptions={viewOptions}
 				changeViewOptions={changeViewOptions}
 			/>
-			<pre dir="ltr">
-				{JSON.stringify(duties, null, 2)}
-			</pre>
+			<div className="flex flex-row flex-wrap">
+				{duties.map((duty) => (
+					<DutyCard duty={duty} />
+				))}
+			</div>
 		</>
 	);
 };

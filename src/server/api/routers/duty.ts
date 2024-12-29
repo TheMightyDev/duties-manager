@@ -19,6 +19,8 @@ export const dutyRouter = createTRPCRouter({
 	getManyDuties: protectedProcedure
 		.input(DutiesSelectOptionsSchema)
 		.query((async ({ ctx, input }) => {
+			const loggedUserOrganizationId = ctx.session.user.organizationId;
+			
 			const specifiedStartDate = new UTCDate(
 				input.startYear,
 				input.startMonthIndex ?? 0,
@@ -42,6 +44,7 @@ export const dutyRouter = createTRPCRouter({
 				
 			const duties = await ctx.db.duty.findMany({
 				where: {
+					organizationId: loggedUserOrganizationId,
 					startDate: {
 						gte: specifiedStartDate,
 						lt: specifiedEndDate,
@@ -65,6 +68,7 @@ export const dutyRouter = createTRPCRouter({
 							: {}
 					),
 				},
+				include: dutyWithAssignmentsInclude,
 				orderBy: {
 					startDate: "asc",
 				},

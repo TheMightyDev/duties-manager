@@ -1,4 +1,5 @@
 import { userRoleIcons } from "@/app/_components/svg-icons/user-roles/user-role-icons";
+import { cn } from "@/lib/utils";
 import { UserRole } from "@prisma/client";
 
 const userRoleBgs: Record<UserRole, string> = {
@@ -11,17 +12,29 @@ const userRoleBgs: Record<UserRole, string> = {
 interface UserRoleMarkProps {
 	role: UserRole;
 	hasTooltip?: boolean;
+	className?: string;
+	// size?: "sm" | "md" | "lg";
 }
 
-export function UserRoleMark({ role, hasTooltip = true }: UserRoleMarkProps) {
+export function UserRoleMark({
+	role,
+	hasTooltip = true,
+	className,
+	// size = "md",
+}: UserRoleMarkProps) {
 	const iconObj = {
 		icon: userRoleIcons[role],
 	};
 	
 	return (
 		<div className="group/role-mark relative inline-block">
-			<div className={`m-auto flex size-7 items-center justify-center rounded-xl text-white ${userRoleBgs[role]}`}>
-				<iconObj.icon className="size-5"/>
+			<div className={cn(
+				`m-auto flex size-7 items-center justify-center text-white ${userRoleBgs[role]}
+				rounded-xl`,
+				className
+			)}
+			>
+				<iconObj.icon className={"size-3/4"} />
 			</div>
 			{
 				hasTooltip &&

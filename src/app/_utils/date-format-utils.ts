@@ -25,3 +25,21 @@ export function getAllMonthNames({
 
 	return months.map(date => formatter.format(date));
 }
+
+export function getDateFormatted({
+	date,
+	locale,
+}: {
+	date: Date;
+	locale: string;
+}): string {
+	const formatter = new Intl.DateTimeFormat(locale, {
+		dateStyle: "full",
+		timeStyle: "short",
+		// hour: "2-digit",
+		// weekday: "short",
+		timeZone: "UTC",
+	});
+	
+	return formatter.format(date);
+}

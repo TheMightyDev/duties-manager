@@ -21,6 +21,15 @@
 		"COMMANDER": "מפקד תורן",
 		"EXEMPT": "פטור"
   },
+	"DutyKind": {
+		"GUARDING": "שמירה",
+		"CAMP_DEFENSE": "הגנ\"ם",
+		"SETTLEMENTS_DEFENSE": "הגנ\"ש",
+		"KITCHEN": "מטבח",
+		"AGRICULTURE": "חקלאות",
+		"FOOD_PACKAGING": "אריזות מזון",
+		"OTHER": "תורנות אחרת"
+	},
 	"Profile": {
 		"assignments": "שיבוצים",
 		"roles": "תפקידים",

@@ -21,6 +21,15 @@
 		"COMMANDER": "commander",
 		"EXEMPT": "exempt"
   },
+	"DutyKind": {
+		"GUARDING": "guarding",
+		"CAMP_DEFENSE": "camp defense",
+		"SETTLEMENTS_DEFENSE": "settlement defense",
+		"KITCHEN": "kitchen",
+		"AGRICULTURE": "agriculture",
+		"FOOD_PACKAGING": "food packaging",
+		"OTHER": "other"
+	},
 	"Profile": {
 		"assignments": "assignments",
 		"roles": "roles",
