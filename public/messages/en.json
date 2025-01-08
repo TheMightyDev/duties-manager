@@ -2,7 +2,9 @@
 	"General": {
 		"present": "present",
 		"past": "past",
-		"pts": "pts"
+		"pts": "pts",
+		"from": "from ",
+		"to": "to"
 	},
 	"NavigationTabs": {
 		"calendar": "calendar",

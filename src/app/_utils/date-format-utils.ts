@@ -26,6 +26,20 @@ export function getAllMonthNames({
 	return months.map(date => formatter.format(date));
 }
 
+export function getWeekday({
+	date,
+	locale,
+}: {
+	date: Date;
+	locale: string;
+}) {
+	const formatterWeekday = new Intl.DateTimeFormat(locale, {
+		weekday: "narrow",
+	});
+
+	return formatterWeekday.format(date);
+}
+
 export function getDateFormatted({
 	date,
 	locale,
@@ -34,12 +48,25 @@ export function getDateFormatted({
 	locale: string;
 }): string {
 	const formatter = new Intl.DateTimeFormat(locale, {
-		dateStyle: "full",
-		timeStyle: "short",
+		dateStyle: "long",
 		// hour: "2-digit",
 		// weekday: "short",
 		timeZone: "UTC",
 	});
 	
-	return formatter.format(date);
+	return formatter.format(date) + " " + getWeekday({
+		date,
+		locale,
+	});
+}
+
+function padZero(num: number): string {
+	return (num < 10) ? `0${String(num)}` : String(num);
+}
+
+/**
+ * Returns a string with the date formatted as HH:MM (e.g. 09:05)
+ */
+export function formatHhMm(date: Date): string {
+	return `${padZero(date.getUTCHours())}:${padZero(date.getUTCMinutes())}`;
 }

@@ -2,7 +2,9 @@
 	"General": {
 		"present": "נוכחי",
 		"past": "עבר",
-		"pts": "נק'"
+		"pts": "נק'",
+		"from": "החל מ",
+		"to": "עד"
 	},
 	"NavigationTabs": {
 		"calendar": "לוח שנה",

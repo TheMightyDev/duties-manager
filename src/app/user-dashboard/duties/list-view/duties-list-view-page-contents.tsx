@@ -35,7 +35,10 @@ export function DutiesListViewPageContents(props: DutiesListViewPageContentsProp
 			/>
 			<div className="flex flex-row flex-wrap">
 				{duties.map((duty) => (
-					<DutyCard duty={duty} />
+					<DutyCard
+						duty={duty}
+						key={duty.id}
+					/>
 				))}
 			</div>
 		</>
