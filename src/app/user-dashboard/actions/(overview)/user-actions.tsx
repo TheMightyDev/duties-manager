@@ -16,6 +16,7 @@ export function UserActions() {
 			</h3>
 			<hr />
 			<div className="flex flex-row flex-wrap gap-2 p-2">
+				
 				<GoToActionButton
 					href={`${pathname}/common-questions`}
 					prefetch={false}
@@ -28,9 +29,8 @@ export function UserActions() {
 					{t("Actions.User.q-and-a")}
 				</GoToActionButton>
 				<GoToActionButton
-					href={`${pathname}`}
+					href={`${pathname}/submit-preferences`}
 					prefetch={false}
-					additionalMark="soon"
 					icon={
 						<QuestionCircleSvgIcon
 							className="size-14 fill-white/80"
