@@ -57,7 +57,7 @@ interface Return {
 	handleUserIdChange: React.ChangeEventHandler<HTMLInputElement>;
 }
 
-export function usePreferencesCalendar({
+export function usePersonalCalendar({
 	initialPreferences,
 	fetchPreferences,
 	createPreference,

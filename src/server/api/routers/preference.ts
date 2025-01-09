@@ -4,17 +4,7 @@ import {
 	createTRPCRouter,
 	publicProcedure
 } from "@/server/api/trpc";
-import { PreferenceImportance, PreferenceReason } from "@prisma/client";
-
-const preferenceSchema = z.object({
-	id: z.string(),
-	userId: z.string(),
-	startDate: z.date(),
-	endDate: z.date().nullable(),
-	reason: z.nativeEnum(PreferenceReason),
-	importance: z.nativeEnum(PreferenceImportance),
-	description: z.string(),
-});
+import { PreferenceSchema } from "prisma/generated/zod";
 
 export const preferenceRouter = createTRPCRouter({
 	getUserExemptionsById: publicProcedure
@@ -23,7 +13,6 @@ export const preferenceRouter = createTRPCRouter({
 			return ctx.db.preference.findMany({
 				where: {
 					userId,
-					reason: PreferenceReason.EXEMPTION,
 				},
 				select: {
 					id: true,
@@ -41,15 +30,12 @@ export const preferenceRouter = createTRPCRouter({
 			return ctx.db.preference.findMany({
 				where: {
 					userId,
-					endDate: {
-						not: null,
-					},
 				},
 			});
 		})),
 		
 	create: publicProcedure
-		.input(preferenceSchema)
+		.input(PreferenceSchema)
 		.query((async ({ ctx, input }) => {
 			try {
 				await ctx.db.preference.create({
@@ -65,7 +51,7 @@ export const preferenceRouter = createTRPCRouter({
 		})),
 	
 	update: publicProcedure
-		.input(preferenceSchema.partial())
+		.input(PreferenceSchema.partial())
 		.query((async ({ ctx, input }) => {
 			try {
 				if (!input.id) {
