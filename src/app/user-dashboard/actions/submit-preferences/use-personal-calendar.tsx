@@ -7,7 +7,7 @@ import { type DateSelectArg, type DateSpanApi, type DatesSetArg, type EventClick
 import { type DateClickArg } from "@fullcalendar/interaction";
 import { type Preference } from "@prisma/client";
 import { add, addDays, addMinutes, subMinutes } from "date-fns";
-import React, { type ChangeEvent } from "react";
+import React, { useRef, type ChangeEvent } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useImmer } from "use-immer";
@@ -55,6 +55,8 @@ interface Return {
 	
 	selectedUserId: string;
 	handleUserIdChange: React.ChangeEventHandler<HTMLInputElement>;
+	
+	floatingDialogRef: React.RefObject<HTMLDivElement>;
 }
 
 export function usePersonalCalendar({
@@ -223,8 +225,8 @@ export function usePersonalCalendar({
 				...prev,
 				isShown: true,
 				...calcFloatingDialogLocation({
-					rect,
-					dialogWidthPx: prev.widthPx,
+					eventMarkRect: rect,
+					floatingDialogRect: floatingDialogRef.current?.getBoundingClientRect(),
 				}),
 			};
 		});
@@ -394,6 +396,8 @@ export function usePersonalCalendar({
 		},
 	};
 	
+	const floatingDialogRef = useRef<HTMLDivElement>(null);
+	
 	return {
 		fcEvents,
 		fcEventHandlers,
@@ -411,5 +415,7 @@ export function usePersonalCalendar({
 		
 		selectedUserId,
 		handleUserIdChange,
+		
+		floatingDialogRef,
 	};
 };

@@ -1,7 +1,8 @@
 "use client";
 
 import { FloatingDialog } from "@/app/_components/floating-dialog/floating-dialog";
-import { type PreferencesCalendarProps, usePreferencesCalendar } from "@/app/user-dashboard/calendar/use-preferences-calendar";
+import { usePersonalCalendar } from "@/app/user-dashboard/actions/submit-preferences/use-personal-calendar";
+import { type PreferencesCalendarProps } from "@/app/user-dashboard/calendar/use-preferences-calendar";
 import heLocale from "@fullcalendar/core/locales/he";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -33,7 +34,9 @@ export function PersonalCalendar({
 		
 		selectedUserId,
 		handleUserIdChange,
-	} = usePreferencesCalendar({
+		
+		floatingDialogRef,
+	} = usePersonalCalendar({
 		createPreference,
 		fetchPreferences,
 		updatePreference,
@@ -81,7 +84,9 @@ export function PersonalCalendar({
 			<FloatingDialog
 				{...floatingDialogData}
 				className="shadow-xl shadow-black/20"
+				containerRef={floatingDialogRef}
 			>
+				p<br/>pp<br/>pp<br/>pp
 				p<br/>pp<br/>pp<br/>pp
 				{/* {
 					(!selectedPreference) &&

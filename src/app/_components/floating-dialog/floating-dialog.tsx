@@ -12,6 +12,7 @@ export interface FloatingDialogData {
 }
 
 interface FloatingDialogProps extends FloatingDialogData {
+	containerRef: React.RefObject<HTMLDivElement>;
 	children?: React.ReactNode;
 }
 
@@ -22,11 +23,13 @@ export function FloatingDialog({
 	yOffsetPx,
 	children,
 	className,
+	containerRef,
 }: FloatingDialogProps) {
 	const isOnMobile = document.documentElement.clientWidth < 700;
 
 	return (
 		<div
+			ref={containerRef}
 			className={
 				cn(
 					"fixed left-0 top-0 z-10 bg-white shadow-2xl shadow-black/50  md:rounded-xl",

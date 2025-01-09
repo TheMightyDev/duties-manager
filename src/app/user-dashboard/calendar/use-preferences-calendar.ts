@@ -223,7 +223,7 @@ export function usePreferencesCalendar({
 				...prev,
 				isShown: true,
 				...calcFloatingDialogLocation({
-					rect,
+					eventMarkRect: rect,
 					dialogWidthPx: prev.widthPx,
 				}),
 			};
