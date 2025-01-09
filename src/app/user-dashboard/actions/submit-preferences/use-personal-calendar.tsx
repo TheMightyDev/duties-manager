@@ -128,6 +128,7 @@ export function usePersonalCalendar({
 					allDay: true,
 					start: proposedEventDatesSelection.start,
 					end: addMinutes(proposedEventDatesSelection.end, 1),
+					editable: false,
 				},
 			];
 		} else {

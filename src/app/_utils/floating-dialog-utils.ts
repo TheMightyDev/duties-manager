@@ -61,11 +61,25 @@ export function calcFloatingDialogLocation({
 		//   A-----------
 		//   |					|
 		//   |					|
-		// --- screen edge ----
+		// --- screen edge (bottom) ----
 		//   |					|
 		//   ------------
 		if (yOffsetPx + dialogHeightPx > document.documentElement.clientHeight) {
 			yOffsetPx -= (dialogHeightPx - eventMarkRect.height);
+		}
+		
+		// If there isn't enough place to the top
+		//   A-----------
+		//   |					|
+		// --- screen edge (top) ----
+		//   |					|
+		//   |					|
+		//   ------------
+		
+		console.log("@yOffsetPx after all", yOffsetPx);
+		
+		if (yOffsetPx < 0) {
+			yOffsetPx = 0;
 		}
 	}
 
