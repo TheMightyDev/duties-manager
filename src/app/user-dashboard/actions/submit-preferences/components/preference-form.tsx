@@ -2,7 +2,9 @@
 
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/app/_components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PreferenceImportance, PreferenceKind } from "@prisma/client";
+import { createId } from "@paralleldrive/cuid2";
+import { PreferenceImportance, PreferenceKind, type Preference, type User } from "@prisma/client";
+import { add } from "date-fns";
 import { PreferenceImportanceSchema, PreferenceKindSchema } from "prisma/generated/zod";
 import { useEffect } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
@@ -46,6 +48,8 @@ type SubmitPreferenceType = z.infer<typeof SubmitPreferenceSchema>;
 interface PreferenceFormProps {
 	startDate: Date;
 	endDate: Date;
+	userId: User["id"];
+	createPreference: (newPreference: Preference) => void;
 	// preference: Preference;
 }
 
@@ -80,6 +84,12 @@ export function PreferenceForm(props: PreferenceFormProps) {
 	
 	const onSubmit: SubmitHandler<SubmitPreferenceType> = (data) => {
 		console.log("@submittedData", data);
+		props.createPreference({
+			id: createId(),
+			userId: props.userId,
+			...data,
+			description: data.description ?? "",
+		});
 	};
 
 	return (
@@ -114,7 +124,10 @@ export function PreferenceForm(props: PreferenceFormProps) {
 									{...field}
 									type="date"
 									value={field.value ? field.value.toISOString().substring(0, 10) : undefined}
-									onChange={( { target: { value } } ) => field.onChange( value === "" ? undefined : new Date(value) ) }
+									onChange={( { target: { value } } ) => field.onChange( value === "" ? undefined : add(new Date(value), {
+										days: 1,
+										minutes: -1,
+									}))}
 								/>
 							</FormControl>
 						</FormItem>

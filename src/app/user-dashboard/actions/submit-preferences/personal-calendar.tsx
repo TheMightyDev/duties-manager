@@ -102,8 +102,10 @@ export function PersonalCalendar({
 				{
 					proposedEventDatesSelection &&
 					<PreferenceForm
+						userId="ofeks"
 						startDate={proposedEventDatesSelection.start}
 						endDate={proposedEventDatesSelection.end}
+						createPreference={preferenceOperationsWrappers.createPreference}
 					/>
 				}
 				{/* p<br/>pp<br/>pp<br/>pp

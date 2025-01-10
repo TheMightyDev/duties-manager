@@ -172,6 +172,7 @@ export function usePersonalCalendar({
 					updatePreferences((draft) => {
 						draft.push(newPreference);
 					});
+					setProposedEventDatesSelection(null);
 				},
 				() => {
 					toast.error("הגשת ההסתייגות נכשלה");
