@@ -7,6 +7,13 @@
 		"to": "עד"
 	},
 	"User": {
+		"first-name": "שם פרטי",
+		"last-name": "שם משפחה",
+		"rank": "דרגה",
+		"phone-number": "מס' טלפון",
+		"gender": "מגדר",
+		"permanent-entry-date": "תאריך כניסה לקבע",
+		"admin-note": "הערה לסגל הניהול",
 		"absence": "תקופת היעדרות"
 	},
 	"NavigationTabs": {
@@ -85,6 +92,12 @@
   	"CAPTAIN": "סרן",
   	"MAJOR": "רס\"ן"
 	},
+	"PreferenceImportance": {
+		"PREFERS": "מעדיף.ה בטווח הזה",
+		"PREFERS_NOT_TO": "מעדיף.ה שלא",
+		"CANT": "לא יכול.ה",
+		"HIGH_HESITATION": "לא יכול.ה בכלל"
+	},
 	"Actions": {
 		"soon": "בקרוב",
 		"new": "חדש!",
@@ -128,5 +141,9 @@
 			"title": "שינוי תצוגה",
 			"description": "שינוי התורנויות שמוצגות"
 		}
+	},
+	"UserInfoEditor": {
+		"title": "עריכת פרטי משתמש",
+		"description": "עריכת מידע בסיסי על המשתמש"
 	}
 }

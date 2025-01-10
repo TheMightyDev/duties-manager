@@ -8,17 +8,20 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/app/_components/ui/select";
-import { UserRank } from "@prisma/client";
+import { PreferenceImportance } from "@prisma/client";
 import { DirectionProvider } from "@radix-ui/react-direction";
 import { useTranslations } from "next-intl";
 
-type PrimitiveUserRankSelectProps = SharedSelectProps<UserRank>;
+type PrimitivePreferenceImportanceSelectProps =
+	SharedSelectProps<PreferenceImportance>;
 
-export function PrimitiveUserRankSelect(props: PrimitiveUserRankSelectProps) {
+export function PrimitivePreferenceImportanceSelect(
+	props: PrimitivePreferenceImportanceSelectProps,
+) {
 	const t = useTranslations();
 
 	function handleValueChange(nextValue: string) {
-		props.handleValueChange(nextValue as UserRank);
+		props.handleValueChange(nextValue as PreferenceImportance);
 	}
 
 	return (
@@ -33,13 +36,15 @@ export function PrimitiveUserRankSelect(props: PrimitiveUserRankSelectProps) {
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent className="max-h-64">
-						{(props.availableValues ?? Object.values(UserRank)).map((rank) => {
-							return (
-								<SelectItem value={rank} key={rank}>
-									{t(`UserRank.${rank}`)}
-								</SelectItem>
-							);
-						})}
+						{(props.availableValues ?? Object.values(PreferenceImportance)).map(
+							(importance) => {
+								return (
+									<SelectItem value={importance} key={importance}>
+										{t(`PreferenceImportance.${importance}`)}
+									</SelectItem>
+								);
+							},
+						)}
 					</SelectContent>
 				</Select>
 			</DirectionProvider>

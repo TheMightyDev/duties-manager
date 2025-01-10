@@ -7,6 +7,13 @@
 		"to": "to"
 	},
 	"User": {
+		"first-name": "first name",
+		"last-name": "last name",
+		"rank": "rank",
+		"phone-number": "phone number",
+		"gender": "gender",
+		"permanent-entry-date": "permanent entry date",
+		"admin-note": "note for admin",
 		"absence": "absence"
 	},
 	"NavigationTabs": {
@@ -85,6 +92,12 @@
   	"CAPTAIN": "captain",
   	"MAJOR": "major"
 	},
+	"PreferenceImportance": {
+		"PREFERS": "Prefers this range",
+		"PREFERS_NOT_TO": "Prefers not to",
+		"CANT": "Can't",
+		"HIGH_HESITATION": "Highly can't"
+	},
 	"Actions": {
 		"soon": "soon",
 		"new": "new!",
@@ -128,5 +141,9 @@
 			"title": "Change View",
 			"description": "change which duties are displayed"
 		}
+	},
+	"UserInfoEditor": {
+		"title": "Edit user info",
+		"description": "Edit basic info about the user"
 	}
 }
