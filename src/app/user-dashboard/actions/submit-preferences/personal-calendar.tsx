@@ -28,7 +28,7 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 		setProposedEventDatesSelection,
 		closeAddPreference,
 		selectedPreference,
-
+		selectedEvent,
 		selectedUserId,
 		handleUserIdChange,
 
@@ -73,6 +73,11 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 				className="shadow-xl shadow-black/20"
 				containerRef={floatingDialogRef}
 			>
+				{selectedEvent && (
+					<pre dir="ltr">
+						{JSON.stringify(selectedEvent.eventData, null, 2)}
+					</pre>
+				)}
 				{proposedEventDatesSelection && (
 					<PreferenceForm
 						userId="ofeks"

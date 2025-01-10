@@ -1,4 +1,4 @@
-import { type Preference } from "@prisma/client";
+import { type Period, type Preference } from "@prisma/client";
 
 interface RangeSelection<T> {
 	start: T;
@@ -20,4 +20,17 @@ export interface PreferenceOperations<ReturnType> {
 			id: string;
 		},
 	) => ReturnType;
+}
+
+export interface EventTaggedUnion {
+	kind: EventKind;
+	eventData: Partial<Preference> | Partial<Period>;
+}
+
+export enum EventKind {
+	PREFERENCE = "PREFERENCE",
+	NEW_PREFERENCE = "NEW_PREFERENCE",
+	ABSENCE = "ABSENCE",
+	DUTY_ASSIGNMENT = "DUTY_ASSIGNMENT",
+	DUTY_RESERVE = "DUTY_RESERVE",
 }
