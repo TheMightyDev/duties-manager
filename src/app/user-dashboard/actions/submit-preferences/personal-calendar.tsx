@@ -1,6 +1,7 @@
 "use client";
 
 import { FloatingDialog } from "@/app/_components/floating-dialog/floating-dialog";
+import { PreferenceForm } from "@/app/user-dashboard/actions/submit-preferences/components/preference-form";
 import { usePersonalCalendar } from "@/app/user-dashboard/actions/submit-preferences/use-personal-calendar";
 import { type PreferencesCalendarProps } from "@/app/user-dashboard/calendar/use-preferences-calendar";
 import heLocale from "@fullcalendar/core/locales/he";
@@ -17,6 +18,18 @@ export function PersonalCalendar({
 	deletePreference,
 	updatePreference,
 }: PreferencesCalendarProps) {
+	// const duration: z.infer<typeof SubmitPreferenceSchema> = {
+	// 	startDate: new Date("2024-10-05"),
+	// 	endDate: new Date("2024-10-03"),
+	// 	kind: PreferenceKind.APPOINTMENT,
+	// 	importance: PreferenceImportance.CANT,
+	// 	description: "woeee",
+	// };
+	
+	// const validation = SubmitPreferenceSchema.safeParse(duration);
+	
+	// console.log("@validation", validation);
+	
 	const {
 		fcEvents,
 		fcEventHandlers,
@@ -86,11 +99,16 @@ export function PersonalCalendar({
 				className="shadow-xl shadow-black/20"
 				containerRef={floatingDialogRef}
 			>
+				{
+					proposedEventDatesSelection &&
+					<PreferenceForm
+						startDate={proposedEventDatesSelection.start}
+						endDate={proposedEventDatesSelection.end}
+					/>
+				}
+				{/* p<br/>pp<br/>pp<br/>pp
 				p<br/>pp<br/>pp<br/>pp
-				p<br/>pp<br/>pp<br/>pp
-				p<br/>pp<br/>pp<br/>pp
-				p<br/>pp<br/>pp<br/>pp
-				p<br/>pp<br/>pp<br/>pp
+				p<br/>pp<br/>pp<br/>pp */}
 				{/* {
 					(!selectedPreference) &&
 					<AddPreference
