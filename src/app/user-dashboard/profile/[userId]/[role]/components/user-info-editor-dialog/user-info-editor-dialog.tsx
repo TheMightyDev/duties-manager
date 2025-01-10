@@ -45,7 +45,6 @@ export function UserInfoEditorDialog({
 		resolver: zodResolver(UserBasicInfoFormSchema),
 		defaultValues: {
 			...user,
-			permanentEntryDate: user.permanentEntryDate,
 		},
 	});
 

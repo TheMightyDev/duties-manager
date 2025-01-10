@@ -4,7 +4,9 @@
 		"past": "past",
 		"pts": "pts",
 		"from": "from ",
-		"to": "to"
+		"to": "to",
+		"start-date": "start date",
+		"end-date": "end date"
 	},
 	"User": {
 		"first-name": "first name",
@@ -145,5 +147,17 @@
 	"UserInfoEditor": {
 		"title": "Edit user info",
 		"description": "Edit basic info about the user"
+	},
+	"Preference": {
+		"importance": "importance level",
+		"kind": "kind",
+		"description": "description"
+	},
+	"PreferenceForm": {
+		"Errors": {
+			"startDateTooEarly": "The date cannot be before today",
+			"endDateTooLate": "The date is too late",
+			"endDateEarlier": "The end date must be after or on the same day as the start date"
+		}
 	}
 }
