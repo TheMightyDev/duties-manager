@@ -6,6 +6,9 @@
 		"from": "החל מ",
 		"to": "עד"
 	},
+	"User": {
+		"absence": "תקופת היעדרות"
+	},
 	"NavigationTabs": {
 		"calendar": "לוח שנה",
 		"my-profile": "הפרופיל שלי",

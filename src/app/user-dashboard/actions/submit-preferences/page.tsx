@@ -6,47 +6,52 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default async function SubmitPreferencesPage() {
 	const session = await auth();
-	
+
 	if (!session?.user) return <></>;
-	
-	const fetchPreferences = async ({ userId }: {
-		userId: string;
-	}) => {
+
+	const fetchPreferences = async ({ userId }: { userId: string }) => {
 		"use server";
-			
+
 		return await api.preference.getUserPreferencesById(userId);
 	};
-		
-	const initialPreferences = await fetchPreferences({
-		userId: session?.user.id,
-	});
+
+	const [initialPreferences, absences] = await Promise.all([
+		fetchPreferences({
+			userId: session?.user.id,
+		}),
+		api.user.getUserAbsences(session?.user.id),
+	]);
+
 	const createPreference = async (newPreference: Preference) => {
 		"use server";
-	
+
 		return await api.preference.create(newPreference);
 	};
-		
+
 	const deletePreference = async (params: { id: string }) => {
 		"use server";
-			
+
 		return await api.preference.delete(params);
 	};
-		
+
 	/** The argument must be an existing preference. the preference
-		 * with the same ID in the DB will be overrode.
-		 */
-	const updatePreference = async (updatedPreference: Partial<Preference> & {
-		id: string;
-	}) => {
+	 * with the same ID in the DB will be overrode.
+	 */
+	const updatePreference = async (
+		updatedPreference: Partial<Preference> & {
+			id: string;
+		},
+	) => {
 		"use server";
-			
+
 		return await api.preference.update(updatedPreference);
 	};
-	
+
 	return (
 		<div dir="ltr">
 			<PersonalCalendar
 				initialPreferences={initialPreferences}
+				absences={absences}
 				fetchPreferences={fetchPreferences}
 				createPreference={createPreference}
 				deletePreference={deletePreference}

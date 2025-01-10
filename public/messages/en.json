@@ -6,6 +6,9 @@
 		"from": "from ",
 		"to": "to"
 	},
+	"User": {
+		"absence": "absence"
+	},
 	"NavigationTabs": {
 		"calendar": "calendar",
 		"my-profile": "my profile",

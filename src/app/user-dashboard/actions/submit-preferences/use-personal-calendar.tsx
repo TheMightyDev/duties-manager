@@ -1,12 +1,28 @@
+"use client";
+
 import { type FloatingDialogData } from "@/app/_components/floating-dialog/floating-dialog";
 import { calcFloatingDialogLocation } from "@/app/_utils/floating-dialog-utils";
 import { preferenceImportanceEmojis } from "@/app/user-dashboard/calendar/preference-importance-emojis";
 import { preferenceKindsEmojis } from "@/app/user-dashboard/calendar/preference-kinds-emojis";
-import { type DatesSelection, type GetPreferenceParams, type PreferenceOperations } from "@/app/user-dashboard/types";
-import { type DateSelectArg, type DateSpanApi, type DatesSetArg, type EventClickArg, type EventDropArg, type EventInput, type EventMountArg, type OverlapFunc } from "@fullcalendar/core/index.js";
+import {
+	type DatesSelection,
+	type GetPreferenceParams,
+	type PreferenceOperations,
+} from "@/app/user-dashboard/types";
+import {
+	type DateSelectArg,
+	type DateSpanApi,
+	type DatesSetArg,
+	type EventClickArg,
+	type EventDropArg,
+	type EventInput,
+	type EventMountArg,
+	type OverlapFunc,
+} from "@fullcalendar/core/index.js";
 import { type DateClickArg } from "@fullcalendar/interaction";
-import { type Preference } from "@prisma/client";
+import { type Period, type Preference } from "@prisma/client";
 import { add, addDays, addMinutes, subMinutes } from "date-fns";
+import { useTranslations } from "next-intl";
 import React, { useRef, type ChangeEvent } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -24,17 +40,19 @@ interface RelevantFcEventHandlers {
 	eventOverlap: OverlapFunc;
 }
 
-export interface PreferencesCalendarProps extends PreferenceOperations<Promise<boolean>> {
+export interface PersonalCalendarProps
+	extends PreferenceOperations<Promise<boolean>> {
 	initialPreferences: Preference[];
+	absences: Period[];
 	fetchPreferences: (params: { userId: string }) => Promise<Preference[]>;
 }
 
-type Params = PreferencesCalendarProps;
+type Params = PersonalCalendarProps;
 
 interface Return {
 	fcEvents: EventInput[];
 	fcEventHandlers: RelevantFcEventHandlers;
-		
+
 	/** Wrappers for the CUD (without Read) operations on preferences, that both
 	 *
 	 * 1. Interact with the DB (the wrappers call these functions)
@@ -44,82 +62,97 @@ interface Return {
 	 */
 	preferenceOperationsWrappers: PreferenceOperations<void>;
 	getPreference: (params: GetPreferenceParams) => Preference | undefined;
-	
+
 	floatingDialogData: FloatingDialogData;
 	setIsFloatingDialogShown: (nextIsShown: boolean) => void;
 	isAddPreferenceDialogOpen: boolean;
 	proposedEventDatesSelection: DatesSelection | null;
-	setProposedEventDatesSelection: React.Dispatch<React.SetStateAction<DatesSelection | null>>;
+	setProposedEventDatesSelection: React.Dispatch<
+		React.SetStateAction<DatesSelection | null>
+	>;
 	closeAddPreference: () => void;
 	selectedPreference: Preference | undefined;
-	
+
 	selectedUserId: string;
 	handleUserIdChange: React.ChangeEventHandler<HTMLInputElement>;
-	
+
 	floatingDialogRef: React.RefObject<HTMLDivElement>;
 }
 
 export function usePersonalCalendar({
 	initialPreferences,
+	absences,
 	fetchPreferences,
 	createPreference,
 	updatePreference,
 	deletePreference,
 }: Params): Return {
+	const t = useTranslations();
 	/**
 	 * Mirrors the current preferences in the DB. Updated to avoid refetching after every operation.
 	 * We use `useImmer` because it eases updating the array by not creating an entirely new array on each manipulation
-	*/
-	const [ preferences, updatePreferences ] = useImmer<Preference[]>(initialPreferences);
+	 */
+	const [preferences, updatePreferences] =
+		useImmer<Preference[]>(initialPreferences);
 
-	const [ selectedPreferenceId, setSelectedPreferenceId ] = React.useState<string | null>(null);
-	
+	const [selectedPreferenceId, setSelectedPreferenceId] = React.useState<
+		string | null
+	>(null);
+
 	/**
 	 * If set (not `null`), it means the user selected a date range to potentially add a new preference in that date range.
 	 */
-	const [ proposedEventDatesSelection, setProposedEventDatesSelection ] = React.useState<DatesSelection | null>(null);
-	
-	const [ floatingDialogData, setFloatingDialogData ] = React.useState<FloatingDialogData>({
-		isShown: false,
-		widthPx: 300,
-		xOffsetPx: 0,
-		yOffsetPx: 0,
-	});
-	const [ isAddPreferenceDialogOpen, setIsAddPreferenceDialogOpen ] = React.useState<boolean>(false);
-	
+	const [proposedEventDatesSelection, setProposedEventDatesSelection] =
+		React.useState<DatesSelection | null>(null);
+
+	const [floatingDialogData, setFloatingDialogData] =
+		React.useState<FloatingDialogData>({
+			isShown: false,
+			widthPx: 300,
+			xOffsetPx: 0,
+			yOffsetPx: 0,
+		});
+	const [isAddPreferenceDialogOpen, setIsAddPreferenceDialogOpen] =
+		React.useState<boolean>(false);
+
 	/** Used for development, so the admin can easily add preferences for different users */
-	const [ selectedUserId, setSelectedUserId ] = React.useState<string>("user1");
-	
-	const preferencesFormattedForEvent = React.useMemo(
-		() => {
-			return preferences.map<EventInput>(({
-				id,
-				startDate,
-				endDate,
-				importance,
-				description,
-				kind,
-			}) => ({
+	const [selectedUserId, setSelectedUserId] = React.useState<string>("user1");
+
+	const preferencesFormattedForEvent = React.useMemo(() => {
+		return preferences.map<EventInput>(
+			({ id, startDate, endDate, importance, description, kind }) => ({
 				id: id,
 				allDay: true,
 				title: `${preferenceKindsEmojis[kind]} ${preferenceImportanceEmojis[importance]} ${description}`,
 				start: startDate,
 				end: endDate ? addMinutes(endDate, 1) : undefined,
-				
+
 				// TODO: Prevent editing of events that aren't preferences (e.g. duties, absences, reserves and more. Exemptions aren't shown!)
 				editable: true,
 				durationEditable: false,
-			}));
-		},
-		[ preferences ]
-	);
-	
+			}),
+		);
+	}, [preferences]);
+
+	const absencesFcEvents = React.useMemo(() => {
+		return absences.map<EventInput>((absence) => ({
+			id: absence.id,
+			title: `${t("User.absence")} - ${absence.description}`,
+			className: "bg-blue-200",
+			allDay: true,
+			start: absence.startDate,
+			end: addMinutes(absence.endDate, 1),
+			editable: false,
+		}));
+	}, [absences]);
+
 	const fcEvents = React.useMemo(() => {
 		if (proposedEventDatesSelection) {
 			console.log("datesSelection", proposedEventDatesSelection);
-			
+
 			return [
 				...preferencesFormattedForEvent,
+				...absencesFcEvents,
 				{
 					id: "placeholder",
 					title: "Placeholder",
@@ -132,10 +165,10 @@ export function usePersonalCalendar({
 				},
 			];
 		} else {
-			return preferencesFormattedForEvent;
+			return [...preferencesFormattedForEvent, ...absencesFcEvents];
 		}
-	}, [ preferencesFormattedForEvent, proposedEventDatesSelection ]);
-	
+	}, [preferencesFormattedForEvent, proposedEventDatesSelection]);
+
 	function getPreference({
 		datesSelection: { start, end },
 		excludedPreferenceId,
@@ -144,14 +177,14 @@ export function usePersonalCalendar({
 			if (excludedPreferenceId && preference.id === excludedPreferenceId) {
 				return false;
 			}
-			
+
 			// if (
 			// 	(!findEaseGuarding && preference.importance === PreferenceImportance.EASE_GUARDING) ||
 			// 	(findEaseGuarding && preference.importance !== PreferenceImportance.EASE_GUARDING)
 			// ) {
 			// 	return false;
 			// }
-			
+
 			// Preferences may not have an end date, because they're permanent exemptions.
 			// We want to ignore them, because we only look at actual preferences submitted by user (or absences)
 			if (preference.endDate) {
@@ -163,7 +196,7 @@ export function usePersonalCalendar({
 			}
 		});
 	}
-	
+
 	const preferenceOperationsWrappers: PreferenceOperations<void> = {
 		createPreference: (newPreference: Preference) => {
 			createPreference(newPreference).then(
@@ -176,18 +209,22 @@ export function usePersonalCalendar({
 				},
 				() => {
 					toast.error("הגשת ההסתייגות נכשלה");
-				}
+				},
 			);
 		},
-		updatePreference: (preferenceUpdates: Partial<Preference> & {
-			id: string;
-		}) => {
+		updatePreference: (
+			preferenceUpdates: Partial<Preference> & {
+				id: string;
+			},
+		) => {
 			updatePreference(preferenceUpdates).then(
 				() => {
 					toast.success("ההסתייגות עודכנה בהצלחה");
 					updatePreferences((draft) => {
-						const index = draft.findIndex((preference) => preference.id === preferenceUpdates.id);
-						
+						const index = draft.findIndex(
+							(preference) => preference.id === preferenceUpdates.id,
+						);
+
 						if (draft[index]) {
 							draft[index] = {
 								...draft[index],
@@ -198,7 +235,7 @@ export function usePersonalCalendar({
 				},
 				() => {
 					toast.error("עדכון ההסתייגות נכשל");
-				}
+				},
 			);
 		},
 		deletePreference: (params: { id: string }) => {
@@ -206,66 +243,67 @@ export function usePersonalCalendar({
 				() => {
 					toast.success("ההסתייגות נמחקה בהצלחה");
 					updatePreferences((draft) => {
-						const deletedPreferenceIndex = draft.findIndex((preference) => preference.id === params.id);
-						
+						const deletedPreferenceIndex = draft.findIndex(
+							(preference) => preference.id === params.id,
+						);
+
 						// Note: `splice` mutates the original array
 						draft.splice(deletedPreferenceIndex, 1);
 					});
 				},
 				() => {
 					toast.error("מחיקת ההסתייגות נכשלה");
-				}
+				},
 			);
 		},
 	};
-	
-	function openFloatingDialog({ rect }: {
-		rect: DOMRect;
-	}) {
+
+	function openFloatingDialog({ rect }: { rect: DOMRect }) {
 		setFloatingDialogData((prev) => {
 			return {
 				...prev,
 				isShown: true,
 				...calcFloatingDialogLocation({
 					eventMarkRect: rect,
-					floatingDialogRect: floatingDialogRef.current?.getBoundingClientRect(),
+					floatingDialogRect:
+						floatingDialogRef.current?.getBoundingClientRect(),
 				}),
 			};
 		});
-	};
-	
-	const selectedPreference = preferences.find((preference) => preference.id === selectedPreferenceId);
-	
+	}
+
+	const selectedPreference = preferences.find(
+		(preference) => preference.id === selectedPreferenceId,
+	);
+
 	function setIsFloatingDialogShown(nextIsShown: boolean) {
 		setFloatingDialogData((prev) => ({
 			...prev,
 			isShown: nextIsShown,
 		}));
 		setProposedEventDatesSelection(null);
-	};
-		
+	}
+
 	function closeAddPreference() {
 		setIsAddPreferenceDialogOpen(false);
 		setProposedEventDatesSelection(null);
 		setIsFloatingDialogShown(false);
-	};
-	
+	}
+
 	function handleUserIdChange(event: ChangeEvent<HTMLInputElement>) {
 		const nextUserId = "user" + event.target.value;
 		setSelectedUserId(nextUserId);
-		
+
 		fetchPreferences({
 			userId: nextUserId,
-		}).then(
-			(result) => {
-				updatePreferences((draft) => {
-					draft.length = 0;
-					draft.push(...result);
-				});
-			}
-		);
-	};
-	
+		}).then((result) => {
+			updatePreferences((draft) => {
+				draft.length = 0;
+				draft.push(...result);
+			});
+		});
+	}
+
 	const fcEventHandlers: RelevantFcEventHandlers = {
 		dateClick: (arg: DateClickArg) => {
 			if (arg.date <= addDays(new Date(), 1)) {
@@ -279,11 +317,11 @@ export function usePersonalCalendar({
 					minutes: -1,
 				}),
 			};
-			
+
 			const preferenceInDateRange = getPreference({
 				datesSelection: nextDatesSelection,
 			});
-			
+
 			if (!preferenceInDateRange) {
 				setSelectedPreferenceId(null);
 				setIsAddPreferenceDialogOpen(true);
@@ -297,7 +335,7 @@ export function usePersonalCalendar({
 					end: span.end,
 				},
 			});
-			
+
 			if (existingPreference) {
 				return false;
 			} else {
@@ -314,10 +352,10 @@ export function usePersonalCalendar({
 				// When we select a dates range in full calendar, the end date is midnight of the next selected date
 				end: subMinutes(arg.end, 1),
 			};
-			
+
 			setIsAddPreferenceDialogOpen(true);
 			setIsFloatingDialogShown(true);
-				
+
 			setProposedEventDatesSelection(nextDatesSelection);
 			// }
 		},
@@ -331,7 +369,7 @@ export function usePersonalCalendar({
 				setProposedEventDatesSelection(null);
 			}
 			setSelectedPreferenceId(preferenceId);
-			
+
 			const rect = arg.el.getBoundingClientRect();
 			openFloatingDialog({
 				rect,
@@ -342,9 +380,11 @@ export function usePersonalCalendar({
 		},
 		eventDrop: (arg: EventDropArg) => {
 			const affectedPreferenceId = arg.event.id;
-			const affectedPreferenceIndex = preferences.findIndex((preference) => preference.id === affectedPreferenceId)!;
+			const affectedPreferenceIndex = preferences.findIndex(
+				(preference) => preference.id === affectedPreferenceId,
+			)!;
 			const affectedPreference = preferences[affectedPreferenceIndex];
-			
+
 			if (arg.event.start && arg.event.end) {
 				const nextStartDate = arg.event.start;
 				const nextEndDate = subMinutes(arg.event.end, 1);
@@ -358,16 +398,14 @@ export function usePersonalCalendar({
 						id: affectedPreferenceId,
 						startDate: nextStartDate,
 						endDate: nextEndDate,
-					}).catch(
-						() => {
-							toast.error("עדכון התאריכים נכשל");
-						}
-					);
+					}).catch(() => {
+						toast.error("עדכון התאריכים נכשל");
+					});
 				}
-				
+
 				updatePreferences((draft) => {
 					const affected = draft[affectedPreferenceIndex];
-					
+
 					if (affected && arg.event.start && arg.event.end) {
 						affected.startDate = arg.event.start;
 						affected.endDate = subMinutes(arg.event.end, 1);
@@ -389,24 +427,24 @@ export function usePersonalCalendar({
 			// TODO: Perhaps we should show exemptions on the calendar?
 			return;
 			// const stillPreference = preferences.find((preference) => preference.id === stillEvent.id);
-			
+
 			// if (stillPreference) {
 			// 	return stillPreference.kind === PreferenceReason.EXEMPTION;
 			// }
-			
+
 			// return false;
 		},
 	};
-	
+
 	const floatingDialogRef = useRef<HTMLDivElement>(null);
-	
+
 	return {
 		fcEvents,
 		fcEventHandlers,
-		
+
 		preferenceOperationsWrappers,
 		getPreference,
-		
+
 		floatingDialogData,
 		setIsFloatingDialogShown,
 		isAddPreferenceDialogOpen,
@@ -414,10 +452,10 @@ export function usePersonalCalendar({
 		setProposedEventDatesSelection,
 		closeAddPreference,
 		selectedPreference,
-		
+
 		selectedUserId,
 		handleUserIdChange,
-		
+
 		floatingDialogRef,
 	};
-};
+}

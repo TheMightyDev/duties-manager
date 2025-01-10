@@ -1,4 +1,5 @@
 import { dutyRouter } from "@/server/api/routers/duty";
+import { eventRouter } from "@/server/api/routers/event";
 import { invitationRouter } from "@/server/api/routers/invitation";
 import { justiceRouter } from "@/server/api/routers/justice";
 import { possibleAssignmentsRouter } from "@/server/api/routers/possible-assignments";
@@ -17,6 +18,7 @@ import { createCallerFactory, createTRPCRouter } from "@/server/api/trpc";
 export const appRouter = createTRPCRouter({
 	user: userRouter,
 	post: postRouter,
+	event: eventRouter,
 	preference: preferenceRouter,
 	duty: dutyRouter,
 	justice: justiceRouter,

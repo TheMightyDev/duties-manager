@@ -2,8 +2,10 @@
 
 import { FloatingDialog } from "@/app/_components/floating-dialog/floating-dialog";
 import { PreferenceForm } from "@/app/user-dashboard/actions/submit-preferences/components/preference-form";
-import { usePersonalCalendar } from "@/app/user-dashboard/actions/submit-preferences/use-personal-calendar";
-import { type PreferencesCalendarProps } from "@/app/user-dashboard/calendar/use-preferences-calendar";
+import {
+	type PersonalCalendarProps,
+	usePersonalCalendar,
+} from "@/app/user-dashboard/actions/submit-preferences/use-personal-calendar";
 import heLocale from "@fullcalendar/core/locales/he";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
@@ -11,32 +13,14 @@ import FullCalendar from "@fullcalendar/react";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export function PersonalCalendar({
-	initialPreferences,
-	fetchPreferences,
-	createPreference,
-	deletePreference,
-	updatePreference,
-}: PreferencesCalendarProps) {
-	// const duration: z.infer<typeof SubmitPreferenceSchema> = {
-	// 	startDate: new Date("2024-10-05"),
-	// 	endDate: new Date("2024-10-03"),
-	// 	kind: PreferenceKind.APPOINTMENT,
-	// 	importance: PreferenceImportance.CANT,
-	// 	description: "woeee",
-	// };
-	
-	// const validation = SubmitPreferenceSchema.safeParse(duration);
-	
-	// console.log("@validation", validation);
-	
+export function PersonalCalendar(props: PersonalCalendarProps) {
 	const {
 		fcEvents,
 		fcEventHandlers,
-		
+
 		getPreference,
 		preferenceOperationsWrappers,
-		
+
 		floatingDialogData,
 		setIsFloatingDialogShown,
 		isAddPreferenceDialogOpen,
@@ -44,19 +28,13 @@ export function PersonalCalendar({
 		setProposedEventDatesSelection,
 		closeAddPreference,
 		selectedPreference,
-		
+
 		selectedUserId,
 		handleUserIdChange,
-		
+
 		floatingDialogRef,
-	} = usePersonalCalendar({
-		createPreference,
-		fetchPreferences,
-		updatePreference,
-		deletePreference,
-		initialPreferences,
-	});
-	
+	} = usePersonalCalendar(props);
+
 	return (
 		<>
 			<p>
@@ -72,24 +50,20 @@ export function PersonalCalendar({
 			<FullCalendar
 				events={fcEvents}
 				timeZone="UTC"
-				
 				showNonCurrentDates={true}
 				nextDayThreshold="11:00:00"
 				locale={heLocale}
-				plugins={[ dayGridPlugin, interactionPlugin ]}
+				plugins={[dayGridPlugin, interactionPlugin]}
 				initialView="dayGridMonth"
-				
 				editable={true}
 				eventDurationEditable={false}
 				selectable={true}
-				
 				{...fcEventHandlers}
-				
 				dayCellClassNames={(arg) => {
 					if (arg.date < new Date()) {
 						return "bg-slate-200";
 					}
-					
+
 					return "";
 				}}
 				height="85vh"
@@ -99,15 +73,14 @@ export function PersonalCalendar({
 				className="shadow-xl shadow-black/20"
 				containerRef={floatingDialogRef}
 			>
-				{
-					proposedEventDatesSelection &&
+				{proposedEventDatesSelection && (
 					<PreferenceForm
 						userId="ofeks"
 						startDate={proposedEventDatesSelection.start}
 						endDate={proposedEventDatesSelection.end}
 						createPreference={preferenceOperationsWrappers.createPreference}
 					/>
-				}
+				)}
 				{/* p<br/>pp<br/>pp<br/>pp
 				p<br/>pp<br/>pp<br/>pp
 				p<br/>pp<br/>pp<br/>pp */}
@@ -152,7 +125,7 @@ export function PersonalCalendar({
 					/>
 				} */}
 			</FloatingDialog>
-			
+
 			<ToastContainer
 				limit={2}
 				rtl={true}
@@ -168,4 +141,4 @@ export function PersonalCalendar({
 			</AcceptCloseDialog> */}
 		</>
 	);
-};
+}

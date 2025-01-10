@@ -5,17 +5,28 @@ import {
 	adminProcedure,
 	createTRPCRouter,
 	protectedProcedure,
-	publicProcedure
+	publicProcedure,
 } from "@/server/api/trpc";
 import { type UserWithPeriodsAndAssignments } from "@/server/api/types/user-with-periods-and-assignments";
 import { calcUserJustice } from "@/server/api/utils/calc-user-justice";
 import { UserBasicInfoFormSchema } from "@/types/forms/user-basic-info-form-schema";
 import { type RoleRecord, roleRecordSchema } from "@/types/user/role-record";
-import { PeriodStatus, type PrismaClient, type User, UserRole } from "@prisma/client";
+import {
+	PeriodStatus,
+	type PrismaClient,
+	type User,
+	UserRole,
+} from "@prisma/client";
 import { endOfDay } from "date-fns";
 import { PeriodSchema, UserSchema } from "prisma/generated/zod";
 
-async function fetchUsersByRole({ role, definitiveDate, ctxDb, includeExemptAndAbsentUsers, fetchPrivateDuties }: {
+async function fetchUsersByRole({
+	role,
+	definitiveDate,
+	ctxDb,
+	includeExemptAndAbsentUsers,
+	fetchPrivateDuties,
+}: {
 	ctxDb: PrismaClient;
 	role: UserRole;
 	definitiveDate: Date;
@@ -62,14 +73,12 @@ async function fetchUsersByRole({ role, definitiveDate, ctxDb, includeExemptAndA
 						requiredRoles: {
 							has: role,
 						},
-						...(
-							fetchPrivateDuties
-								? {}
-								// If we only fetch public duties, a requirement for the duty is to not be private
-								: {
+						...(fetchPrivateDuties
+							? {}
+							: // If we only fetch public duties, a requirement for the duty is to not be private
+								{
 									isPrivate: false,
-								}
-						),
+								}),
 					},
 				},
 			},
@@ -85,24 +94,24 @@ async function fetchUsersByRole({ role, definitiveDate, ctxDb, includeExemptAndA
 					},
 					role: role,
 					status: {
-						in: includeExemptAndAbsentUsers ? [
-							PeriodStatus.FULFILLS_ROLE,
-							PeriodStatus.TEMPORARILY_EXEMPT,
-							PeriodStatus.TEMPORARILY_ABSENT,
-						] : [
-							PeriodStatus.FULFILLS_ROLE,
-						],
+						in: includeExemptAndAbsentUsers
+							? [
+									PeriodStatus.FULFILLS_ROLE,
+									PeriodStatus.TEMPORARILY_EXEMPT,
+									PeriodStatus.TEMPORARILY_ABSENT,
+								]
+							: [PeriodStatus.FULFILLS_ROLE],
 					},
 				},
 			},
 		},
 	});
-	
+
 	// A duty may require more than one role (e.g. `SETTLEMENT_DEFENSE` may
 	// require both `OFFICER` and `COMMANDER`), but each assignment for a user
 	// can only belong to a single role (more specifically, to a single period).
 	// It's determined by the duty date.
-	
+
 	const usersWithEligibleAssignments = users.map((user) => ({
 		...user,
 		assignments: user.assignments.filter((assignment) => {
@@ -111,10 +120,11 @@ async function fetchUsersByRole({ role, definitiveDate, ctxDb, includeExemptAndA
 			 * Recall that we only fetch the periods when the user is
 			 * on a specific role!!
 			 */
-			const doesDutyBelongInAnyPeriod = user.periods.some((period) => (
-				dutyStartDate > period.startDate && dutyStartDate < period.endDate
-			));
-			
+			const doesDutyBelongInAnyPeriod = user.periods.some(
+				(period) =>
+					dutyStartDate > period.startDate && dutyStartDate < period.endDate,
+			);
+
 			return doesDutyBelongInAnyPeriod;
 		}),
 	}));
@@ -126,19 +136,19 @@ export const userRouter = createTRPCRouter({
 	getUserBasicInfoById: protectedProcedure
 		.input(z.string())
 		.output(UserSchema.nullable())
-		.query((async ({ ctx, input: userId }) => {
+		.query(async ({ ctx, input: userId }) => {
 			const user = await ctx.db.user.findUnique({
 				where: {
 					id: userId,
 				},
 			});
-			
+
 			return user;
-		})),
-		
+		}),
+
 	getUserFullNameById: protectedProcedure
 		.input(z.string())
-		.query((async ({ ctx, input: userId }) => {
+		.query(async ({ ctx, input: userId }) => {
 			const user = await ctx.db.user.findUnique({
 				select: {
 					firstName: true,
@@ -148,53 +158,60 @@ export const userRouter = createTRPCRouter({
 					id: userId,
 				},
 			});
-			
+
 			if (!user) {
 				return null;
 			}
-			
+
 			const fullName = user.firstName + " " + user.lastName;
-			
+
 			return fullName;
-		})),
-	
+		}),
+
 	getManyUsersJustice: publicProcedure
-		.input(z
-			.object({
+		.input(
+			z.object({
 				roles: z.array(z.nativeEnum(UserRole)),
 				definitiveDate: z.date(),
 				includeExemptAndAbsentUsers: z.boolean(),
-			}))
-		.query((async ({
-			ctx, input: {
-				definitiveDate: _definitiveDate,
-				roles,
-				includeExemptAndAbsentUsers,
-			},
-		}) => {
-			const isLoggedUserAdmin = Boolean(ctx.session?.user.isAdmin);
-			const definitiveDate = _definitiveDate ?? endOfDay(new Date());
-			
-			/** An array of arrays of users - all users in each nested array are of the same role */
-			const usersByRole = await Promise.all(
-				roles.map((role) => fetchUsersByRole({
-					ctxDb: ctx.db,
-					role,
-					definitiveDate,
+			}),
+		)
+		.query(
+			async ({
+				ctx,
+				input: {
+					definitiveDate: _definitiveDate,
+					roles,
 					includeExemptAndAbsentUsers,
-					fetchPrivateDuties: isLoggedUserAdmin,
-				}))
-			);
-			
-			const usersJustice = usersByRole.flat(1).map((user) => (
-				calcUserJustice({
-					userWithPeriodsAndAssignments: user,
-					definitiveDate,
-				})));
-				
-			return usersJustice;
-		})),
-	
+				},
+			}) => {
+				const isLoggedUserAdmin = Boolean(ctx.session?.user.isAdmin);
+				const definitiveDate = _definitiveDate ?? endOfDay(new Date());
+
+				/** An array of arrays of users - all users in each nested array are of the same role */
+				const usersByRole = await Promise.all(
+					roles.map((role) =>
+						fetchUsersByRole({
+							ctxDb: ctx.db,
+							role,
+							definitiveDate,
+							includeExemptAndAbsentUsers,
+							fetchPrivateDuties: isLoggedUserAdmin,
+						}),
+					),
+				);
+
+				const usersJustice = usersByRole.flat(1).map((user) =>
+					calcUserJustice({
+						userWithPeriodsAndAssignments: user,
+						definitiveDate,
+					}),
+				);
+
+				return usersJustice;
+			},
+		),
+
 	/**
 	 * This is a public procedure because it's called during login to cache the roles the user fulfilled in session!
 	 *
@@ -212,7 +229,7 @@ export const userRouter = createTRPCRouter({
 	 * [ {
 	 * 	role: UserRole.EXEMPT,
 	 * 	latestFulfilledRole: LAST_DAY_WAS_EXEMPT,
-   * }, {
+	 * }, {
 	 * 	role: UserRole.SQUAD,
 	 * 	latestFulfilledRole: TODAY,
 	 * } ]
@@ -221,9 +238,9 @@ export const userRouter = createTRPCRouter({
 	getAllUserRolesById: publicProcedure
 		.input(z.string())
 		.output(z.array(roleRecordSchema).nullable())
-		.query((async ({ ctx, input: userId }) => {
+		.query(async ({ ctx, input: userId }) => {
 			const todayEnd = endOfDay(new UTCDate());
-			
+
 			const userWithPeriods = await ctx.db.user.findUnique({
 				where: {
 					id: userId,
@@ -243,22 +260,25 @@ export const userRouter = createTRPCRouter({
 					},
 				},
 			});
-			
+
 			if (!userWithPeriods) {
 				return null;
 			}
-			
+
 			const fulfilledRolesSoFar: RoleRecord[] = [];
-			
+
 			userWithPeriods?.periods.forEach(({ role, endDate }) => {
 				const record = fulfilledRolesSoFar.find((curr) => curr.role === role);
-				
+
 				// We advance the endDate to be as latest as known
 				if (record) {
 					// If it's `null` - meaning that's the user current role and we stick to it.
-					record.latestFulfilledDate = record.latestFulfilledDate === null
-						? null
-						: endDate > todayEnd ? null : endDate;
+					record.latestFulfilledDate =
+						record.latestFulfilledDate === null
+							? null
+							: endDate > todayEnd
+								? null
+								: endDate;
 				} else {
 					fulfilledRolesSoFar.push({
 						role,
@@ -266,32 +286,37 @@ export const userRouter = createTRPCRouter({
 					});
 				}
 			});
-			
+
 			const fulfilledSorted = fulfilledRolesSoFar.sort((recordA, recordB) => {
 				if (recordA.latestFulfilledDate === null) return 1;
-				
+
 				if (recordB.latestFulfilledDate === null) return -1;
-				
-				return (recordA.latestFulfilledDate.getTime() > recordB.latestFulfilledDate.getTime()) ? 1 : -1;
+
+				return recordA.latestFulfilledDate.getTime() >
+					recordB.latestFulfilledDate.getTime()
+					? 1
+					: -1;
 			});
-			
+
 			console.log("@@fulfilledRolesSoFar", fulfilledSorted);
-			
+
 			return fulfilledSorted;
-		})),
-	
+		}),
+
 	/**
 	 * Returns all assignments of a specific user,
 	 * ordered from the latest duty to the oldest duty
 	 */
 	getUserAssignments: protectedProcedure
-		.input(z.object({
-			userId: z.string(),
-			role: z.nativeEnum(UserRole).optional(),
-		}))
-		.query((async ({ ctx, input: { userId, role } }) => {
+		.input(
+			z.object({
+				userId: z.string(),
+				role: z.nativeEnum(UserRole).optional(),
+			}),
+		)
+		.query(async ({ ctx, input: { userId, role } }) => {
 			const isLoggedUserAdmin = Boolean(ctx.session?.user.isAdmin);
-			
+
 			const userWithAssignments = await ctx.db.user.findUnique({
 				where: {
 					id: userId,
@@ -306,15 +331,13 @@ export const userRouter = createTRPCRouter({
 						},
 						// If `role` is `undefined` (which is possible), then it'd result in
 						// `where: {}` (empty object) which is illegal and yields runtime error!
-						...(
-							role
-								? {
+						...(role
+							? {
 									where: {
 										role,
 									},
 								}
-								: {}
-						),
+							: {}),
 						orderBy: [
 							{
 								startDate: "asc",
@@ -324,23 +347,19 @@ export const userRouter = createTRPCRouter({
 					assignments: {
 						where: {
 							duty: {
-								...(
-									role
-										? {
+								...(role
+									? {
 											requiredRoles: {
 												has: role,
 											},
 										}
-										: {}
-								),
-								...(
-									isLoggedUserAdmin
-										? {}
-										// If we only fetch public duties, a requirement for the duty is to not be private
-										: {
+									: {}),
+								...(isLoggedUserAdmin
+									? {}
+									: // If we only fetch public duties, a requirement for the duty is to not be private
+										{
 											isPrivate: false,
-										}
-								),
+										}),
 							},
 						},
 						include: {
@@ -352,38 +371,41 @@ export const userRouter = createTRPCRouter({
 									startDate: "desc",
 								},
 							},
-							
 						],
 					},
 				},
 			});
-			
+
 			// A duty may require more than one role, so a user can do a duty
 			// while they were in a specific role and then switched to another role,
 			// where that duty is still relevant.
 			// The duty from the previous role shouldn't be obtained.
-			const eligibleAssignments = userWithAssignments?.assignments.filter((assignment) => {
-				const dutyStartDate = assignment.duty.startDate;
-				/** Determines if a duty spans over one of the fetched periods.
+			const eligibleAssignments = userWithAssignments?.assignments.filter(
+				(assignment) => {
+					const dutyStartDate = assignment.duty.startDate;
+					/** Determines if a duty spans over one of the fetched periods.
 					 * Recall that we only fetch the periods when the user is
 					 * on a specific role!!
 					 */
-				const doesDutyBelongInAnyPeriod = userWithAssignments.periods.some((period) => (
-					dutyStartDate > period.startDate && dutyStartDate < period.endDate
-				));
-					
-				return doesDutyBelongInAnyPeriod;
-			});
-			
+					const doesDutyBelongInAnyPeriod = userWithAssignments.periods.some(
+						(period) =>
+							dutyStartDate > period.startDate &&
+							dutyStartDate < period.endDate,
+					);
+
+					return doesDutyBelongInAnyPeriod;
+				},
+			);
+
 			return eligibleAssignments;
-		})),
-	
+		}),
+
 	/** Returns all periods of a user ordered chronologically,
 	 * starting from the very first period and the last one.
 	 */
 	getUserPeriodsById: protectedProcedure
 		.input(z.string())
-		.query((async ({ ctx, input: userId }) => {
+		.query(async ({ ctx, input: userId }) => {
 			const userWithPeriods = await ctx.db.user.findUnique({
 				where: {
 					id: userId,
@@ -396,10 +418,10 @@ export const userRouter = createTRPCRouter({
 					},
 				},
 			});
-			
+
 			return userWithPeriods?.periods;
-		})),
-		
+		}),
+
 	/** Returns an object whose keys are full names of each
 	 * user in the organization, and values are the IDs.
 	 * E.g. a pair in this object can be:
@@ -407,30 +429,29 @@ export const userRouter = createTRPCRouter({
 	 * John Black - 8jhwsjsdr34
 	 * ```
 	 */
-	getAllUsersFullNameAndId: adminProcedure
-		.query((async ({ ctx }) => {
-			const allUsers = await ctx.db.user.findMany({
-				select: {
-					id: true,
-					firstName: true,
-					lastName: true,
-				},
-				where: {
-					organizationId: ctx.session.user.organizationId,
-				},
-			});
-			
-			/** An object where each key is a full name of a user in the organization and the value is its ID */
-			const allUsersIds: Record<string, User["id"]> = {};
-			
-			allUsers.forEach((user) => {
-				const fullName = user.firstName + " " + user.lastName;
-				allUsersIds[fullName] = user.id;
-			});
-			
-			return allUsersIds;
-		})),
-	
+	getAllUsersFullNameAndId: adminProcedure.query(async ({ ctx }) => {
+		const allUsers = await ctx.db.user.findMany({
+			select: {
+				id: true,
+				firstName: true,
+				lastName: true,
+			},
+			where: {
+				organizationId: ctx.session.user.organizationId,
+			},
+		});
+
+		/** An object where each key is a full name of a user in the organization and the value is its ID */
+		const allUsersIds: Record<string, User["id"]> = {};
+
+		allUsers.forEach((user) => {
+			const fullName = user.firstName + " " + user.lastName;
+			allUsersIds[fullName] = user.id;
+		});
+
+		return allUsersIds;
+	}),
+
 	/** Returns an object whose keys are phone numbers of each
 	 * user in the organization, and values are the full name of the phone owner.
 	 * Note that the phone number doesn't include dashes (-)
@@ -439,37 +460,38 @@ export const userRouter = createTRPCRouter({
 	 * 0521234567 - John Black
 	 * ```
 	 */
-	getAllUsersPhoneNumberAndFullName: adminProcedure
-		.query((async ({ ctx }) => {
-			const allUsers = await ctx.db.user.findMany({
-				select: {
-					id: true,
-					phoneNumber: true,
-					firstName: true,
-					lastName: true,
-				},
-				where: {
-					organizationId: ctx.session.user.organizationId,
-				},
-			});
-			
-			/** An object where each key is a phone number of a user in the organization and the value is its string */
-			const allUsersIds: Record<string, string> = {};
-			
-			allUsers.forEach((user) => {
-				const fullName = user.firstName + " " + user.lastName;
-				allUsersIds[user.phoneNumber.replaceAll("-", "")] = fullName;
-			});
-			
-			return allUsersIds;
-		})),
-		
+	getAllUsersPhoneNumberAndFullName: adminProcedure.query(async ({ ctx }) => {
+		const allUsers = await ctx.db.user.findMany({
+			select: {
+				id: true,
+				phoneNumber: true,
+				firstName: true,
+				lastName: true,
+			},
+			where: {
+				organizationId: ctx.session.user.organizationId,
+			},
+		});
+
+		/** An object where each key is a phone number of a user in the organization and the value is its string */
+		const allUsersIds: Record<string, string> = {};
+
+		allUsers.forEach((user) => {
+			const fullName = user.firstName + " " + user.lastName;
+			allUsersIds[user.phoneNumber.replaceAll("-", "")] = fullName;
+		});
+
+		return allUsersIds;
+	}),
+
 	replacePeriods: adminProcedure
-		.input(z.object({
-			userId: z.string(),
-			nextPeriods: z.array(PeriodSchema),
-		}))
-		.query((async ({ ctx, input }) => {
+		.input(
+			z.object({
+				userId: z.string(),
+				nextPeriods: z.array(PeriodSchema),
+			}),
+		)
+		.query(async ({ ctx, input }) => {
 			const oldPeriodsIds = (
 				await ctx.db.period.findMany({
 					select: {
@@ -480,11 +502,11 @@ export const userRouter = createTRPCRouter({
 					},
 				})
 			).map((period) => period.id);
-			
+
 			await ctx.db.period.createMany({
 				data: input.nextPeriods,
 			});
-			
+
 			await ctx.db.period.deleteMany({
 				where: {
 					id: {
@@ -492,21 +514,37 @@ export const userRouter = createTRPCRouter({
 					},
 				},
 			});
-		})),
-		
+		}),
+
 	updateUserInfo: adminProcedure
 		.input(UserBasicInfoFormSchema)
-		.query((async ({ ctx, input }) => {
-			const {
-				id,
-				...changes
-			} = input;
-			
+		.query(async ({ ctx, input }) => {
+			const { id, ...changes } = input;
+
 			return await ctx.db.user.update({
 				where: {
 					id,
 				},
 				data: changes,
 			});
-		})),
+		}),
+
+	/** Returns all absences of a user ordered chronologically,
+	 * starting from the very first absence and the last one.
+	 */
+	getUserAbsences: protectedProcedure
+		.input(z.string())
+		.query(async ({ ctx, input: userId }) => {
+			const absences = await ctx.db.period.findMany({
+				where: {
+					userId: userId,
+					status: PeriodStatus.TEMPORARILY_ABSENT,
+				},
+				orderBy: {
+					startDate: "asc",
+				},
+			});
+
+			return absences;
+		}),
 });
