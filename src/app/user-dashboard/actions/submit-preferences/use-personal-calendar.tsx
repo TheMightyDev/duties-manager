@@ -323,6 +323,18 @@ export function usePersonalCalendar({
 		});
 	}
 
+	const eventsByKind = {
+		[EventKind.PREFERENCE]: preferences,
+		[EventKind.ABSENCE]: absences,
+		[EventKind.DUTY_ASSIGNMENT]: preferences,
+		[EventKind.DUTY_RESERVE]: preferences,
+		[EventKind.NEW_PREFERENCE]: preferences,
+	} as const satisfies Record<
+		EventKind,
+		{
+			id: string;
+		}[]
+	>;
 	const fcEventHandlers: RelevantFcEventHandlers = {
 		dateClick: (arg: DateClickArg) => {
 			if (arg.date <= addDays(new Date(), 1)) {
@@ -377,32 +389,26 @@ export function usePersonalCalendar({
 			setIsFloatingDialogShown(true);
 
 			setProposedEventDatesSelection(nextDatesSelection);
-			// }
 		},
 		eventClick: (arg: EventClickArg) => {
-			const preferenceId = arg.event.id;
-			// setFloatingDialogData((prev) => ({
-			// 	...prev,
-			// 	title: "עריכת הסתייגות",
-			// }));
+			const clickedEventId = arg.event.id as string;
+			const clickedEventKind = arg.event.extendedProps.kind as EventKind;
 
-			if (preferenceId === "placeholder") {
-			} else {
+			if (clickedEventKind !== EventKind.NEW_PREFERENCE) {
 				setProposedEventDatesSelection(null);
-				const selectedPreference = preferences.find(
-					(preference) => preference.id === preferenceId,
+				const eventsOfKind = eventsByKind[clickedEventKind];
+
+				const clickedEventData = eventsOfKind.find(
+					(event) => event.id === clickedEventId,
 				);
 
-				console.log("@selectedPreference", preferences, preferenceId);
-
-				if (selectedPreference) {
+				if (clickedEventData) {
 					setSelectedEvent({
-						kind: EventKind.PREFERENCE,
-						eventData: selectedPreference,
+						kind: clickedEventKind,
+						eventData: clickedEventData,
 					});
 				}
 			}
-			setSelectedPreferenceId(preferenceId);
 
 			const rect = arg.el.getBoundingClientRect();
 			openFloatingDialog({
