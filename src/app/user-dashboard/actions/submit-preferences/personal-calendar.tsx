@@ -81,14 +81,13 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 				{proposedEventDatesSelection && (
 					<PreferenceForm
 						userId="ofeks"
-						startDate={proposedEventDatesSelection.start}
-						endDate={proposedEventDatesSelection.end}
+						datesSelection={proposedEventDatesSelection}
+						getPreference={getPreference}
+						setDatesSelection={setProposedEventDatesSelection}
+						isOpen={floatingDialogData.isShown}
 						createPreference={preferenceOperationsWrappers.createPreference}
 					/>
 				)}
-				{/* p<br/>pp<br/>pp<br/>pp
-				p<br/>pp<br/>pp<br/>pp
-				p<br/>pp<br/>pp<br/>pp */}
 				{/* {
 					(!selectedPreference) &&
 					<AddPreference

@@ -157,7 +157,8 @@
 		"Errors": {
 			"startDateTooEarly": "The date cannot be before today",
 			"endDateTooLate": "The date is too late",
-			"endDateEarlier": "The end date must be after or on the same day as the start date"
+			"endDateEarlier": "The end date must be after or on the same day as the start date",
+			"overlapping": "The preference overlaps with an existing event"
 		}
 	}
 }

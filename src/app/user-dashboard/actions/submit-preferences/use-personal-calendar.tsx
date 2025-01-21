@@ -197,10 +197,10 @@ export function usePersonalCalendar({
 		}
 	}, [preferencesFormattedForEvent, proposedEventDatesSelection]);
 
-	function getPreference({
+	const getPreference = ({
 		datesSelection: { start, end },
 		excludedPreferenceId,
-	}: GetPreferenceParams): Preference | undefined {
+	}: GetPreferenceParams): Preference | undefined => {
 		return preferences.find((preference) => {
 			if (excludedPreferenceId && preference.id === excludedPreferenceId) {
 				return false;
@@ -223,7 +223,7 @@ export function usePersonalCalendar({
 				);
 			}
 		});
-	}
+	};
 
 	const preferenceOperationsWrappers: PreferenceOperations<void> = {
 		createPreference: (newPreference: Preference) => {

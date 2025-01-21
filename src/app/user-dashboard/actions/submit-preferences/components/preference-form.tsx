@@ -11,6 +11,10 @@ import {
 	FormMessage,
 } from "@/app/_components/ui/form";
 import { Input } from "@/app/_components/ui/input";
+import {
+	type DatesSelection,
+	type GetPreferenceParams,
+} from "@/app/user-dashboard/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createId } from "@paralleldrive/cuid2";
 import {
@@ -25,7 +29,7 @@ import {
 	PreferenceImportanceSchema,
 	PreferenceKindSchema,
 } from "prisma/generated/zod";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 
@@ -69,11 +73,12 @@ const SubmitPreferenceSchema = DurationSchema.extend({
 type SubmitPreferenceType = z.infer<typeof SubmitPreferenceSchema>;
 
 interface PreferenceFormProps {
-	startDate: Date;
-	endDate: Date;
+	datesSelection: DatesSelection;
+	setDatesSelection: React.Dispatch<React.SetStateAction<DatesSelection>>;
 	userId: User["id"];
+	isOpen: boolean;
 	createPreference: (newPreference: Preference) => void;
-	// preference: Preference;
+	getPreference: (params: GetPreferenceParams) => Preference | undefined;
 }
 
 export function PreferenceForm(props: PreferenceFormProps) {
@@ -95,16 +100,16 @@ export function PreferenceForm(props: PreferenceFormProps) {
 	const { handleSubmit, formState } = form;
 
 	useEffect(() => {
-		if (props.startDate && props.endDate) {
+		if (props.datesSelection) {
 			form.reset({
-				startDate: props.startDate,
-				endDate: props.endDate,
+				startDate: props.datesSelection.start,
+				endDate: props.datesSelection.end,
 				importance: PreferenceImportance.CANT,
 				kind: PreferenceKind.APPOINTMENT,
 				description: "",
 			});
 		}
-	}, [props.startDate, props.endDate]);
+	}, [props.isOpen]);
 
 	console.log("@formState.errors", formState.errors);
 
@@ -121,6 +126,27 @@ export function PreferenceForm(props: PreferenceFormProps) {
 			description: data.description,
 		});
 	};
+
+	// TODO: Extend to check no overlapping with any event (not just preference)
+	// TODO: Adjust form to overlapping with an existing event
+	const validateNoEventOverlap = (datesSelection: DatesSelection) => {
+		const existingPreference = props.getPreference({
+			datesSelection,
+			excludedPreferenceId: "placeholder",
+		});
+
+		if (existingPreference) {
+			form.setError("endDate", {
+				message: "overlapping",
+			});
+		} else {
+			form.clearErrors("endDate");
+		}
+	};
+
+	useEffect(() => {
+		validateNoEventOverlap(props.datesSelection);
+	}, [props.datesSelection]);
 
 	return (
 		<Form {...form}>
@@ -140,9 +166,23 @@ export function PreferenceForm(props: PreferenceFormProps) {
 											? field.value.toISOString().substring(0, 10)
 											: ""
 									}
-									onChange={({ target: { value } }) =>
-										field.onChange(value === "" ? undefined : new Date(value))
-									}
+									onChange={({ target: { value } }) => {
+										const nextValue =
+											value === "" ? undefined : new Date(value);
+
+										if (nextValue) {
+											props.setDatesSelection((prev) => {
+												const next: DatesSelection = {
+													...prev,
+													start: nextValue,
+												};
+
+												return next;
+											});
+										}
+
+										field.onChange(nextValue);
+									}}
 								/>
 							</FormControl>
 
@@ -169,16 +209,27 @@ export function PreferenceForm(props: PreferenceFormProps) {
 											? field.value.toISOString().substring(0, 10)
 											: undefined
 									}
-									onChange={({ target: { value } }) =>
-										field.onChange(
+									onChange={({ target: { value } }) => {
+										const nextValue =
 											value === ""
 												? undefined
 												: add(new Date(value), {
 														days: 1,
 														minutes: -1,
-													}),
-										)
-									}
+													});
+
+										if (nextValue) {
+											props.setDatesSelection((prev) => {
+												const next: DatesSelection = {
+													...prev,
+													end: nextValue,
+												};
+
+												return next;
+											});
+										}
+										field.onChange(nextValue);
+									}}
 								/>
 							</FormControl>
 							{form.formState.errors.endDate &&
