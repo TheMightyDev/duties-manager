@@ -27,7 +27,13 @@ import { type DateClickArg } from "@fullcalendar/interaction";
 import { type Period, type Preference } from "@prisma/client";
 import { add, addDays, addMinutes, subMinutes } from "date-fns";
 import { useTranslations } from "next-intl";
-import React, { useRef, useState, type ChangeEvent } from "react";
+import React, {
+	useCallback,
+	useEffect,
+	useRef,
+	useState,
+	type ChangeEvent,
+} from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useImmer } from "use-immer";
@@ -107,6 +113,9 @@ export function usePersonalCalendar({
 	const [selectedPreferenceId, setSelectedPreferenceId] = useState<
 		string | null
 	>(null);
+
+	const [clickedEventBoundingClientRect, setClickedEventBoundingClientRect] =
+		useState<DOMRect | null>(null);
 
 	/**
 	 * If set (not `null`), it means the user selected a date range to potentially add a new preference in that date range.
@@ -277,7 +286,7 @@ export function usePersonalCalendar({
 		},
 	};
 
-	function openFloatingDialog({ rect }: { rect: DOMRect }) {
+	const openFloatingDialog = useCallback(({ rect }: { rect: DOMRect }) => {
 		setFloatingDialogData((prev) => {
 			return {
 				...prev,
@@ -289,7 +298,13 @@ export function usePersonalCalendar({
 				}),
 			};
 		});
-	}
+	}, []);
+
+	useEffect(() => {
+		if (!clickedEventBoundingClientRect) return;
+
+		openFloatingDialog({ rect: clickedEventBoundingClientRect });
+	}, [clickedEventBoundingClientRect]);
 
 	const selectedPreference = preferences.find(
 		(preference) => preference.id === selectedPreferenceId,
@@ -410,10 +425,9 @@ export function usePersonalCalendar({
 				}
 			}
 
+			/** The floating dialog opens later, in an effect, after the height was calculated */
 			const rect = arg.el.getBoundingClientRect();
-			openFloatingDialog({
-				rect,
-			});
+			setClickedEventBoundingClientRect(rect);
 		},
 		eventAllow: (dropInfo: DateSpanApi): boolean => {
 			return dropInfo.start > addDays(new Date(), 1);

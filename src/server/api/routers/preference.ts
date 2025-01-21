@@ -1,27 +1,14 @@
 import { z } from "zod";
 
-import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import {
+	createTRPCRouter,
+	protectedProcedure,
+	publicProcedure,
+} from "@/server/api/trpc";
 import { PreferenceSchema } from "prisma/generated/zod";
 
 export const preferenceRouter = createTRPCRouter({
-	getUserExemptionsById: publicProcedure
-		.input(z.string())
-		.query(async ({ ctx, input: userId }) => {
-			return ctx.db.preference.findMany({
-				where: {
-					userId,
-				},
-				select: {
-					id: true,
-					description: true,
-					importance: true,
-					startDate: true,
-					endDate: true,
-				},
-			});
-		}),
-
-	getUserPreferencesById: publicProcedure
+	getUserPreferencesById: protectedProcedure
 		.input(z.string())
 		.query(async ({ ctx, input: userId }) => {
 			return ctx.db.preference.findMany({

@@ -1,13 +1,16 @@
 "use client";
 
 import { PrimitivePreferenceImportanceSelect } from "@/app/_components/selects/primitive-preference-importance-select";
+import { PrimitivePreferenceKindSelect } from "@/app/_components/selects/primitive-preference-kind-select";
 import {
 	Form,
 	FormControl,
 	FormField,
 	FormItem,
 	FormLabel,
+	FormMessage,
 } from "@/app/_components/ui/form";
+import { Input } from "@/app/_components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createId } from "@paralleldrive/cuid2";
 import {
@@ -45,7 +48,7 @@ const PREFERENCE_DESCRIPTION_MIN_LENGTH = 4;
 const SubmitPreferenceSchema = DurationSchema.extend({
 	importance: PreferenceImportanceSchema,
 	kind: PreferenceKindSchema,
-	description: z.string().optional(),
+	description: z.string(),
 })
 	.refine((data) => new Date(data.endDate) > new Date(data.startDate), {
 		message: "endDateEarlier",
@@ -81,23 +84,24 @@ export function PreferenceForm(props: PreferenceFormProps) {
 			endDate: new Date(),
 			importance: PreferenceImportance.CANT,
 			kind: PreferenceKind.APPOINTMENT,
+			description: "",
 		},
 	});
 
 	const t = useTranslations();
+
+	const selectedImportance = form.watch("importance");
 
 	const { handleSubmit, formState } = form;
 
 	useEffect(() => {
 		if (props.startDate && props.endDate) {
 			form.reset({
-				// Error `startDate` is expected to be `Date`
 				startDate: props.startDate,
-				// No error, but `endDate` isn't visible on input
 				endDate: props.endDate,
 				importance: PreferenceImportance.CANT,
 				kind: PreferenceKind.APPOINTMENT,
-				description: "wowie",
+				description: "",
 			});
 		}
 	}, [props.startDate, props.endDate]);
@@ -106,17 +110,21 @@ export function PreferenceForm(props: PreferenceFormProps) {
 
 	const onSubmit: SubmitHandler<SubmitPreferenceType> = (data) => {
 		console.log("@submittedData", data);
+		if (data.importance === PreferenceImportance.PREFERS) {
+			data.kind = PreferenceKind.OTHER;
+		}
+
 		props.createPreference({
 			id: createId(),
 			userId: props.userId,
 			...data,
-			description: data.description ?? "",
+			description: data.description,
 		});
 	};
 
 	return (
 		<Form {...form}>
-			<form onSubmit={handleSubmit(onSubmit)}>
+			<form onSubmit={handleSubmit(onSubmit)} dir="rtl">
 				<FormField
 					control={form.control}
 					name="startDate"
@@ -189,7 +197,7 @@ export function PreferenceForm(props: PreferenceFormProps) {
 							<FormLabel>{t("Preference.importance")}</FormLabel>
 							<FormControl>
 								<PrimitivePreferenceImportanceSelect
-									defaultValue={field.value}
+									currentValue={field.value}
 									handleValueChange={field.onChange}
 								/>
 							</FormControl>
@@ -197,6 +205,37 @@ export function PreferenceForm(props: PreferenceFormProps) {
 					)}
 				/>
 
+				{selectedImportance !== PreferenceImportance.PREFERS && (
+					<FormField
+						control={form.control}
+						name="kind"
+						render={({ field }) => (
+							<FormItem>
+								<FormLabel>{t("Preference.kind")}</FormLabel>
+								<FormControl>
+									<PrimitivePreferenceKindSelect
+										currentValue={field.value}
+										handleValueChange={field.onChange}
+									/>
+								</FormControl>
+							</FormItem>
+						)}
+					/>
+				)}
+
+				<FormField
+					control={form.control}
+					name="description"
+					render={({ field }) => (
+						<FormItem>
+							<FormLabel>{t("Preference.description")}</FormLabel>
+							<FormControl>
+								<Input {...field} dir="rtl" />
+							</FormControl>
+							<FormMessage />
+						</FormItem>
+					)}
+				/>
 				<input type="submit" />
 			</form>
 		</Form>
