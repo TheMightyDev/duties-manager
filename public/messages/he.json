@@ -27,6 +27,7 @@
 	},
 	"FormInteractions": {
 		"cancel": "ביטול",
+		"submit": "הגשה",
 		"save-changes": "שמירת השינויים" 
 	},
   "UserRole": {

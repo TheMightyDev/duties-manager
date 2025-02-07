@@ -83,6 +83,7 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 						userId="ofeks"
 						datesSelection={proposedEventDatesSelection}
 						getPreference={getPreference}
+						closeDialog={closeAddPreference}
 						setDatesSelection={setProposedEventDatesSelection}
 						isOpen={floatingDialogData.isShown}
 						createPreference={preferenceOperationsWrappers.createPreference}

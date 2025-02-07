@@ -24,6 +24,7 @@ import {
 	type User,
 } from "@prisma/client";
 import { add, addMonths, endOfMonth } from "date-fns";
+import { X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import {
 	PreferenceImportanceSchema,
@@ -86,6 +87,7 @@ interface PreferenceFormProps {
 	setDatesSelection: React.Dispatch<React.SetStateAction<DatesSelection>>;
 	userId: User["id"];
 	isOpen: boolean;
+	closeDialog: () => void;
 	createPreference: (newPreference: Preference) => void;
 	getPreference: (params: GetPreferenceParams) => Preference | undefined;
 }
@@ -119,7 +121,7 @@ export function PreferenceForm(props: PreferenceFormProps) {
 			kind: PreferenceKind.APPOINTMENT,
 			description: "",
 		},
-		mode: "onChange",
+		mode: "onBlur",
 	});
 
 	const t = useTranslations();
@@ -181,6 +183,15 @@ export function PreferenceForm(props: PreferenceFormProps) {
 
 	return (
 		<Form {...form}>
+			<div>
+				<button
+					onClick={() => {
+						props.closeDialog();
+					}}
+				>
+					<X />
+				</button>
+			</div>
 			<form onSubmit={handleSubmit(onSubmit)} dir="rtl">
 				<FormField
 					control={form.control}
@@ -340,7 +351,12 @@ export function PreferenceForm(props: PreferenceFormProps) {
 						</FormItem>
 					)}
 				/>
-				<input type="submit" />
+				<div className="flex flex-row justify-end gap-1">
+					<button onClick={props.closeDialog}>
+						{t("FormInteractions.cancel")}
+					</button>
+					<input type="submit" value={t("FormInteractions.submit")} />
+				</div>
 			</form>
 		</Form>
 	);

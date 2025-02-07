@@ -27,6 +27,7 @@
 	},
 	"FormInteractions": {
 		"cancel": "cancel",
+		"submit": "submit",
 		"save-changes": "save changes" 
 	},
   "UserRole": {
