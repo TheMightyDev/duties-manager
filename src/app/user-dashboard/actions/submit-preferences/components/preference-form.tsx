@@ -30,7 +30,7 @@ import {
 	PreferenceImportanceSchema,
 	PreferenceKindSchema,
 } from "prisma/generated/zod";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 
@@ -83,8 +83,12 @@ const SubmitPreferenceSchema = DurationSchema.extend({
 type SubmitPreferenceType = z.infer<typeof SubmitPreferenceSchema>;
 
 interface PreferenceFormProps {
-	datesSelection: DatesSelection;
-	setDatesSelection: React.Dispatch<React.SetStateAction<DatesSelection>>;
+	/** The info about an existing preference (on edit), or placeholder data about a
+	 * preference that's about to be created (on add)
+	 */
+	initialPreferenceData: Preference;
+	// datesSelection: DatesSelection;
+	// setDatesSelection: React.Dispatch<React.SetStateAction<DatesSelection>>;
 	userId: User["id"];
 	isOpen: boolean;
 	closeDialog: () => void;
@@ -99,7 +103,7 @@ export function PreferenceForm(props: PreferenceFormProps) {
 				(arg) => {
 					const existingPreference = props.getPreference({
 						datesSelection: arg.datesSelection,
-						excludedPreferenceId: "placeholder",
+						excludedPreferenceId: "new-preference",
 					});
 
 					console.log("@existingPreference", existingPreference);
@@ -114,12 +118,10 @@ export function PreferenceForm(props: PreferenceFormProps) {
 		),
 		defaultValues: {
 			datesSelection: {
-				start: new Date(),
-				end: new Date(),
+				start: props.initialPreferenceData.startDate,
+				end: props.initialPreferenceData.endDate,
 			},
-			importance: PreferenceImportance.CANT,
-			kind: PreferenceKind.APPOINTMENT,
-			description: "",
+			...props.initialPreferenceData,
 		},
 		mode: "onBlur",
 	});
@@ -131,14 +133,14 @@ export function PreferenceForm(props: PreferenceFormProps) {
 	const { handleSubmit, formState } = form;
 
 	useEffect(() => {
-		console.log("@datesSelection", props.datesSelection);
-
-		if (props.datesSelection) {
-			form.resetField("datesSelection", {
-				defaultValue: props.datesSelection,
-			});
-		}
-	}, [props.datesSelection]);
+		form.reset({
+			datesSelection: {
+				start: props.initialPreferenceData.startDate,
+				end: props.initialPreferenceData.endDate,
+			},
+			...props.initialPreferenceData,
+		});
+	}, [props.initialPreferenceData]);
 
 	useEffect(() => {}, [props.isOpen]);
 
@@ -212,15 +214,6 @@ export function PreferenceForm(props: PreferenceFormProps) {
 										const nextValue =
 											value === "" ? undefined : new Date(value);
 
-										if (nextValue) {
-											const nextDatesSelection: DatesSelection = {
-												...props.datesSelection,
-												start: nextValue,
-											};
-											// validateNoEventOverlap(nextDatesSelection);
-											// props.setDatesSelection(nextDatesSelection);
-										}
-
 										field.onChange(nextValue);
 										// There's a bug with React Hook Form that errors found by zod schema violations aren't registered (even thought the check is made)
 										form.trigger();
@@ -280,15 +273,6 @@ export function PreferenceForm(props: PreferenceFormProps) {
 														days: 1,
 														minutes: -1,
 													});
-
-										if (nextValue) {
-											const nextDatesSelection: DatesSelection = {
-												...props.datesSelection,
-												end: nextValue,
-											};
-											// validateNoEventOverlap(nextDatesSelection);
-											// props.setDatesSelection(nextDatesSelection);
-										}
 
 										field.onChange(nextValue);
 

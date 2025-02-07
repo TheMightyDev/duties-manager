@@ -93,13 +93,14 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 						</pre>
 					</>
 				)}
-				{proposedEventDatesSelection && (
+				{selectedEvent?.kind === EventKind.NEW_PREFERENCE && (
 					<PreferenceForm
 						userId="ofeks"
-						datesSelection={proposedEventDatesSelection}
+						initialPreferenceData={selectedEvent.eventData}
+						// datesSelection={proposedEventDatesSelection}
 						getPreference={getPreference}
 						closeDialog={closeAddPreference}
-						setDatesSelection={setProposedEventDatesSelection}
+						// setDatesSelection={setProposedEventDatesSelection}
 						isOpen={floatingDialogData.isShown}
 						createPreference={preferenceOperationsWrappers.createPreference}
 					/>

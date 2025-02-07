@@ -25,7 +25,12 @@ import {
 	type OverlapFunc,
 } from "@fullcalendar/core/index.js";
 import { type DateClickArg } from "@fullcalendar/interaction";
-import { type Period, type Preference } from "@prisma/client";
+import {
+	PreferenceImportance,
+	PreferenceKind,
+	type Period,
+	type Preference,
+} from "@prisma/client";
 import { add, addDays, addMinutes, subMinutes } from "date-fns";
 import { useTranslations } from "next-intl";
 import React, {
@@ -175,9 +180,7 @@ export function usePersonalCalendar({
 	}, [absences]);
 
 	const fcEvents = React.useMemo(() => {
-		if (proposedEventDatesSelection) {
-			console.log("datesSelection", proposedEventDatesSelection);
-
+		if (selectedEvent?.kind === EventKind.NEW_PREFERENCE) {
 			return [
 				...preferencesFormattedForEvent,
 				...absencesFcEvents,
@@ -187,8 +190,8 @@ export function usePersonalCalendar({
 					className: "bg-blue-200",
 					color: "pink",
 					allDay: true,
-					start: proposedEventDatesSelection.start,
-					end: addMinutes(proposedEventDatesSelection.end, 1),
+					start: selectedEvent.eventData.startDate,
+					end: addMinutes(selectedEvent.eventData.endDate, 1),
 					editable: false,
 					extendedProps: {
 						kind: EventKind.NEW_PREFERENCE,
@@ -198,7 +201,7 @@ export function usePersonalCalendar({
 		} else {
 			return [...preferencesFormattedForEvent, ...absencesFcEvents];
 		}
-	}, [preferencesFormattedForEvent, proposedEventDatesSelection]);
+	}, [preferencesFormattedForEvent, selectedEvent]);
 
 	const getPreference = ({
 		datesSelection: { start, end },
@@ -236,7 +239,8 @@ export function usePersonalCalendar({
 					updatePreferences((draft) => {
 						draft.push(newPreference);
 					});
-					setProposedEventDatesSelection(null);
+					setSelectedEvent(null);
+					// setProposedEventDatesSelection(null);
 				},
 				() => {
 					toast.error("הגשת ההסתייגות נכשלה");
@@ -324,7 +328,8 @@ export function usePersonalCalendar({
 			...prev,
 			isShown: nextIsShown,
 		}));
-		setProposedEventDatesSelection(null);
+		setSelectedEvent(null);
+		// setProposedEventDatesSelection(null);
 	}
 
 	const unselectEventAndCloseDialog = () => {
@@ -334,7 +339,8 @@ export function usePersonalCalendar({
 
 	function closeAddPreference() {
 		setIsAddPreferenceDialogOpen(false);
-		setProposedEventDatesSelection(null);
+		setSelectedEvent(null);
+		// setProposedEventDatesSelection(null);
 		setIsFloatingDialogShown(false);
 	}
 
@@ -385,7 +391,19 @@ export function usePersonalCalendar({
 			if (!preferenceInDateRange) {
 				setSelectedPreferenceId(null);
 				setIsAddPreferenceDialogOpen(true);
-				setProposedEventDatesSelection(nextDatesSelection);
+				setSelectedEvent({
+					kind: EventKind.NEW_PREFERENCE,
+					eventData: {
+						id: "new-preference",
+						userId: "ofeks",
+						endDate: nextDatesSelection.end,
+						startDate: nextDatesSelection.start,
+						importance: PreferenceImportance.CANT,
+						kind: PreferenceKind.CELEBRATION,
+						description: "",
+					},
+				});
+				// setProposedEventDatesSelection(nextDatesSelection);
 			}
 		},
 		selectAllow: (span: DateSpanApi): boolean => {
@@ -407,7 +425,6 @@ export function usePersonalCalendar({
 				...prev,
 				isShown: false,
 			}));
-			setSelectedEvent(null);
 			const nextDatesSelection: DatesSelection = {
 				start: arg.start,
 				// When we select a dates range in full calendar, the end date is midnight of the next selected date
@@ -416,15 +433,27 @@ export function usePersonalCalendar({
 
 			setIsAddPreferenceDialogOpen(true);
 			setIsFloatingDialogShown(true);
+			setSelectedEvent({
+				kind: EventKind.NEW_PREFERENCE,
+				eventData: {
+					id: "new-preference",
+					description: "",
+					endDate: nextDatesSelection.end,
+					startDate: nextDatesSelection.start,
+					importance: PreferenceImportance.CANT,
+					kind: PreferenceKind.CELEBRATION,
+					userId: "ofeks",
+				},
+			});
 
-			setProposedEventDatesSelection(nextDatesSelection);
+			// setProposedEventDatesSelection(nextDatesSelection);
 		},
 		eventClick: (arg: EventClickArg) => {
 			const clickedEventId = arg.event.id as string;
 			const clickedEventKind = arg.event.extendedProps.kind as EventKind;
 
 			if (clickedEventKind !== EventKind.NEW_PREFERENCE) {
-				setProposedEventDatesSelection(null);
+				// setProposedEventDatesSelection(null);
 				const eventsOfKind = eventsByKind[clickedEventKind];
 
 				const clickedEventData = eventsOfKind.find(
@@ -439,7 +468,7 @@ export function usePersonalCalendar({
 				}
 			}
 
-			/** The floating dialog opens later, in an effect, after the height was calculated */
+			// The floating dialog opens later, in an effect, after the height was calculated
 			const rect = arg.el.getBoundingClientRect();
 			setClickedEventBoundingClientRect(rect);
 		},
@@ -456,12 +485,7 @@ export function usePersonalCalendar({
 			if (arg.event.start && arg.event.end) {
 				const nextStartDate = arg.event.start;
 				const nextEndDate = subMinutes(arg.event.end, 1);
-				if (affectedPreferenceId === "placeholder") {
-					setProposedEventDatesSelection({
-						start: nextStartDate,
-						end: nextEndDate,
-					});
-				} else if (affectedPreference) {
+				if (affectedPreference) {
 					updatePreference({
 						id: affectedPreferenceId,
 						startDate: nextStartDate,
@@ -487,14 +511,16 @@ export function usePersonalCalendar({
 			}
 		},
 		eventDidMount: (arg: EventMountArg) => {
-			if (arg.event.id === "placeholder") {
+			if (
+				(arg.event.extendedProps.kind as EventKind) === EventKind.NEW_PREFERENCE
+			) {
 				// A trick to trigger opening the floating dialog
 				arg.el.click();
 			}
 		},
 		datesSet: () => {
 			// This event fires when the user changes the view in the calendar (navigates to a different month)
-			setProposedEventDatesSelection(null);
+			setSelectedEvent(null);
 			setIsFloatingDialogShown(false);
 		},
 		eventOverlap: (stillEvent) => {

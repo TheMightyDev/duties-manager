@@ -22,10 +22,19 @@ export interface PreferenceOperations<ReturnType> {
 	) => ReturnType;
 }
 
-export interface EventTaggedUnion {
-	kind: EventKind;
-	eventData: Preference | Period;
-}
+export type EventTaggedUnion =
+	| {
+			kind: EventKind.PREFERENCE;
+			eventData: Preference;
+	  }
+	| {
+			kind: EventKind.NEW_PREFERENCE;
+			eventData: Preference;
+	  }
+	| {
+			kind: EventKind.ABSENCE;
+			eventData: Period;
+	  };
 
 export enum EventKind {
 	PREFERENCE = "PREFERENCE",
