@@ -37,14 +37,19 @@ type StartDateErrorMessageKey = "startDateTooEarly";
 type EndDateErrorMessageKey = "endDateTooLate" | "endDateEarlier";
 
 const DurationSchema = z.object({
-	startDate: z.coerce.date().refine((data) => data > new Date(), {
-		message: "startDateTooEarly",
-	}),
-	endDate: z.coerce
-		.date()
-		.refine((data) => new Date(data) <= endOfMonth(addMonths(new Date(), 1)), {
-			message: "endDateTooLate",
+	datesSelection: z.object({
+		start: z.coerce.date().refine((data) => data > new Date(), {
+			message: "startDateTooEarly",
 		}),
+		end: z.coerce
+			.date()
+			.refine(
+				(data) => new Date(data) <= endOfMonth(addMonths(new Date(), 1)),
+				{
+					message: "endDateTooLate",
+				},
+			),
+	}),
 });
 
 const PREFERENCE_DESCRIPTION_MIN_LENGTH = 4;
@@ -54,10 +59,14 @@ const SubmitPreferenceSchema = DurationSchema.extend({
 	kind: PreferenceKindSchema,
 	description: z.string(),
 })
-	.refine((data) => new Date(data.endDate) > new Date(data.startDate), {
-		message: "endDateEarlier",
-		path: ["endDate"],
-	})
+	.refine(
+		(data) =>
+			new Date(data.datesSelection.end) > new Date(data.datesSelection.start),
+		{
+			message: "endDateEarlier",
+			path: ["datesSelection.end"],
+		},
+	)
 	.refine(
 		(data) =>
 			data.importance !== PreferenceImportance.PREFERS
@@ -83,14 +92,34 @@ interface PreferenceFormProps {
 
 export function PreferenceForm(props: PreferenceFormProps) {
 	const form = useForm<SubmitPreferenceType>({
-		resolver: zodResolver(SubmitPreferenceSchema),
+		resolver: zodResolver(
+			SubmitPreferenceSchema.refine(
+				(arg) => {
+					const existingPreference = props.getPreference({
+						datesSelection: arg.datesSelection,
+						excludedPreferenceId: "placeholder",
+					});
+
+					console.log("@existingPreference", existingPreference);
+
+					return existingPreference === undefined;
+				},
+				{
+					message: "overlapping",
+					path: ["datesSelection.root"],
+				},
+			),
+		),
 		defaultValues: {
-			startDate: new Date(),
-			endDate: new Date(),
+			datesSelection: {
+				start: new Date(),
+				end: new Date(),
+			},
 			importance: PreferenceImportance.CANT,
 			kind: PreferenceKind.APPOINTMENT,
 			description: "",
 		},
+		mode: "onChange",
 	});
 
 	const t = useTranslations();
@@ -100,16 +129,16 @@ export function PreferenceForm(props: PreferenceFormProps) {
 	const { handleSubmit, formState } = form;
 
 	useEffect(() => {
+		console.log("@datesSelection", props.datesSelection);
+
 		if (props.datesSelection) {
-			form.reset({
-				startDate: props.datesSelection.start,
-				endDate: props.datesSelection.end,
-				importance: PreferenceImportance.CANT,
-				kind: PreferenceKind.APPOINTMENT,
-				description: "",
+			form.resetField("datesSelection", {
+				defaultValue: props.datesSelection,
 			});
 		}
-	}, [props.isOpen]);
+	}, [props.datesSelection]);
+
+	useEffect(() => {}, [props.isOpen]);
 
 	console.log("@formState.errors", formState.errors);
 
@@ -122,7 +151,10 @@ export function PreferenceForm(props: PreferenceFormProps) {
 		props.createPreference({
 			id: createId(),
 			userId: props.userId,
-			...data,
+			startDate: data.datesSelection.start,
+			endDate: data.datesSelection.end,
+			importance: data.importance,
+			kind: data.kind,
 			description: data.description,
 		});
 	};
@@ -134,26 +166,25 @@ export function PreferenceForm(props: PreferenceFormProps) {
 			datesSelection,
 			excludedPreferenceId: "placeholder",
 		});
-
 		if (existingPreference) {
-			form.setError("endDate", {
+			console.log("@error preference");
+
+			form.setError("datesSelection", {
 				message: "overlapping",
 			});
 		} else {
-			form.clearErrors("endDate");
+			console.log("@clearing end date errors");
+
+			form.clearErrors("datesSelection");
 		}
 	};
-
-	useEffect(() => {
-		validateNoEventOverlap(props.datesSelection);
-	}, [props.datesSelection]);
 
 	return (
 		<Form {...form}>
 			<form onSubmit={handleSubmit(onSubmit)} dir="rtl">
 				<FormField
 					control={form.control}
-					name="startDate"
+					name="datesSelection.start"
 					render={({ field }) => (
 						<FormItem>
 							<FormLabel>{t("General.start-date")}</FormLabel>
@@ -171,24 +202,24 @@ export function PreferenceForm(props: PreferenceFormProps) {
 											value === "" ? undefined : new Date(value);
 
 										if (nextValue) {
-											props.setDatesSelection((prev) => {
-												const next: DatesSelection = {
-													...prev,
-													start: nextValue,
-												};
-
-												return next;
-											});
+											const nextDatesSelection: DatesSelection = {
+												...props.datesSelection,
+												start: nextValue,
+											};
+											// validateNoEventOverlap(nextDatesSelection);
+											// props.setDatesSelection(nextDatesSelection);
 										}
 
 										field.onChange(nextValue);
+										// There's a bug with React Hook Form that errors found by zod schema violations aren't registered (even thought the check is made)
+										form.trigger();
 									}}
 								/>
 							</FormControl>
 
-							{form.formState.errors.startDate &&
+							{form.formState.errors.datesSelection &&
 								t(
-									`PreferenceForm.Errors.${form.formState.errors.startDate.message as StartDateErrorMessageKey}`,
+									`PreferenceForm.Errors.${form.formState.errors.datesSelection.root?.message as StartDateErrorMessageKey}`,
 								)}
 						</FormItem>
 					)}
@@ -196,7 +227,28 @@ export function PreferenceForm(props: PreferenceFormProps) {
 
 				<FormField
 					control={form.control}
-					name="endDate"
+					name="datesSelection.end"
+					// rules={{
+					// 	validate: {
+					// 		endDate: (endDate, { startDate }) => {
+					// 			const preference = props.getPreference({
+					// 				datesSelection: {
+					// 					start: startDate,
+					// 					end: endDate,
+					// 				},
+					// 				excludedPreferenceId: "placeholder",
+					// 			});
+
+					// 			console.log("@preference", preference);
+
+					// 			if (preference) {
+					// 				return "ohohoh";
+					// 			}
+
+					// 			return "meow";
+					// 		},
+					// 	},
+					// }}
 					render={({ field }) => (
 						<FormItem>
 							<FormLabel>{t("General.end-date")}</FormLabel>
@@ -219,22 +271,23 @@ export function PreferenceForm(props: PreferenceFormProps) {
 													});
 
 										if (nextValue) {
-											props.setDatesSelection((prev) => {
-												const next: DatesSelection = {
-													...prev,
-													end: nextValue,
-												};
-
-												return next;
-											});
+											const nextDatesSelection: DatesSelection = {
+												...props.datesSelection,
+												end: nextValue,
+											};
+											// validateNoEventOverlap(nextDatesSelection);
+											// props.setDatesSelection(nextDatesSelection);
 										}
+
 										field.onChange(nextValue);
+
+										form.trigger();
 									}}
 								/>
 							</FormControl>
-							{form.formState.errors.endDate &&
+							{form.formState.errors.datesSelection?.end?.message &&
 								t(
-									`PreferenceForm.Errors.${form.formState.errors.endDate.message as EndDateErrorMessageKey}`,
+									`PreferenceForm.Errors.${form.formState.errors.datesSelection?.end?.message as EndDateErrorMessageKey}`,
 								)}
 						</FormItem>
 					)}
