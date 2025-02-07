@@ -35,19 +35,14 @@ type StartDateErrorMessageKey = "startDateTooEarly";
 type EndDateErrorMessageKey = "endDateTooLate" | "endDateEarlier";
 
 const DurationSchema = z.object({
-	datesSelection: z.object({
-		start: z.coerce.date().refine((data) => data > new Date(), {
-			message: "startDateTooEarly",
-		}),
-		end: z.coerce
-			.date()
-			.refine(
-				(data) => new Date(data) <= endOfMonth(addMonths(new Date(), 1)),
-				{
-					message: "endDateTooLate",
-				},
-			),
+	startDate: z.coerce.date().refine((data) => data > new Date(), {
+		message: "startDateTooEarly",
 	}),
+	endDate: z.coerce
+		.date()
+		.refine((data) => new Date(data) <= endOfMonth(addMonths(new Date(), 1)), {
+			message: "endDateTooLate",
+		}),
 });
 
 const PREFERENCE_DESCRIPTION_MIN_LENGTH = 4;
@@ -57,14 +52,10 @@ const SubmitPreferenceSchema = DurationSchema.extend({
 	kind: PreferenceKindSchema,
 	description: z.string(),
 })
-	.refine(
-		(data) =>
-			new Date(data.datesSelection.end) > new Date(data.datesSelection.start),
-		{
-			message: "endDateEarlier",
-			path: ["datesSelection.end"],
-		},
-	)
+	.refine((data) => data.endDate > data.startDate, {
+		message: "endDateEarlier",
+		path: ["endDate"],
+	})
 	.refine(
 		(data) =>
 			data.importance !== PreferenceImportance.PREFERS
@@ -99,7 +90,10 @@ export function PreferenceForm(props: PreferenceFormProps) {
 			SubmitPreferenceSchema.refine(
 				(arg) => {
 					const existingPreference = props.getPreference({
-						datesSelection: arg.datesSelection,
+						datesSelection: {
+							start: arg.startDate,
+							end: arg.endDate,
+						},
 						excludedPreferenceId: "new-preference",
 					});
 
@@ -109,15 +103,11 @@ export function PreferenceForm(props: PreferenceFormProps) {
 				},
 				{
 					message: "overlapping",
-					path: ["datesSelection.root"],
+					path: ["endDate"],
 				},
 			),
 		),
 		defaultValues: {
-			datesSelection: {
-				start: props.initialPreferenceData.startDate,
-				end: props.initialPreferenceData.endDate,
-			},
 			...props.initialPreferenceData,
 		},
 		mode: "onBlur",
@@ -131,10 +121,6 @@ export function PreferenceForm(props: PreferenceFormProps) {
 
 	useEffect(() => {
 		form.reset({
-			datesSelection: {
-				start: props.initialPreferenceData.startDate,
-				end: props.initialPreferenceData.endDate,
-			},
 			...props.initialPreferenceData,
 		});
 	}, [props.initialPreferenceData]);
@@ -152,8 +138,8 @@ export function PreferenceForm(props: PreferenceFormProps) {
 		props.createPreference({
 			id: createId(),
 			userId: props.userId,
-			startDate: submittedData.datesSelection.start,
-			endDate: submittedData.datesSelection.end,
+			startDate: submittedData.startDate,
+			endDate: submittedData.endDate,
 			importance: submittedData.importance,
 			kind: submittedData.kind,
 			description: submittedData.description,
@@ -174,7 +160,7 @@ export function PreferenceForm(props: PreferenceFormProps) {
 			<form onSubmit={handleSubmit(onSubmit)} dir="rtl">
 				<FormField
 					control={form.control}
-					name="datesSelection.start"
+					name="startDate"
 					render={({ field }) => (
 						<FormItem>
 							<FormLabel>{t("General.start-date")}</FormLabel>
@@ -198,9 +184,9 @@ export function PreferenceForm(props: PreferenceFormProps) {
 								/>
 							</FormControl>
 
-							{form.formState.errors.datesSelection &&
+							{form.formState.errors.startDate &&
 								t(
-									`PreferenceForm.Errors.${form.formState.errors.datesSelection.root?.message as StartDateErrorMessageKey}`,
+									`PreferenceForm.Errors.${form.formState.errors.startDate.message as StartDateErrorMessageKey}`,
 								)}
 						</FormItem>
 					)}
@@ -208,28 +194,7 @@ export function PreferenceForm(props: PreferenceFormProps) {
 
 				<FormField
 					control={form.control}
-					name="datesSelection.end"
-					// rules={{
-					// 	validate: {
-					// 		endDate: (endDate, { startDate }) => {
-					// 			const preference = props.getPreference({
-					// 				datesSelection: {
-					// 					start: startDate,
-					// 					end: endDate,
-					// 				},
-					// 				excludedPreferenceId: "placeholder",
-					// 			});
-
-					// 			console.log("@preference", preference);
-
-					// 			if (preference) {
-					// 				return "ohohoh";
-					// 			}
-
-					// 			return "meow";
-					// 		},
-					// 	},
-					// }}
+					name="endDate"
 					render={({ field }) => (
 						<FormItem>
 							<FormLabel>{t("General.end-date")}</FormLabel>
@@ -257,9 +222,9 @@ export function PreferenceForm(props: PreferenceFormProps) {
 									}}
 								/>
 							</FormControl>
-							{form.formState.errors.datesSelection?.end?.message &&
+							{form.formState.errors.endDate?.message &&
 								t(
-									`PreferenceForm.Errors.${form.formState.errors.datesSelection?.end?.message as EndDateErrorMessageKey}`,
+									`PreferenceForm.Errors.${form.formState.errors.endDate?.message as EndDateErrorMessageKey}`,
 								)}
 						</FormItem>
 					)}

@@ -133,6 +133,7 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 				limit={2}
 				rtl={true}
 				position="bottom-left"
+				pauseOnFocusLoss={false}
 				toastClassName="bottom-10 md:bottom-0"
 			/>
 			{/* <AcceptCloseDialog
