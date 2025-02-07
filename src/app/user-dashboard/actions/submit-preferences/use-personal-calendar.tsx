@@ -1,6 +1,7 @@
 "use client";
 
 import { type FloatingDialogData } from "@/app/_components/floating-dialog/floating-dialog";
+import { TrashSvgIcon } from "@/app/_components/svg-icons/ui/trash-svg-icon";
 import { calcFloatingDialogLocation } from "@/app/_utils/floating-dialog-utils";
 import {
 	EventKind,
@@ -87,6 +88,8 @@ interface Return {
 	handleUserIdChange: React.ChangeEventHandler<HTMLInputElement>;
 
 	selectedEvent: EventTaggedUnion | null;
+	unselectEventAndCloseDialog: () => void;
+
 	floatingDialogRef: React.RefObject<HTMLDivElement>;
 }
 
@@ -269,7 +272,13 @@ export function usePersonalCalendar({
 		deletePreference: (params: { id: string }) => {
 			deletePreference(params).then(
 				() => {
-					toast.success("ההסתייגות נמחקה בהצלחה");
+					toast.success("ההסתייגות נמחקה בהצלחה", {
+						icon: (
+							<div className="rounded-full bg-green-500 p-1">
+								<TrashSvgIcon className="size-5 stroke-white" />
+							</div>
+						),
+					});
 					updatePreferences((draft) => {
 						const deletedPreferenceIndex = draft.findIndex(
 							(preference) => preference.id === params.id,
@@ -317,6 +326,11 @@ export function usePersonalCalendar({
 		}));
 		setProposedEventDatesSelection(null);
 	}
+
+	const unselectEventAndCloseDialog = () => {
+		setSelectedEvent(null);
+		setIsFloatingDialogShown(false);
+	};
 
 	function closeAddPreference() {
 		setIsAddPreferenceDialogOpen(false);
@@ -465,10 +479,16 @@ export function usePersonalCalendar({
 						affected.endDate = subMinutes(arg.event.end, 1);
 					}
 				});
+
+				// If the dropped event is the selected event
+				if (arg.event.id === selectedEvent?.eventData.id) {
+					setSelectedEvent(null);
+				}
 			}
 		},
 		eventDidMount: (arg: EventMountArg) => {
 			if (arg.event.id === "placeholder") {
+				// A trick to trigger opening the floating dialog
 				arg.el.click();
 			}
 		},
@@ -509,7 +529,9 @@ export function usePersonalCalendar({
 
 		selectedUserId,
 		handleUserIdChange,
+
 		selectedEvent,
+		unselectEventAndCloseDialog,
 
 		floatingDialogRef,
 	};

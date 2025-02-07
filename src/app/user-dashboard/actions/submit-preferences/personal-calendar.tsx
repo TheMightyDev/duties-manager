@@ -2,6 +2,8 @@
 
 import { FloatingDialog } from "@/app/_components/floating-dialog/floating-dialog";
 import { PreferenceForm } from "@/app/user-dashboard/actions/submit-preferences/components/preference-form";
+import { PreferenceInfo } from "@/app/user-dashboard/actions/submit-preferences/components/preference-info";
+import { EventKind } from "@/app/user-dashboard/actions/submit-preferences/types";
 import {
 	type PersonalCalendarProps,
 	usePersonalCalendar,
@@ -10,6 +12,7 @@ import heLocale from "@fullcalendar/core/locales/he";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import FullCalendar from "@fullcalendar/react";
+import { type Preference } from "@prisma/client";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -28,9 +31,11 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 		setProposedEventDatesSelection,
 		closeAddPreference,
 		selectedPreference,
-		selectedEvent,
 		selectedUserId,
 		handleUserIdChange,
+
+		selectedEvent,
+		unselectEventAndCloseDialog,
 
 		floatingDialogRef,
 	} = usePersonalCalendar(props);
@@ -46,7 +51,6 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 					onChange={handleUserIdChange}
 				/>
 			</p>
-			<h2 className="text-3xl font-bold">hey</h2>
 			<FullCalendar
 				events={fcEvents}
 				timeZone="UTC"
@@ -73,10 +77,21 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 				className="shadow-xl shadow-black/20"
 				containerRef={floatingDialogRef}
 			>
-				{selectedEvent && (
-					<pre dir="ltr">
-						{JSON.stringify(selectedEvent.eventData, null, 2)}
-					</pre>
+				{selectedEvent && selectedEvent.kind === EventKind.PREFERENCE && (
+					<>
+						<PreferenceInfo
+							preference={selectedEvent.eventData as Preference}
+							handleClose={unselectEventAndCloseDialog}
+							handleDeletePreference={() => {
+								preferenceOperationsWrappers.deletePreference({
+									id: selectedEvent.eventData.id,
+								});
+							}}
+						/>
+						<pre dir="ltr">
+							{JSON.stringify(selectedEvent.eventData, null, 2)}
+						</pre>
+					</>
 				)}
 				{proposedEventDatesSelection && (
 					<PreferenceForm

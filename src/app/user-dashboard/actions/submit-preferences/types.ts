@@ -24,7 +24,7 @@ export interface PreferenceOperations<ReturnType> {
 
 export interface EventTaggedUnion {
 	kind: EventKind;
-	eventData: Partial<Preference> | Partial<Period>;
+	eventData: Preference | Period;
 }
 
 export enum EventKind {
