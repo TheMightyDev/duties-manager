@@ -11,10 +11,7 @@ import {
 	FormMessage,
 } from "@/app/_components/ui/form";
 import { Input } from "@/app/_components/ui/input";
-import {
-	type DatesSelection,
-	type GetPreferenceParams,
-} from "@/app/user-dashboard/types";
+import { type GetPreferenceParams } from "@/app/user-dashboard/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createId } from "@paralleldrive/cuid2";
 import {
@@ -87,8 +84,6 @@ interface PreferenceFormProps {
 	 * preference that's about to be created (on add)
 	 */
 	initialPreferenceData: Preference;
-	// datesSelection: DatesSelection;
-	// setDatesSelection: React.Dispatch<React.SetStateAction<DatesSelection>>;
 	userId: User["id"];
 	isOpen: boolean;
 	closeDialog: () => void;
@@ -99,6 +94,8 @@ interface PreferenceFormProps {
 export function PreferenceForm(props: PreferenceFormProps) {
 	const form = useForm<SubmitPreferenceType>({
 		resolver: zodResolver(
+			// TODO: Extend to check no overlapping with any event (not just preference)
+			// TODO: Adjust form to overlapping with an existing event
 			SubmitPreferenceSchema.refine(
 				(arg) => {
 					const existingPreference = props.getPreference({
@@ -146,41 +143,21 @@ export function PreferenceForm(props: PreferenceFormProps) {
 
 	console.log("@formState.errors", formState.errors);
 
-	const onSubmit: SubmitHandler<SubmitPreferenceType> = (data) => {
-		console.log("@submittedData", data);
-		if (data.importance === PreferenceImportance.PREFERS) {
-			data.kind = PreferenceKind.OTHER;
+	const onSubmit: SubmitHandler<SubmitPreferenceType> = (submittedData) => {
+		console.log("@submittedData", submittedData);
+		if (submittedData.importance === PreferenceImportance.PREFERS) {
+			submittedData.kind = PreferenceKind.OTHER;
 		}
 
 		props.createPreference({
 			id: createId(),
 			userId: props.userId,
-			startDate: data.datesSelection.start,
-			endDate: data.datesSelection.end,
-			importance: data.importance,
-			kind: data.kind,
-			description: data.description,
+			startDate: submittedData.datesSelection.start,
+			endDate: submittedData.datesSelection.end,
+			importance: submittedData.importance,
+			kind: submittedData.kind,
+			description: submittedData.description,
 		});
-	};
-
-	// TODO: Extend to check no overlapping with any event (not just preference)
-	// TODO: Adjust form to overlapping with an existing event
-	const validateNoEventOverlap = (datesSelection: DatesSelection) => {
-		const existingPreference = props.getPreference({
-			datesSelection,
-			excludedPreferenceId: "placeholder",
-		});
-		if (existingPreference) {
-			console.log("@error preference");
-
-			form.setError("datesSelection", {
-				message: "overlapping",
-			});
-		} else {
-			console.log("@clearing end date errors");
-
-			form.clearErrors("datesSelection");
-		}
 	};
 
 	return (

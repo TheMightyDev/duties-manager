@@ -25,14 +25,7 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 		preferenceOperationsWrappers,
 
 		floatingDialogData,
-		setIsFloatingDialogShown,
-		isAddPreferenceDialogOpen,
-		proposedEventDatesSelection,
-		setProposedEventDatesSelection,
 		closeAddPreference,
-		selectedPreference,
-		selectedUserId,
-		handleUserIdChange,
 
 		selectedEvent,
 		unselectEventAndCloseDialog,
@@ -42,15 +35,6 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 
 	return (
 		<>
-			<p>
-				<label htmlFor="selected-user-id">User ID </label>
-				<input
-					value={Number(selectedUserId.replace("user", ""))}
-					type="number"
-					id="selected-user-id"
-					onChange={handleUserIdChange}
-				/>
-			</p>
 			<FullCalendar
 				events={fcEvents}
 				timeZone="UTC"
@@ -97,10 +81,8 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 					<PreferenceForm
 						userId="ofeks"
 						initialPreferenceData={selectedEvent.eventData}
-						// datesSelection={proposedEventDatesSelection}
 						getPreference={getPreference}
 						closeDialog={closeAddPreference}
-						// setDatesSelection={setProposedEventDatesSelection}
 						isOpen={floatingDialogData.isShown}
 						createPreference={preferenceOperationsWrappers.createPreference}
 					/>

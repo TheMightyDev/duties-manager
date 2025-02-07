@@ -82,10 +82,6 @@ interface Return {
 	floatingDialogData: FloatingDialogData;
 	setIsFloatingDialogShown: (nextIsShown: boolean) => void;
 	isAddPreferenceDialogOpen: boolean;
-	proposedEventDatesSelection: DatesSelection | null;
-	setProposedEventDatesSelection: React.Dispatch<
-		React.SetStateAction<DatesSelection | null>
-	>;
 	closeAddPreference: () => void;
 	selectedPreference: Preference | undefined;
 
@@ -124,12 +120,6 @@ export function usePersonalCalendar({
 
 	const [clickedEventBoundingClientRect, setClickedEventBoundingClientRect] =
 		useState<DOMRect | null>(null);
-
-	/**
-	 * If set (not `null`), it means the user selected a date range to potentially add a new preference in that date range.
-	 */
-	const [proposedEventDatesSelection, setProposedEventDatesSelection] =
-		React.useState<DatesSelection | null>(null);
 
 	const [floatingDialogData, setFloatingDialogData] =
 		React.useState<FloatingDialogData>({
@@ -240,7 +230,6 @@ export function usePersonalCalendar({
 						draft.push(newPreference);
 					});
 					setSelectedEvent(null);
-					// setProposedEventDatesSelection(null);
 				},
 				() => {
 					toast.error("הגשת ההסתייגות נכשלה");
@@ -329,7 +318,6 @@ export function usePersonalCalendar({
 			isShown: nextIsShown,
 		}));
 		setSelectedEvent(null);
-		// setProposedEventDatesSelection(null);
 	}
 
 	const unselectEventAndCloseDialog = () => {
@@ -340,7 +328,6 @@ export function usePersonalCalendar({
 	function closeAddPreference() {
 		setIsAddPreferenceDialogOpen(false);
 		setSelectedEvent(null);
-		// setProposedEventDatesSelection(null);
 		setIsFloatingDialogShown(false);
 	}
 
@@ -403,7 +390,6 @@ export function usePersonalCalendar({
 						description: "",
 					},
 				});
-				// setProposedEventDatesSelection(nextDatesSelection);
 			}
 		},
 		selectAllow: (span: DateSpanApi): boolean => {
@@ -445,15 +431,12 @@ export function usePersonalCalendar({
 					userId: "ofeks",
 				},
 			});
-
-			// setProposedEventDatesSelection(nextDatesSelection);
 		},
 		eventClick: (arg: EventClickArg) => {
 			const clickedEventId = arg.event.id as string;
 			const clickedEventKind = arg.event.extendedProps.kind as EventKind;
 
 			if (clickedEventKind !== EventKind.NEW_PREFERENCE) {
-				// setProposedEventDatesSelection(null);
 				const eventsOfKind = eventsByKind[clickedEventKind];
 
 				const clickedEventData = eventsOfKind.find(
@@ -548,8 +531,6 @@ export function usePersonalCalendar({
 		floatingDialogData,
 		setIsFloatingDialogShown,
 		isAddPreferenceDialogOpen,
-		proposedEventDatesSelection,
-		setProposedEventDatesSelection,
 		closeAddPreference,
 		selectedPreference,
 
