@@ -278,22 +278,17 @@ export function usePersonalCalendar({
 	};
 	const preferenceOperationsWrappers: PreferenceOperations<void> = {
 		createPreference: (newPreference: Preference) => {
-			const savingInfoToastId = toast.info(
-				t("PersonalCalendar.ToastMessages.submitProgress"),
-			);
 			addMirroredPreference(newPreference);
 			unselectEventAndCloseDialog();
-			createPreference(newPreference).then(
-				() => {
-					toast.dismiss(savingInfoToastId);
-					toast.success(t("PersonalCalendar.ToastMessages.submitSuccess"));
-				},
-				() => {
+			toast
+				.promise(createPreference(newPreference), {
+					pending: t("PersonalCalendar.ToastMessages.submitProgress"),
+					success: t("PersonalCalendar.ToastMessages.submitSuccess"),
+					error: t("PersonalCalendar.ToastMessages.submitFailure"),
+				})
+				.catch(() => {
 					deleteMirroredPreference({ id: newPreference.id });
-					toast.dismiss(savingInfoToastId);
-					toast.error(t("PersonalCalendar.ToastMessages.submitFailure"));
-				},
-			);
+				});
 		},
 		updatePreference: (
 			preferenceUpdates: Partial<Preference> & {
@@ -303,50 +298,51 @@ export function usePersonalCalendar({
 			const originalPreference = preferences.find(
 				(curr) => curr.id === preferenceUpdates.id,
 			);
-			if (!originalPreference) return;
-			const savingInfoToastId = toast.info(
-				t("PersonalCalendar.ToastMessages.updateProgress"),
-			);
+			if (!originalPreference) {
+				toast.error(t("PersonalCalendar.ToastMessages.updateFailure"));
+
+				return;
+			}
 			updateMirroredPreference(preferenceUpdates);
-			updatePreference(preferenceUpdates).then(
-				() => {
-					toast.dismiss(savingInfoToastId);
-					toast.success(t("PersonalCalendar.ToastMessages.updateSuccess"));
-				},
-				() => {
+			toast
+				.promise(updatePreference(preferenceUpdates), {
+					pending: t("PersonalCalendar.ToastMessages.updateProgress"),
+					success: t("PersonalCalendar.ToastMessages.updateSuccess"),
+					error: t("PersonalCalendar.ToastMessages.updateFailure"),
+				})
+				.catch(() => {
 					updateMirroredPreference(originalPreference);
-					toast.dismiss(savingInfoToastId);
-					toast.error(t("PersonalCalendar.ToastMessages.updateFailure"));
-				},
-			);
+				});
 		},
 		deletePreference: (params: { id: string }) => {
 			const deletedPreferenceIndex = preferences.findIndex(
 				(preference) => preference.id === params.id,
 			);
 			const deletedPreference = preferences[deletedPreferenceIndex];
-			if (!deletedPreference) return;
-			const savingInfoToastId = toast.info(
-				t("PersonalCalendar.ToastMessages.deleteProgress"),
-			);
+			if (!deletedPreference) {
+				toast.error("PersonalCalendar.ToastMessages.deleteFailure");
+
+				return;
+			}
 			deleteMirroredPreference(params);
-			deletePreference(params).then(
-				() => {
-					toast.dismiss(savingInfoToastId);
-					toast.success(t("PersonalCalendar.ToastMessages.deleteSuccess"), {
+			toast
+				.promise(deletePreference(params), {
+					pending: t("PersonalCalendar.ToastMessages.deleteProgress"),
+					success: {
+						render: () => {
+							return t("PersonalCalendar.ToastMessages.deleteSuccess");
+						},
 						icon: (
 							<div className="rounded-full bg-green-500 p-1">
 								<TrashSvgIcon className="size-5 stroke-white" />
 							</div>
 						),
-					});
-				},
-				() => {
+					},
+					error: t("PersonalCalendar.ToastMessages.deleteFailure"),
+				})
+				.catch(() => {
 					addMirroredPreference(deletedPreference);
-					toast.dismiss(savingInfoToastId);
-					toast.error(t("PersonalCalendar.ToastMessages.deleteFailure"));
-				},
-			);
+				});
 		},
 	};
 
