@@ -56,11 +56,7 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 				}}
 				height="85vh"
 			/>
-			<FloatingDialog
-				{...floatingDialogData}
-				className="shadow-xl shadow-black/20"
-				containerRef={floatingDialogRef}
-			>
+			<FloatingDialog {...floatingDialogData} containerRef={floatingDialogRef}>
 				{selectedEvent?.kind === EventKind.PREFERENCE && (
 					<PreferenceDialogContent
 						preference={selectedEvent.eventData}

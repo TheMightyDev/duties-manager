@@ -48,15 +48,13 @@ export default async function SubmitPreferencesPage() {
 	};
 
 	return (
-		<div dir="ltr">
-			<PersonalCalendar
-				initialPreferences={initialPreferences}
-				absences={absences}
-				fetchPreferences={fetchPreferences}
-				createPreference={createPreference}
-				deletePreference={deletePreference}
-				updatePreference={updatePreference}
-			/>
-		</div>
+		<PersonalCalendar
+			initialPreferences={initialPreferences}
+			absences={absences}
+			fetchPreferences={fetchPreferences}
+			createPreference={createPreference}
+			deletePreference={deletePreference}
+			updatePreference={updatePreference}
+		/>
 	);
 }

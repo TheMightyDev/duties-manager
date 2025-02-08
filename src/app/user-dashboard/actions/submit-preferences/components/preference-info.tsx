@@ -1,28 +1,19 @@
-import { TrashSvgIcon } from "@/app/_components/svg-icons/ui/trash-svg-icon";
 import { type Preference } from "@prisma/client";
+import { useTranslations } from "next-intl";
 
 interface PreferenceInfoProps {
 	preference: Preference;
-	handleClose: () => void;
-	handleDeletePreference: () => void;
 }
 
 export function PreferenceInfo(props: PreferenceInfoProps) {
+	const t = useTranslations();
 	const { preference } = props;
 
 	return (
-		<>
-			<div>
-				<button
-					onClick={() => {
-						props.handleDeletePreference();
-						props.handleClose();
-					}}
-				>
-					<TrashSvgIcon className="size-8 stroke-black" />
-				</button>
-			</div>
-			{preference.id}!{preference.description}
-		</>
+		<div className="flex flex-col gap-2">
+			<h3 className="text-lg font-semibold">{preference.description}</h3>
+			<p>{preference.kind}</p>
+			<p>{t(`PreferenceImportance.${preference.importance}`)}</p>
+		</div>
 	);
 }

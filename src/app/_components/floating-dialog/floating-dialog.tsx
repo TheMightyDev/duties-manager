@@ -30,21 +30,21 @@ export function FloatingDialog({
 	return (
 		<div
 			ref={containerRef}
-			className={
-				cn(
-					"fixed left-0 top-0 z-10 bg-white shadow-2xl shadow-black/50  md:rounded-xl",
-					isShown ? "visible opacity-100" : "invisible opacity-0",
-					className
-				)
-			}
+			className={cn(
+				"fixed left-0 top-0 z-10 shadow-md shadow-black/20 bg-event-background md:rounded-xl text-event-foreground",
+				isShown ? "visible opacity-100" : "invisible opacity-0",
+				className,
+			)}
 			style={{
 				width: isOnMobile ? "100vw" : `${widthPx}px`,
 				height: isOnMobile ? "100vh" : "fit-content",
-				transform: isOnMobile ? undefined : `translate(${xOffsetPx}px, ${yOffsetPx}px)`,
+				transform: isOnMobile
+					? undefined
+					: `translate(${xOffsetPx}px, ${yOffsetPx}px)`,
 				transition: `opacity 350ms, transform 350ms ${isShown ? "" : ", visibility 350ms"}`,
 			}}
 		>
 			{children}
 		</div>
 	);
-};
+}

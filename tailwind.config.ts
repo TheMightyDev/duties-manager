@@ -3,15 +3,15 @@ import { fontFamily } from "tailwindcss/defaultTheme";
 
 /** @type {import('tailwindcss').Config} */
 export default {
-	darkMode: [ "class" ],
-	content: [ "./src/**/*.tsx" ],
+	darkMode: ["class"],
+	content: ["./src/**/*.tsx"],
 	theme: {
 		extend: {
 			screens: {
-				"xs": "350px",
+				xs: "350px",
 			},
 			fontFamily: {
-				sans: [ "Assistant", ...fontFamily.sans ],
+				sans: ["Assistant", ...fontFamily.sans],
 			},
 			width: {
 				18: "4.5rem",
@@ -23,6 +23,8 @@ export default {
 				18: "4.5rem",
 			},
 			colors: {
+				"event-background": "#F0F3F8",
+				"event-foreground": "#3c3d41",
 				"role-squad": "#8843F2",
 				"role-officer": "#59D5E0",
 				"role-commander": "#FAA300",
@@ -102,5 +104,5 @@ export default {
 			},
 		},
 	},
-	plugins: [ require("tailwindcss-animate") ],
+	plugins: [require("tailwindcss-animate")],
 } satisfies Config;

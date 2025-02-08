@@ -1,6 +1,8 @@
 import { PenLineSvgIcon } from "@/app/_components/svg-icons/ui/pen-line-svg-icon";
 import { TrashSvgIcon } from "@/app/_components/svg-icons/ui/trash-svg-icon";
+import { IconButton } from "@/app/_components/ui/icon-button";
 import { PreferenceForm } from "@/app/user-dashboard/actions/submit-preferences/components/preference-form";
+import { PreferenceInfo } from "@/app/user-dashboard/actions/submit-preferences/components/preference-info";
 import {
 	type GetPreferenceParams,
 	type PreferenceOperations,
@@ -50,18 +52,26 @@ export function PreferenceDialogContent(props: PreferenceDialogContentProps) {
 	}, [props.preference]);
 
 	return (
-		<>
-			<button onClick={props.closeDialog}>
-				<X />
-			</button>
-			<button onClick={deletePreference}>
-				<TrashSvgIcon className="size-5 stroke-black" />
-			</button>
-			<button onClick={toggleEditMode}>
-				<PenLineSvgIcon className="size-5 stroke-black" />
-			</button>
+		<div className="p-2">
+			<div className="flex flex-row justify-end gap-1">
+				<IconButton
+					onClick={toggleEditMode}
+					icon={PenLineSvgIcon}
+					iconClassName="stroke-event-foreground"
+				/>
+				<IconButton
+					onClick={deletePreference}
+					icon={TrashSvgIcon}
+					iconClassName="stroke-event-foreground"
+				/>
+				<IconButton
+					onClick={props.closeDialog}
+					icon={X}
+					iconClassName="stroke-event-foreground"
+				/>
+			</div>
 			{mode === PreferenceDialogContentMode.VIEW && (
-				<div dir="ltr">{JSON.stringify(props.preference, null, 2)}</div>
+				<PreferenceInfo preference={props.preference} />
 			)}
 			{mode === PreferenceDialogContentMode.EDIT && (
 				<PreferenceForm
@@ -79,6 +89,6 @@ export function PreferenceDialogContent(props: PreferenceDialogContentProps) {
 					}}
 				/>
 			)}
-		</>
+		</div>
 	);
 }
