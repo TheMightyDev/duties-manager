@@ -74,7 +74,7 @@ interface Return {
 	getPreference: (params: GetPreferenceParams) => Preference | undefined;
 
 	floatingDialogData: FloatingDialogData;
-	setIsFloatingDialogShown: (nextIsShown: boolean) => void;
+	recalculateFloatingDialogPosition: () => void;
 
 	selectedEvent: EventTaggedUnion | null;
 	unselectEventAndCloseDialog: () => void;
@@ -102,7 +102,7 @@ export function usePersonalCalendar({
 		null,
 	);
 
-	const [clickedEventBoundingClientRect, setClickedEventBoundingClientRect] =
+	const [clickedEventElementBoundingRect, setClickedEventElementBoundingRect] =
 		useState<DOMRect | null>(null);
 
 	const [floatingDialogData, setFloatingDialogData] =
@@ -309,18 +309,36 @@ export function usePersonalCalendar({
 		});
 	}, []);
 
-	useEffect(() => {
-		if (!clickedEventBoundingClientRect) return;
+	const recalculateFloatingDialogPosition = () => {
+		console.log(
+			"@ClickedEventElementBoundingRect",
+			clickedEventElementBoundingRect,
+		);
 
-		openFloatingDialog({ rect: clickedEventBoundingClientRect });
-	}, [clickedEventBoundingClientRect]);
+		setClickedEventElementBoundingRect((prev) => {
+			if (prev) {
+				console.log("@prev", prev);
+
+				return DOMRect.fromRect(prev);
+			} else {
+				return null;
+			}
+		});
+		console.log("@recalculate...");
+	};
+
+	useEffect(() => {
+		if (!clickedEventElementBoundingRect) return;
+		console.log("@repositioning", clickedEventElementBoundingRect);
+
+		openFloatingDialog({ rect: clickedEventElementBoundingRect });
+	}, [clickedEventElementBoundingRect]);
 
 	function setIsFloatingDialogShown(nextIsShown: boolean) {
 		setFloatingDialogData((prev) => ({
 			...prev,
 			isShown: nextIsShown,
 		}));
-		setSelectedEvent(null);
 	}
 
 	const unselectEventAndCloseDialog = () => {
@@ -433,7 +451,7 @@ export function usePersonalCalendar({
 
 			// The floating dialog opens later, in an effect, after the height was calculated
 			const rect = arg.el.getBoundingClientRect();
-			setClickedEventBoundingClientRect(rect);
+			setClickedEventElementBoundingRect(rect);
 		},
 		eventAllow: (dropInfo: DateSpanApi): boolean => {
 			return dropInfo.start > addDays(new Date(), 1);
@@ -509,7 +527,7 @@ export function usePersonalCalendar({
 		getPreference,
 
 		floatingDialogData,
-		setIsFloatingDialogShown,
+		recalculateFloatingDialogPosition,
 
 		selectedEvent,
 		unselectEventAndCloseDialog,

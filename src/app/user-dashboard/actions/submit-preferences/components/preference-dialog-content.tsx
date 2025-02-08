@@ -7,11 +7,12 @@ import {
 } from "@/app/user-dashboard/types";
 import { type Preference } from "@prisma/client";
 import { X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface PreferenceDialogContentProps extends PreferenceOperations<void> {
 	preference: Preference;
 	getPreference: (params: GetPreferenceParams) => Preference | undefined;
+	recalculateFloatingDialogPosition: () => void;
 	closeDialog: () => void;
 }
 
@@ -35,14 +36,18 @@ export function PreferenceDialogContent(props: PreferenceDialogContentProps) {
 	};
 
 	const toggleEditMode = () => {
-		setMode((prev) => {
-			if (prev !== PreferenceDialogContentMode.EDIT) {
-				return PreferenceDialogContentMode.EDIT;
-			} else {
-				return PreferenceDialogContentMode.VIEW;
-			}
-		});
+		if (mode === PreferenceDialogContentMode.EDIT) {
+			setMode(PreferenceDialogContentMode.VIEW);
+			props.recalculateFloatingDialogPosition();
+		} else {
+			setMode(PreferenceDialogContentMode.EDIT);
+			props.recalculateFloatingDialogPosition();
+		}
 	};
+
+	useEffect(() => {
+		setMode(PreferenceDialogContentMode.VIEW);
+	}, [props.preference]);
 
 	return (
 		<>

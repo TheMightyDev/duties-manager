@@ -24,14 +24,13 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 		preferenceOperationsWrappers,
 
 		floatingDialogData,
+		recalculateFloatingDialogPosition,
 
 		selectedEvent,
 		unselectEventAndCloseDialog,
 
 		floatingDialogRef,
 	} = usePersonalCalendar(props);
-
-	preferenceOperationsWrappers.updatePreference;
 
 	return (
 		<>
@@ -66,6 +65,9 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 						preference={selectedEvent.eventData}
 						closeDialog={unselectEventAndCloseDialog}
 						getPreference={getPreference}
+						recalculateFloatingDialogPosition={
+							recalculateFloatingDialogPosition
+						}
 						{...preferenceOperationsWrappers}
 					/>
 					// <PreferenceInfo
