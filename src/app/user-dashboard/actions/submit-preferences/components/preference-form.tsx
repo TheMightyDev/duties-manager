@@ -11,7 +11,10 @@ import {
 	FormMessage,
 } from "@/app/_components/ui/form";
 import { Input } from "@/app/_components/ui/input";
-import { type GetPreferenceParams } from "@/app/user-dashboard/types";
+import {
+	type DatesSelection,
+	type GetPreferenceParams,
+} from "@/app/user-dashboard/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
 	PreferenceImportance,
@@ -74,6 +77,9 @@ export interface PreferenceFormProps {
 	 */
 	initialPreferenceData: Preference;
 	getPreference: (params: GetPreferenceParams) => Preference | undefined;
+	updateSelectedPreferenceDatesSelection: (
+		nextDatesSelection: Partial<DatesSelection>,
+	) => void;
 	/** A callback that closes the dialog.
 	 * If not provided, the button to close the dialog is not rendered
 	 */
@@ -118,8 +124,11 @@ export function PreferenceForm(props: PreferenceFormProps) {
 	const selectedImportance = form.watch("importance");
 
 	useEffect(() => {
-		form.reset({
-			...props.initialPreferenceData,
+		form.resetField("startDate", {
+			defaultValue: props.initialPreferenceData.startDate,
+		});
+		form.resetField("endDate", {
+			defaultValue: props.initialPreferenceData.endDate,
 		});
 	}, [props.initialPreferenceData]);
 
@@ -164,6 +173,9 @@ export function PreferenceForm(props: PreferenceFormProps) {
 											value === "" ? undefined : new Date(value);
 
 										field.onChange(nextValue);
+										props.updateSelectedPreferenceDatesSelection({
+											start: nextValue,
+										});
 										// There's a bug with React Hook Form that errors found by zod schema violations aren't registered (even thought the check is made)
 										form.trigger();
 									}}
@@ -201,8 +213,10 @@ export function PreferenceForm(props: PreferenceFormProps) {
 														days: 1,
 														minutes: -1,
 													});
-
 										field.onChange(nextValue);
+										props.updateSelectedPreferenceDatesSelection({
+											end: nextValue,
+										});
 
 										form.trigger();
 									}}

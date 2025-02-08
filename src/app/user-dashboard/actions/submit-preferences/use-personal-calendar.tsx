@@ -85,6 +85,9 @@ interface Return {
 	recalculateFloatingDialogPosition: () => void;
 
 	selectedEvent: EventTaggedUnion | null;
+	updateSelectedPreferenceDatesSelection: (
+		nextDatesSelection: Partial<DatesSelection>,
+	) => void;
 	unselectEventAndCloseDialog: () => void;
 
 	floatingDialogRef: React.RefObject<HTMLDivElement>;
@@ -192,6 +195,24 @@ export function usePersonalCalendar({
 		}
 	}, [preferencesFormattedForEvent, selectedEvent]);
 
+	const updateSelectedPreferenceDatesSelection = (
+		nextDatesSelection: Partial<DatesSelection>,
+	) => {
+		setSelectedEvent((prev) =>
+			prev &&
+			(prev.kind === EventKind.NEW_PREFERENCE ||
+				prev.kind === EventKind.PREFERENCE)
+				? {
+						kind: prev.kind,
+						eventData: {
+							...prev.eventData,
+							startDate: nextDatesSelection.start ?? prev.eventData.startDate,
+							endDate: nextDatesSelection.end ?? prev.eventData.endDate,
+						},
+					}
+				: null,
+		);
+	};
 	const getPreference = ({
 		datesSelection: { start, end },
 		excludedPreferenceId,
@@ -543,6 +564,7 @@ export function usePersonalCalendar({
 		recalculateFloatingDialogPosition,
 
 		selectedEvent,
+		updateSelectedPreferenceDatesSelection,
 		unselectEventAndCloseDialog,
 
 		floatingDialogRef,

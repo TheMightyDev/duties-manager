@@ -28,6 +28,7 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 		recalculateFloatingDialogPosition,
 
 		selectedEvent,
+		updateSelectedPreferenceDatesSelection,
 		unselectEventAndCloseDialog,
 
 		floatingDialogRef,
@@ -72,6 +73,9 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 					<PreferenceForm
 						initialPreferenceData={selectedEvent.eventData}
 						getPreference={getPreference}
+						updateSelectedPreferenceDatesSelection={
+							updateSelectedPreferenceDatesSelection
+						}
 						closeDialog={unselectEventAndCloseDialog}
 						handleCancel={unselectEventAndCloseDialog}
 						handleSubmit={(submittedData) => {
