@@ -161,5 +161,18 @@
 			"endDateEarlier": "The end date must be after or on the same day as the start date",
 			"overlapping": "The preference overlaps with an existing event"
 		}
+	},
+	"PersonalCalendar": {
+		"ToastMessages": {
+			"submitProgress": "Submitting...",
+			"submitSuccess": "Submitted preference",
+			"submitFailure": "Couldn't submit preference",
+			"updateProgress": "Updating...",
+			"updateSuccess": "Updated preference",
+			"updateFailure": "Couldn't update preference",
+			"deleteProgress": "Deleting...",
+			"deleteSuccess": "Preference deleted",
+			"deleteFailure": "Couldn't delete preference"
+		}
 	}
 }

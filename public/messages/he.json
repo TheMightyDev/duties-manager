@@ -161,5 +161,18 @@
 			"endDateEarlier": "התאריך חייב להיות אחרי או באותו יום כמו תאריך ההתחלה",
 			"overlapping": "ההעדפה חופפת עם אירוע קיים"
 		}
+	},
+	"PersonalCalendar": {
+		"ToastMessages": {
+			"submitProgress": "מגיש...",
+			"submitSuccess": "ההעדפה הוגשה",
+			"submitFailure": "הגשת ההעדפה נכשלה",
+			"updateProgress": "מעדכן...",
+			"updateSuccess": "ההעדפה עודכנה",
+			"updateFailure": "עדכון העדפה נכשל",
+			"deleteProgress": "מוחק...",
+			"deleteSuccess": "ההעדפה נמחקה",
+			"deleteFailure": "מחיקת ההעדפה נכשלה"
+		}
 	}
 }
