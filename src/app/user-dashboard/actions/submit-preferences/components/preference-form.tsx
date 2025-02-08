@@ -11,17 +11,12 @@ import {
 	FormMessage,
 } from "@/app/_components/ui/form";
 import { Input } from "@/app/_components/ui/input";
-import {
-	type GetPreferenceParams,
-	type PreferenceOperations,
-} from "@/app/user-dashboard/types";
+import { type GetPreferenceParams } from "@/app/user-dashboard/types";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createId } from "@paralleldrive/cuid2";
 import {
 	PreferenceImportance,
 	PreferenceKind,
 	type Preference,
-	type User,
 } from "@prisma/client";
 import { add, addMonths, endOfMonth } from "date-fns";
 import { X } from "lucide-react";
@@ -78,14 +73,13 @@ export interface PreferenceFormProps {
 	 * preference that's about to be created (on add)
 	 */
 	initialPreferenceData: Preference;
-	userId: User["id"];
-	createPreference?: PreferenceOperations<void>["createPreference"];
-	updatePreference?: PreferenceOperations<void>["updatePreference"];
 	getPreference: (params: GetPreferenceParams) => Preference | undefined;
 	/** A callback that closes the dialog.
 	 * If not provided, the button to close the dialog is not rendered
 	 */
 	closeDialog?: () => void;
+	handleCancel: () => void;
+	handleSubmit: (submittedData: SubmitPreferenceType) => void;
 }
 
 export function PreferenceForm(props: PreferenceFormProps) {
@@ -130,30 +124,10 @@ export function PreferenceForm(props: PreferenceFormProps) {
 	}, [props.initialPreferenceData]);
 
 	const onSubmit: SubmitHandler<SubmitPreferenceType> = (submittedData) => {
-		console.log("@submittedData", submittedData);
 		if (submittedData.importance === PreferenceImportance.PREFERS) {
 			submittedData.kind = PreferenceKind.OTHER;
 		}
-
-		if (props.createPreference) {
-			props.createPreference({
-				id: createId(),
-				userId: props.userId,
-				startDate: submittedData.startDate,
-				endDate: submittedData.endDate,
-				importance: submittedData.importance,
-				kind: submittedData.kind,
-				description: submittedData.description,
-			});
-
-			return;
-		}
-		if (props.updatePreference) {
-			props.updatePreference({
-				id: props.initialPreferenceData.id,
-				...submittedData,
-			});
-		}
+		props.handleSubmit(submittedData);
 	};
 
 	return (
@@ -290,7 +264,7 @@ export function PreferenceForm(props: PreferenceFormProps) {
 					)}
 				/>
 				<div className="flex flex-row justify-end gap-1">
-					<button onClick={props.closeDialog}>
+					<button onClick={props.handleCancel}>
 						{t("FormInteractions.cancel")}
 					</button>
 					<input type="submit" value={t("FormInteractions.submit")} />

@@ -12,6 +12,7 @@ import heLocale from "@fullcalendar/core/locales/he";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import FullCalendar from "@fullcalendar/react";
+import { createId } from "@paralleldrive/cuid2";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -70,23 +71,20 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 						}
 						{...preferenceOperationsWrappers}
 					/>
-					// <PreferenceInfo
-					// 	preference={selectedEvent.eventData as Preference}
-					// 	handleClose={unselectEventAndCloseDialog}
-					// 	handleDeletePreference={() => {
-					// 		preferenceOperationsWrappers.deletePreference({
-					// 			id: selectedEvent.eventData.id,
-					// 		});
-					// 	}}
-					// />
 				)}
 				{selectedEvent?.kind === EventKind.NEW_PREFERENCE && (
 					<PreferenceForm
-						userId="ofeks"
 						initialPreferenceData={selectedEvent.eventData}
 						getPreference={getPreference}
 						closeDialog={unselectEventAndCloseDialog}
-						createPreference={preferenceOperationsWrappers.createPreference}
+						handleCancel={unselectEventAndCloseDialog}
+						handleSubmit={(submittedData) => {
+							preferenceOperationsWrappers.createPreference({
+								id: createId(),
+								userId: "ofeks",
+								...submittedData,
+							});
+						}}
 					/>
 				)}
 			</FloatingDialog>

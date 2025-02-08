@@ -238,10 +238,11 @@ export function usePersonalCalendar({
 	const preferenceOperationsWrappers: PreferenceOperations<void> = {
 		createPreference: (newPreference: Preference) => {
 			addMirroredPreference(newPreference);
+			unselectEventAndCloseDialog();
+
 			createPreference(newPreference).then(
 				() => {
 					toast.success("ההסתייגות הוגשה בהצלחה");
-					unselectEventAndCloseDialog();
 				},
 				() => {
 					deleteMirroredPreference({ id: newPreference.id });

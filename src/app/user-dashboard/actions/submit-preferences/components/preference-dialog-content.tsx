@@ -65,13 +65,18 @@ export function PreferenceDialogContent(props: PreferenceDialogContentProps) {
 			)}
 			{mode === PreferenceDialogContentMode.EDIT && (
 				<PreferenceForm
-					userId="ofeks"
-					updatePreference={(preference) => {
-						props.updatePreference(preference);
+					initialPreferenceData={props.preference}
+					getPreference={props.getPreference}
+					handleCancel={() => {
+						toggleEditMode();
+					}}
+					handleSubmit={(submittedData) => {
+						props.updatePreference({
+							id: props.preference.id,
+							...submittedData,
+						});
 						props.closeDialog();
 					}}
-					getPreference={props.getPreference}
-					initialPreferenceData={props.preference}
 				/>
 			)}
 		</>
