@@ -278,15 +278,17 @@ export function usePersonalCalendar({
 	};
 	const preferenceOperationsWrappers: PreferenceOperations<void> = {
 		createPreference: (newPreference: Preference) => {
+			const savingInfoToastId = toast.info("שומר...", {});
 			addMirroredPreference(newPreference);
 			unselectEventAndCloseDialog();
-
 			createPreference(newPreference).then(
 				() => {
-					toast.success("ההסתייגות הוגשה בהצלחה");
+					toast.dismiss(savingInfoToastId);
+					toast.success("ההסתייגות הוגשה בהצלחה", {});
 				},
 				() => {
 					deleteMirroredPreference({ id: newPreference.id });
+					toast.dismiss(savingInfoToastId);
 					toast.error("הגשת ההסתייגות נכשלה");
 				},
 			);
@@ -300,13 +302,16 @@ export function usePersonalCalendar({
 				(curr) => curr.id === preferenceUpdates.id,
 			);
 			if (!originalPreference) return;
+			const savingInfoToastId = toast.info("שומר...", {});
 			updateMirroredPreference(preferenceUpdates);
 			updatePreference(preferenceUpdates).then(
 				() => {
+					toast.dismiss(savingInfoToastId);
 					toast.success("ההסתייגות עודכנה בהצלחה");
 				},
 				() => {
 					updateMirroredPreference(originalPreference);
+					toast.dismiss(savingInfoToastId);
 					toast.error("עדכון ההסתייגות נכשל");
 				},
 			);
@@ -317,10 +322,11 @@ export function usePersonalCalendar({
 			);
 			const deletedPreference = preferences[deletedPreferenceIndex];
 			if (!deletedPreference) return;
+			const savingInfoToastId = toast.info("שומר שינויים", {});
 			deleteMirroredPreference(params);
-
 			deletePreference(params).then(
 				() => {
+					toast.dismiss(savingInfoToastId);
 					toast.success("ההסתייגות נמחקה בהצלחה", {
 						icon: (
 							<div className="rounded-full bg-green-500 p-1">
@@ -331,6 +337,7 @@ export function usePersonalCalendar({
 				},
 				() => {
 					addMirroredPreference(deletedPreference);
+					toast.dismiss(savingInfoToastId);
 					toast.error("מחיקת ההסתייגות נכשלה");
 				},
 			);
