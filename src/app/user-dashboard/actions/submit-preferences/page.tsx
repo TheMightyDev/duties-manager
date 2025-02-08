@@ -17,9 +17,9 @@ export default async function SubmitPreferencesPage() {
 
 	const [initialPreferences, absences] = await Promise.all([
 		fetchPreferences({
-			userId: session?.user.id,
+			userId: session.user.id,
 		}),
-		api.user.getUserAbsences(session?.user.id),
+		api.user.getUserAbsences(session.user.id),
 	]);
 
 	const createPreference = async (newPreference: Preference) => {
@@ -51,6 +51,7 @@ export default async function SubmitPreferencesPage() {
 		<PersonalCalendar
 			initialPreferences={initialPreferences}
 			absences={absences}
+			userId={session.user.id}
 			fetchPreferences={fetchPreferences}
 			createPreference={createPreference}
 			deletePreference={deletePreference}

@@ -77,7 +77,7 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 						handleSubmit={(submittedData) => {
 							preferenceOperationsWrappers.createPreference({
 								id: createId(),
-								userId: "ofeks",
+								userId: props.userId,
 								...submittedData,
 							});
 						}}

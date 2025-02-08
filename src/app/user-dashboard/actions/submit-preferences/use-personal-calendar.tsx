@@ -30,10 +30,17 @@ import {
 	PreferenceKind,
 	type Period,
 	type Preference,
+	type User,
 } from "@prisma/client";
 import { add, addDays, addMinutes, subMinutes } from "date-fns";
 import { useTranslations } from "next-intl";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, {
+	useCallback,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useImmer } from "use-immer";
@@ -55,6 +62,7 @@ export interface PersonalCalendarProps
 	initialPreferences: Preference[];
 	absences: Period[];
 	fetchPreferences: (params: { userId: string }) => Promise<Preference[]>;
+	userId: User["id"];
 }
 
 type Params = PersonalCalendarProps;
@@ -112,6 +120,18 @@ export function usePersonalCalendar({
 			xOffsetPx: 0,
 			yOffsetPx: 0,
 		});
+
+	const defaultPreference = useMemo(
+		() =>
+			({
+				id: "new-preference",
+				userId: "",
+				importance: PreferenceImportance.CANT,
+				kind: PreferenceKind.CELEBRATION,
+				description: "",
+			}) as const satisfies Partial<Preference>,
+		[],
+	);
 
 	const preferencesFormattedForEvent = React.useMemo(() => {
 		return preferences.map<EventInput>(
@@ -381,13 +401,9 @@ export function usePersonalCalendar({
 				setSelectedEvent({
 					kind: EventKind.NEW_PREFERENCE,
 					eventData: {
-						id: "new-preference",
-						userId: "ofeks",
-						endDate: nextDatesSelection.end,
+						...defaultPreference,
 						startDate: nextDatesSelection.start,
-						importance: PreferenceImportance.CANT,
-						kind: PreferenceKind.CELEBRATION,
-						description: "",
+						endDate: nextDatesSelection.end,
 					},
 				});
 			}
@@ -421,13 +437,9 @@ export function usePersonalCalendar({
 			setSelectedEvent({
 				kind: EventKind.NEW_PREFERENCE,
 				eventData: {
-					id: "new-preference",
-					description: "",
+					...defaultPreference,
 					endDate: nextDatesSelection.end,
 					startDate: nextDatesSelection.start,
-					importance: PreferenceImportance.CANT,
-					kind: PreferenceKind.CELEBRATION,
-					userId: "ofeks",
 				},
 			});
 		},
