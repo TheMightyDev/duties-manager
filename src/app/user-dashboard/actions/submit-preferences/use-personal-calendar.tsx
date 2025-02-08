@@ -33,13 +33,7 @@ import {
 } from "@prisma/client";
 import { add, addDays, addMinutes, subMinutes } from "date-fns";
 import { useTranslations } from "next-intl";
-import React, {
-	useCallback,
-	useEffect,
-	useRef,
-	useState,
-	type ChangeEvent,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useImmer } from "use-immer";
@@ -81,12 +75,7 @@ interface Return {
 
 	floatingDialogData: FloatingDialogData;
 	setIsFloatingDialogShown: (nextIsShown: boolean) => void;
-	isAddPreferenceDialogOpen: boolean;
 	closeAddPreference: () => void;
-	selectedPreference: Preference | undefined;
-
-	selectedUserId: string;
-	handleUserIdChange: React.ChangeEventHandler<HTMLInputElement>;
 
 	selectedEvent: EventTaggedUnion | null;
 	unselectEventAndCloseDialog: () => void;
@@ -114,10 +103,6 @@ export function usePersonalCalendar({
 		null,
 	);
 
-	const [selectedPreferenceId, setSelectedPreferenceId] = useState<
-		string | null
-	>(null);
-
 	const [clickedEventBoundingClientRect, setClickedEventBoundingClientRect] =
 		useState<DOMRect | null>(null);
 
@@ -128,11 +113,6 @@ export function usePersonalCalendar({
 			xOffsetPx: 0,
 			yOffsetPx: 0,
 		});
-	const [isAddPreferenceDialogOpen, setIsAddPreferenceDialogOpen] =
-		React.useState<boolean>(false);
-
-	/** Used for development, so the admin can easily add preferences for different users */
-	const [selectedUserId, setSelectedUserId] = React.useState<string>("user1");
 
 	const preferencesFormattedForEvent = React.useMemo(() => {
 		return preferences.map<EventInput>(
@@ -308,10 +288,6 @@ export function usePersonalCalendar({
 		openFloatingDialog({ rect: clickedEventBoundingClientRect });
 	}, [clickedEventBoundingClientRect]);
 
-	const selectedPreference = preferences.find(
-		(preference) => preference.id === selectedPreferenceId,
-	);
-
 	function setIsFloatingDialogShown(nextIsShown: boolean) {
 		setFloatingDialogData((prev) => ({
 			...prev,
@@ -326,23 +302,8 @@ export function usePersonalCalendar({
 	};
 
 	function closeAddPreference() {
-		setIsAddPreferenceDialogOpen(false);
 		setSelectedEvent(null);
 		setIsFloatingDialogShown(false);
-	}
-
-	function handleUserIdChange(event: ChangeEvent<HTMLInputElement>) {
-		const nextUserId = "user" + event.target.value;
-		setSelectedUserId(nextUserId);
-
-		fetchPreferences({
-			userId: nextUserId,
-		}).then((result) => {
-			updatePreferences((draft) => {
-				draft.length = 0;
-				draft.push(...result);
-			});
-		});
 	}
 
 	const eventsByKind = {
@@ -376,8 +337,6 @@ export function usePersonalCalendar({
 			});
 
 			if (!preferenceInDateRange) {
-				setSelectedPreferenceId(null);
-				setIsAddPreferenceDialogOpen(true);
 				setSelectedEvent({
 					kind: EventKind.NEW_PREFERENCE,
 					eventData: {
@@ -417,7 +376,6 @@ export function usePersonalCalendar({
 				end: subMinutes(arg.end, 1),
 			};
 
-			setIsAddPreferenceDialogOpen(true);
 			setIsFloatingDialogShown(true);
 			setSelectedEvent({
 				kind: EventKind.NEW_PREFERENCE,
@@ -530,12 +488,7 @@ export function usePersonalCalendar({
 
 		floatingDialogData,
 		setIsFloatingDialogShown,
-		isAddPreferenceDialogOpen,
 		closeAddPreference,
-		selectedPreference,
-
-		selectedUserId,
-		handleUserIdChange,
 
 		selectedEvent,
 		unselectEventAndCloseDialog,
