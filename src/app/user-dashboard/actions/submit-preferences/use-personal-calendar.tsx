@@ -75,7 +75,6 @@ interface Return {
 
 	floatingDialogData: FloatingDialogData;
 	setIsFloatingDialogShown: (nextIsShown: boolean) => void;
-	closeAddPreference: () => void;
 
 	selectedEvent: EventTaggedUnion | null;
 	unselectEventAndCloseDialog: () => void;
@@ -201,6 +200,22 @@ export function usePersonalCalendar({
 		});
 	};
 
+	const addMirroredPreference = (preference: Preference) => {
+		updatePreferences((draft) => {
+			draft.push(preference);
+		});
+	};
+
+	const deleteMirroredPreference = ({ id }: { id: string }) => {
+		updatePreferences((draft) => {
+			const deletedPreferenceIndex = draft.findIndex(
+				(preference) => preference.id === id,
+			);
+
+			// Note: `splice` mutates the original array
+			draft.splice(deletedPreferenceIndex, 1);
+		});
+	};
 	const preferenceOperationsWrappers: PreferenceOperations<void> = {
 		createPreference: (newPreference: Preference) => {
 			createPreference(newPreference).then(
@@ -209,7 +224,7 @@ export function usePersonalCalendar({
 					updatePreferences((draft) => {
 						draft.push(newPreference);
 					});
-					setSelectedEvent(null);
+					unselectEventAndCloseDialog();
 				},
 				() => {
 					toast.error("הגשת ההסתייגות נכשלה");
@@ -243,6 +258,13 @@ export function usePersonalCalendar({
 			);
 		},
 		deletePreference: (params: { id: string }) => {
+			const deletedPreferenceIndex = preferences.findIndex(
+				(preference) => preference.id === params.id,
+			);
+			const deletedPreference = preferences[deletedPreferenceIndex];
+			if (!deletedPreference) return;
+			deleteMirroredPreference(params);
+
 			deletePreference(params).then(
 				() => {
 					toast.success("ההסתייגות נמחקה בהצלחה", {
@@ -252,16 +274,9 @@ export function usePersonalCalendar({
 							</div>
 						),
 					});
-					updatePreferences((draft) => {
-						const deletedPreferenceIndex = draft.findIndex(
-							(preference) => preference.id === params.id,
-						);
-
-						// Note: `splice` mutates the original array
-						draft.splice(deletedPreferenceIndex, 1);
-					});
 				},
 				() => {
+					addMirroredPreference(deletedPreference);
 					toast.error("מחיקת ההסתייגות נכשלה");
 				},
 			);
@@ -300,11 +315,6 @@ export function usePersonalCalendar({
 		setSelectedEvent(null);
 		setIsFloatingDialogShown(false);
 	};
-
-	function closeAddPreference() {
-		setSelectedEvent(null);
-		setIsFloatingDialogShown(false);
-	}
 
 	const eventsByKind = {
 		[EventKind.PREFERENCE]: preferences,
@@ -488,7 +498,6 @@ export function usePersonalCalendar({
 
 		floatingDialogData,
 		setIsFloatingDialogShown,
-		closeAddPreference,
 
 		selectedEvent,
 		unselectEventAndCloseDialog,

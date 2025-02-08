@@ -11,7 +11,10 @@ import {
 	FormMessage,
 } from "@/app/_components/ui/form";
 import { Input } from "@/app/_components/ui/input";
-import { type GetPreferenceParams } from "@/app/user-dashboard/types";
+import {
+	type GetPreferenceParams,
+	type PreferenceOperations,
+} from "@/app/user-dashboard/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createId } from "@paralleldrive/cuid2";
 import {
@@ -70,16 +73,19 @@ const SubmitPreferenceSchema = DurationSchema.extend({
 
 type SubmitPreferenceType = z.infer<typeof SubmitPreferenceSchema>;
 
-interface PreferenceFormProps {
+export interface PreferenceFormProps {
 	/** The info about an existing preference (on edit), or placeholder data about a
 	 * preference that's about to be created (on add)
 	 */
 	initialPreferenceData: Preference;
 	userId: User["id"];
-	isOpen: boolean;
-	closeDialog: () => void;
-	createPreference: (newPreference: Preference) => void;
+	createPreference?: PreferenceOperations<void>["createPreference"];
+	updatePreference?: PreferenceOperations<void>["updatePreference"];
 	getPreference: (params: GetPreferenceParams) => Preference | undefined;
+	/** A callback that closes the dialog.
+	 * If not provided, the button to close the dialog is not rendered
+	 */
+	closeDialog?: () => void;
 }
 
 export function PreferenceForm(props: PreferenceFormProps) {
@@ -94,7 +100,7 @@ export function PreferenceForm(props: PreferenceFormProps) {
 							start: arg.startDate,
 							end: arg.endDate,
 						},
-						excludedPreferenceId: "new-preference",
+						excludedPreferenceId: props.initialPreferenceData.id,
 					});
 
 					console.log("@existingPreference", existingPreference);
@@ -117,17 +123,11 @@ export function PreferenceForm(props: PreferenceFormProps) {
 
 	const selectedImportance = form.watch("importance");
 
-	const { handleSubmit, formState } = form;
-
 	useEffect(() => {
 		form.reset({
 			...props.initialPreferenceData,
 		});
 	}, [props.initialPreferenceData]);
-
-	useEffect(() => {}, [props.isOpen]);
-
-	console.log("@formState.errors", formState.errors);
 
 	const onSubmit: SubmitHandler<SubmitPreferenceType> = (submittedData) => {
 		console.log("@submittedData", submittedData);
@@ -135,29 +135,41 @@ export function PreferenceForm(props: PreferenceFormProps) {
 			submittedData.kind = PreferenceKind.OTHER;
 		}
 
-		props.createPreference({
-			id: createId(),
-			userId: props.userId,
-			startDate: submittedData.startDate,
-			endDate: submittedData.endDate,
-			importance: submittedData.importance,
-			kind: submittedData.kind,
-			description: submittedData.description,
-		});
+		if (props.createPreference) {
+			props.createPreference({
+				id: createId(),
+				userId: props.userId,
+				startDate: submittedData.startDate,
+				endDate: submittedData.endDate,
+				importance: submittedData.importance,
+				kind: submittedData.kind,
+				description: submittedData.description,
+			});
+
+			return;
+		}
+		if (props.updatePreference) {
+			props.updatePreference({
+				id: props.initialPreferenceData.id,
+				...submittedData,
+			});
+		}
 	};
 
 	return (
 		<Form {...form}>
 			<div>
-				<button
-					onClick={() => {
-						props.closeDialog();
-					}}
-				>
-					<X />
-				</button>
+				{props.closeDialog && (
+					<button
+						onClick={() => {
+							props.closeDialog?.();
+						}}
+					>
+						<X />
+					</button>
+				)}
 			</div>
-			<form onSubmit={handleSubmit(onSubmit)} dir="rtl">
+			<form onSubmit={form.handleSubmit(onSubmit)} dir="rtl">
 				<FormField
 					control={form.control}
 					name="startDate"

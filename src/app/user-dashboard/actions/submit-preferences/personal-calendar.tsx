@@ -1,8 +1,8 @@
 "use client";
 
 import { FloatingDialog } from "@/app/_components/floating-dialog/floating-dialog";
+import { PreferenceDialogContent } from "@/app/user-dashboard/actions/submit-preferences/components/preference-dialog-content";
 import { PreferenceForm } from "@/app/user-dashboard/actions/submit-preferences/components/preference-form";
-import { PreferenceInfo } from "@/app/user-dashboard/actions/submit-preferences/components/preference-info";
 import { EventKind } from "@/app/user-dashboard/actions/submit-preferences/types";
 import {
 	type PersonalCalendarProps,
@@ -12,7 +12,6 @@ import heLocale from "@fullcalendar/core/locales/he";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import FullCalendar from "@fullcalendar/react";
-import { type Preference } from "@prisma/client";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -25,13 +24,14 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 		preferenceOperationsWrappers,
 
 		floatingDialogData,
-		closeAddPreference,
 
 		selectedEvent,
 		unselectEventAndCloseDialog,
 
 		floatingDialogRef,
 	} = usePersonalCalendar(props);
+
+	preferenceOperationsWrappers.updatePreference;
 
 	return (
 		<>
@@ -61,72 +61,32 @@ export function PersonalCalendar(props: PersonalCalendarProps) {
 				className="shadow-xl shadow-black/20"
 				containerRef={floatingDialogRef}
 			>
-				{selectedEvent && selectedEvent.kind === EventKind.PREFERENCE && (
-					<>
-						<PreferenceInfo
-							preference={selectedEvent.eventData as Preference}
-							handleClose={unselectEventAndCloseDialog}
-							handleDeletePreference={() => {
-								preferenceOperationsWrappers.deletePreference({
-									id: selectedEvent.eventData.id,
-								});
-							}}
-						/>
-						<pre dir="ltr">
-							{JSON.stringify(selectedEvent.eventData, null, 2)}
-						</pre>
-					</>
+				{selectedEvent?.kind === EventKind.PREFERENCE && (
+					<PreferenceDialogContent
+						preference={selectedEvent.eventData}
+						closeDialog={unselectEventAndCloseDialog}
+						getPreference={getPreference}
+						{...preferenceOperationsWrappers}
+					/>
+					// <PreferenceInfo
+					// 	preference={selectedEvent.eventData as Preference}
+					// 	handleClose={unselectEventAndCloseDialog}
+					// 	handleDeletePreference={() => {
+					// 		preferenceOperationsWrappers.deletePreference({
+					// 			id: selectedEvent.eventData.id,
+					// 		});
+					// 	}}
+					// />
 				)}
 				{selectedEvent?.kind === EventKind.NEW_PREFERENCE && (
 					<PreferenceForm
 						userId="ofeks"
 						initialPreferenceData={selectedEvent.eventData}
 						getPreference={getPreference}
-						closeDialog={closeAddPreference}
-						isOpen={floatingDialogData.isShown}
+						closeDialog={unselectEventAndCloseDialog}
 						createPreference={preferenceOperationsWrappers.createPreference}
 					/>
 				)}
-				{/* {
-					(!selectedPreference) &&
-					<AddPreference
-						isOpen={isAddPreferenceDialogOpen}
-						userId={selectedUserId}
-						datesSelection={proposedEventDatesSelection ?? {
-							start: new Date(),
-							end: new Date(),
-						}}
-						setDatesSelection={setProposedEventDatesSelection}
-						getPreference={getPreference}
-						createPreference={preferenceOperationsWrappers.createPreference}
-						updatePreference={preferenceOperationsWrappers.updatePreference}
-						deletePreference={preferenceOperationsWrappers.deletePreference}
-						closeDialog={closeAddPreference}
-					/>
-				}
-				{
-					selectedPreference &&
-					<EditPreference
-						getPreference={getPreference}
-						isOpen={floatingDialogData.isShown}
-						preference={selectedPreference}
-						createPreference={preferenceOperationsWrappers.createPreference}
-						updatePreference={preferenceOperationsWrappers.updatePreference}
-						deletePreference={preferenceOperationsWrappers.deletePreference}
-						closeDialog={() => {
-							setIsFloatingDialogShown(false);
-						}}
-					/>
-				}
-				{
-					selectedPreference &&
-					<ViewPreference
-						preference={selectedPreference}
-						closeDialog={() => {
-							setIsFloatingDialogShown(false);
-						}}
-					/>
-				} */}
 			</FloatingDialog>
 
 			<ToastContainer

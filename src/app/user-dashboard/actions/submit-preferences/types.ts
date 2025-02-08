@@ -22,11 +22,13 @@ export interface PreferenceOperations<ReturnType> {
 	) => ReturnType;
 }
 
+export type PreferenceTagged = {
+	kind: EventKind.PREFERENCE;
+	eventData: Preference;
+};
+
 export type EventTaggedUnion =
-	| {
-			kind: EventKind.PREFERENCE;
-			eventData: Preference;
-	  }
+	| PreferenceTagged
 	| {
 			kind: EventKind.NEW_PREFERENCE;
 			eventData: Preference;
