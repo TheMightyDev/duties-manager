@@ -216,17 +216,35 @@ export function usePersonalCalendar({
 			draft.splice(deletedPreferenceIndex, 1);
 		});
 	};
+
+	const updateMirroredPreference = (
+		preferenceUpdates: Partial<Preference> & {
+			id: string;
+		},
+	) => {
+		updatePreferences((draft) => {
+			const index = draft.findIndex(
+				(preference) => preference.id === preferenceUpdates.id,
+			);
+
+			if (draft[index]) {
+				draft[index] = {
+					...draft[index],
+					...preferenceUpdates,
+				};
+			}
+		});
+	};
 	const preferenceOperationsWrappers: PreferenceOperations<void> = {
 		createPreference: (newPreference: Preference) => {
+			addMirroredPreference(newPreference);
 			createPreference(newPreference).then(
 				() => {
 					toast.success("ההסתייגות הוגשה בהצלחה");
-					updatePreferences((draft) => {
-						draft.push(newPreference);
-					});
 					unselectEventAndCloseDialog();
 				},
 				() => {
+					deleteMirroredPreference({ id: newPreference.id });
 					toast.error("הגשת ההסתייגות נכשלה");
 				},
 			);
@@ -236,23 +254,17 @@ export function usePersonalCalendar({
 				id: string;
 			},
 		) => {
+			const originalPreference = preferences.find(
+				(curr) => curr.id === preferenceUpdates.id,
+			);
+			if (!originalPreference) return;
+			updateMirroredPreference(preferenceUpdates);
 			updatePreference(preferenceUpdates).then(
 				() => {
 					toast.success("ההסתייגות עודכנה בהצלחה");
-					updatePreferences((draft) => {
-						const index = draft.findIndex(
-							(preference) => preference.id === preferenceUpdates.id,
-						);
-
-						if (draft[index]) {
-							draft[index] = {
-								...draft[index],
-								...preferenceUpdates,
-							};
-						}
-					});
 				},
 				() => {
+					updateMirroredPreference(originalPreference);
 					toast.error("עדכון ההסתייגות נכשל");
 				},
 			);
